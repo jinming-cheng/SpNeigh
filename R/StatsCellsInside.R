@@ -5,6 +5,20 @@
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
 #' @export
+#' @examples
+#' # Load coordinates
+#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
+#'                  package = "SpNeigh"))
+#' head(coords)
+#'
+#' # Get cells inside boundaries
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
+#'                                eps = 120, minPts = 10)
+#' cells_inside <- GetCellsInside(data = coords, boundary =  boundary_points)
+#'
+#' # Statistics of cells inside boundaries
+#' stats_cells = StatsCellsInside(cells_inside)
+#' head(stats_cells)
 #'
 StatsCellsInside <- function(cells_inside = NULL){
   # Count and proportions of cells in different clusters for each region

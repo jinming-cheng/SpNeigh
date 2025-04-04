@@ -3,9 +3,39 @@
 #'
 #' @param coords coordinates of the cells
 #' @param k The maximum number of nearest neighbors to search, which is a parameter used in `get.knn` function. Default is set to 5.
-#' @param distance_cutoff K-nearest neighbor distance Threshold. Default is set to 30. k and distance_cutoff are used to remove outlier points.
+#' @param distance_cutoff K-nearest neighbor distance threshold. Default is set to 30. k and distance_cutoff are used to remove outlier points.
 #' @export
+#' @examples
+#' # Set seed for reproducibility
+#' set.seed(123)
 #'
+#' # Generate 20 clustered points
+#' n1 <- 20
+#' x1 <- rnorm(n1, mean = 5, sd = 0.5)
+#' y1 <- rnorm(n1, mean = 5, sd = 0.5)
+#'
+#' # Generate 5 outliers
+#' n2 <- 5
+#' x2 <- runif(n2, min = 10, max = 15)
+#' y2 <- runif(n2, min = 10, max = 15)
+#'
+#' # Combine clustered points and outliers
+#' coords <- data.frame(x = c(x1, x2), y = c(y1, y2) )
+#' dim(coords)
+#'
+#' # Plot clustered points and outlier points
+#' plot(coords$x, coords$y, pch = 16,
+#'      col = rep(c("red","green"), times = c(20,5)) )
+#'
+#' # Remove outlier points with a specified knn distance cutoff
+#' new_coords <- RemoveOutliers(coords, k = 5, distance_cutoff = 2)
+#' dim(new_coords)
+#'
+#' # Returns TRUE meaning outliers have been removed in new_coords
+#' all((new_coords$x == x1) & (new_coords$y == y1))
+
+
+
 RemoveOutliers <- function(coords, k = 5, distance_cutoff = 30) {
   knn_res <- FNN::get.knn(coords, k = k)
   mean_dist <- rowMeans(knn_res$nn.dist)
@@ -20,6 +50,17 @@ RemoveOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 #'
 #' @param data A data frame contains coordinates of the cells and cluster information. If the input is a Seurat object, the information will be extracted automatically.
 #' @export
+#' @examples
+#' # Load coordinates
+#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
+#'                  package = "SpNeigh"))
+#'
+#' # An exmaple of the coordinate data.frame used for analysis
+#' head(coords)
+#'
+#' # If the data is a data.frame, returns it without doing anything
+#' head(ExtractCoords(coords))
+#'
 
 ExtractCoords <- function(data = NULL){
   # If data is a Seurat object, extract the coordinates and cluster information
@@ -46,6 +87,44 @@ ExtractCoords <- function(data = NULL){
 #' @param minPts A parameter used when `subregion_method` is set to "dbscan". Number of minimum points required in the eps neighborhood for core points. The `eps` and `minPts` parameters are used to adjust the subregion numbers for "dbscan" method.
 #' @param n_subregions A parameter used when `subregion_method` is set to "kmeans". Manually set the number of subregions. Default is 3.
 #' @export
+#' @examples
+#' # Load coordinates
+#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
+#'                  package = "SpNeigh"))
+#' head(coords)
+#'
+#' # Get boundary points of cluster 1 using dbscan method by default
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 1)
+#'
+#' # An example of data in the boundary_points data.frame
+#' head(boundary_points)
+#'
+#' # Number of subregions
+#' table(boundary_points$region_id)
+#'
+#' # Plot coordinates without boundaries
+#' PlotBoundary(coords)
+#'
+#' # Plot boundary points of cluster 1
+#' plot(boundary_points[,c("x","y")], pch=16, cex=0.3)
+#'
+#' # Plot boundary polygon of cluster 1
+#' PlotBoundary(coords, one_cluster = 1)
+#'
+#' # Get boundary points of cluster 1 using kmeans method
+#' # and manually specify subregion number
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 1,
+#'                                subregion_method = "kmeans",
+#'                                n_subregions = 2)
+#' table(boundary_points$region_id)
+#' plot(boundary_points[,c("x","y")], pch=16, cex=0.3)
+#'
+#' # Get boundary points of cluster 1 using concaveman hull method.
+#' # region_id is set to 1 but it is not meaningful for this method.
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 1,
+#'                                multi_region = FALSE)
+#' table(boundary_points$region_id)
+#' plot(boundary_points[,c("x","y")], pch=16, cex=0.3)
 
 GetBoundary <- function(data = NULL,
                         one_cluster = NULL,
@@ -116,6 +195,21 @@ GetBoundary <- function(data = NULL,
 #'
 #' @param boundary Boundary result returned by `GetBoundary` function.
 #' @export
+#' @examples
+#' # Load coordinates
+#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
+#'                  package = "SpNeigh"))
+#' head(coords)
+#'
+#' # Get boundary points of cluster 2
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
+#'
+#' # Build boundary polygon from the boundary points
+#' boundary_polys = BuildBoundaryPoly(boundary_points)
+#'
+#' # Plot boundary polygons
+#' plot(boundary_polys)
+#'
 BuildBoundaryPoly <- function(boundary = NULL){
   # Build safe polygons
   polygon_list <- lapply(split(boundary,
@@ -147,6 +241,29 @@ BuildBoundaryPoly <- function(boundary = NULL){
 #' @param boundary A data frame or sf object. Boundary result returned by `GetBoundary` or `GetBoundaryPoly` function.
 #' @param dist Distance of the outer boundary from the existing boundary.
 #' @export
+#' @examples
+#' # Load coordinates
+#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
+#'                  package = "SpNeigh"))
+#' head(coords)
+#'
+#' # Get boundary points of cluster 2
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
+#'
+#' # Build boundary polygon from the boundary points
+#' boundary_polys = BuildBoundaryPoly(boundary_points)
+#'
+#' # Get outer boundary ploygons that are of a distance of 100 units from the original boundaries
+#' # both boundary points and boundary polygons can be used as input
+#' outer_boundary_polys <- GetOuterBoundary(boundary_points, dist = 100)
+#' outer_boundary_polys <- GetOuterBoundary(boundary_polys, dist = 100)
+#'
+#' # Plot original boundary polygons
+#' plot(boundary_polys)
+#'
+#' # Plot outer boundary polygons
+#' plot(outer_boundary_polys)
+#'
 GetOuterBoundary <- function(boundary = NULL, dist = 100){
   # Build a safe polygon
   if(is(boundary,"sf")){
@@ -169,6 +286,27 @@ GetOuterBoundary <- function(boundary = NULL, dist = 100){
 #' @param outer_boundary A sf object. Outer boundary returned by `GetOuterBoundary` function.
 #' @param ... Parameters in `GetOuterBoundary`
 #' @export
+#' @examples
+#' # Load coordinates
+#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
+#'                  package = "SpNeigh"))
+#' head(coords)
+#'
+#' # Get boundary points of cluster 2
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
+#'
+#' # Get ring regions (outer regions with be automatically obtained)
+#' ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
+#'
+#' # Plot ring regions
+#' plot(ring_regions)
+#'
+#' # Alternatively, get ring region using the provided boundary and outer_boundary
+#' outer_boundary_polys <- GetOuterBoundary(boundary_points, dist = 100)
+#' ring_regions <- GetRingRegion(boundary = boundary_points,
+#'                               outer_boundary = outer_boundary_polys)
+#' plot(ring_regions)
+#'
 GetRingRegion <- function(boundary = NULL, outer_boundary = NULL,...){
   # Build safe polygons
   if(is(boundary,"sf")){
@@ -180,6 +318,8 @@ GetRingRegion <- function(boundary = NULL, outer_boundary = NULL,...){
   # If outer boundary is not provided, get the outer boundary
   if(is.null(outer_boundary)){
     outer_boundaries <- GetOuterBoundary(boundary = boundary_polys,...)
+  }else{
+    outer_boundaries <- outer_boundary
   }
 
   # Subtract each original region from its own buffer (row-wise difference)

@@ -20,3 +20,20 @@ AddBoundaryPoly(
 \description{
 Add a boundary poly to the plot
 }
+\examples{
+# Load coordinates
+load(system.file("extdata", "MouseBrainTinyCoords.rda",
+                 package = "SpNeigh"))
+head(coords)
+
+# Build boundary polygons from the boundary points
+boundary_points <- GetBoundary(data = coords, one_cluster = 2,
+                               subregion_method = "dbscan",
+                               eps = 120, minPts = 10)
+boundary_polys <- BuildBoundaryPoly(boundary_points)
+
+# Add boundary polygons to an existing plot
+PlotBoundary(coords) + AddBoundaryPoly(boundary_polys,
+                                       color="blue")
+
+}

@@ -44,3 +44,28 @@ PlotBoundary(
 \description{
 Draw boundary for a cluster or cell population
 }
+\examples{
+# Load coordinates
+load(system.file("extdata", "MouseBrainTinyCoords.rda",
+                 package = "SpNeigh"))
+head(coords)
+
+# Plot coordinates without boundary
+PlotBoundary(coords)
+
+# Plot boundaries of cluster 2
+PlotBoundary(coords, one_cluster = 2)
+
+# Plot boundaries of cluster 2, and adjust subregion numbers
+# for dbscan method using eps and minPts parameters
+PlotBoundary(coords, one_cluster = 2,
+            multi_region = TRUE,
+            subregion_method = "dbscan",
+            eps = 120, minPts = 10)
+
+# Alternatively, the boundaries can be manually specified
+boundary_points <- GetBoundary(data = coords, one_cluster = 2,
+                               subregion_method = "dbscan",
+                               eps = 120, minPts = 10)
+PlotBoundary(data = coords, boundary = boundary_points)
+}

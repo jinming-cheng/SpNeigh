@@ -23,7 +23,7 @@ GetBoundary(
 
 \item{k}{The maximum number of nearest neighbors to search, which is a parameter used in \code{get.knn} function. Default is set to 5.}
 
-\item{distance_cutoff}{K-nearest neighbor distance Threshold. Default is set to 30. k and distance_cutoff are used to remove outlier points.}
+\item{distance_cutoff}{K-nearest neighbor distance threshold. Default is set to 30. k and distance_cutoff are used to remove outlier points.}
 
 \item{multi_region}{A logical value demonstrates whether a cluster has multiple regions on a spatial plot. Default is TRUE}
 
@@ -37,4 +37,43 @@ GetBoundary(
 }
 \description{
 Get boundary points for a cluster or cell population
+}
+\examples{
+# Load coordinates
+load(system.file("extdata", "MouseBrainTinyCoords.rda",
+                 package = "SpNeigh"))
+head(coords)
+
+# Get boundary points of cluster 1 using dbscan method by default
+boundary_points <- GetBoundary(data = coords, one_cluster = 1)
+
+# An example of data in the boundary_points data.frame
+head(boundary_points)
+
+# Number of subregions
+table(boundary_points$region_id)
+
+# Plot coordinates without boundaries
+PlotBoundary(coords)
+
+# Plot boundary points of cluster 1
+plot(boundary_points[,c("x","y")], pch=16, cex=0.3)
+
+# Plot boundary polygon of cluster 1
+PlotBoundary(coords, one_cluster = 1)
+
+# Get boundary points of cluster 1 using kmeans method
+# and manually specify subregion number
+boundary_points <- GetBoundary(data = coords, one_cluster = 1,
+                               subregion_method = "kmeans",
+                               n_subregions = 2)
+table(boundary_points$region_id)
+plot(boundary_points[,c("x","y")], pch=16, cex=0.3)
+
+# Get boundary points of cluster 1 using concaveman hull method.
+# region_id is set to 1 but it is not meaningful for this method.
+boundary_points <- GetBoundary(data = coords, one_cluster = 1,
+                               multi_region = FALSE)
+table(boundary_points$region_id)
+plot(boundary_points[,c("x","y")], pch=16, cex=0.3)
 }

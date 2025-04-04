@@ -6,6 +6,22 @@
 #' @param cells_inside A sf object. cells_inside returned by `GetCellsInside`.
 #' @param ... Other paramters in `sf::geom_sf()` function.
 #' @export
+#' @examples
+#' # Load coordinates
+#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
+#'                  package = "SpNeigh"))
+#' head(coords)
+#'
+#' # Get cells inside boundaries
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
+#'                                eps = 120, minPts = 10)
+#' cells_inside <- GetCellsInside(data = coords, boundary =  boundary_points)
+#' PlotCellsInside(cells_inside = cells_inside)
+#'
+#' # Get cells inside rings
+#' ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
+#' cells_ring <- GetCellsInside(data = coords, boundary =  boundary_points)
+#' PlotCellsInside(cells_inside = cells_ring)
 #'
 PlotCellsInside <- function(cells_inside = NULL,
                             point_size = 0.5,

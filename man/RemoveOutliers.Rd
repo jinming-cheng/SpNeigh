@@ -11,8 +11,37 @@ RemoveOutliers(coords, k = 5, distance_cutoff = 30)
 
 \item{k}{The maximum number of nearest neighbors to search, which is a parameter used in \code{get.knn} function. Default is set to 5.}
 
-\item{distance_cutoff}{K-nearest neighbor distance Threshold. Default is set to 30. k and distance_cutoff are used to remove outlier points.}
+\item{distance_cutoff}{K-nearest neighbor distance threshold. Default is set to 30. k and distance_cutoff are used to remove outlier points.}
 }
 \description{
 Removes outlier cells that are too far from their neighbors in a cluster or cell population
+}
+\examples{
+# Set seed for reproducibility
+set.seed(123)
+
+# Generate 20 clustered points
+n1 <- 20
+x1 <- rnorm(n1, mean = 5, sd = 0.5)
+y1 <- rnorm(n1, mean = 5, sd = 0.5)
+
+# Generate 5 outliers
+n2 <- 5
+x2 <- runif(n2, min = 10, max = 15)
+y2 <- runif(n2, min = 10, max = 15)
+
+# Combine clustered points and outliers
+coords <- data.frame(x = c(x1, x2), y = c(y1, y2) )
+dim(coords)
+
+# Plot clustered points and outlier points
+plot(coords$x, coords$y, pch = 16,
+     col = rep(c("red","green"), times = c(20,5)) )
+
+# Remove outlier points with a specified knn distance cutoff
+new_coords <- RemoveOutliers(coords, k = 5, distance_cutoff = 2)
+dim(new_coords)
+
+# Returns TRUE meaning outliers have been removed in new_coords
+all((new_coords$x == x1) & (new_coords$y == y1))
 }

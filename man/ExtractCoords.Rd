@@ -12,3 +12,15 @@ ExtractCoords(data = NULL)
 \description{
 Extract coordinates from a Seurat object or a data frame
 }
+\examples{
+# Load coordinates
+load(system.file("extdata", "MouseBrainTinyCoords.rda",
+                 package = "SpNeigh"))
+
+# An exmaple of the coordinate data.frame used for analysis
+head(coords)
+
+# If the data is a data.frame, returns it without doing anything
+head(ExtractCoords(coords))
+
+}

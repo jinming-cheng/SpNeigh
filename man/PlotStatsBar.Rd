@@ -26,3 +26,22 @@ PlotStatsBar(
 \description{
 Bar plot of statistics of cells inside boundaries or rings
 }
+\examples{
+# Load coordinates
+load(system.file("extdata", "MouseBrainTinyCoords.rda",
+                 package = "SpNeigh"))
+head(coords)
+
+# Obtain statistics of cells inside boundaries
+boundary_points <- GetBoundary(data = coords, one_cluster = 2,
+                               eps = 120, minPts = 10)
+cells_inside <- GetCellsInside(data = coords, boundary =  boundary_points)
+stats_cells = StatsCellsInside(cells_inside)
+
+# Plot proportion of cells in different clusters using bar plot
+PlotStatsBar(stats_cells, stat_column = "proportion")
+
+# Plot count of cells in different clusters using bar plot
+PlotStatsBar(stats_cells, stat_column = "count")
+
+}

@@ -29,3 +29,20 @@ PlotRegion(
 \description{
 Plot regions inside boundries or rings
 }
+\examples{
+# Load coordinates
+load(system.file("extdata", "MouseBrainTinyCoords.rda",
+                 package = "SpNeigh"))
+head(coords)
+
+# Plot region inside boundaries
+boundary_points <- GetBoundary(data = coords, one_cluster = 2,
+                               eps = 120, minPts = 10)
+boundary_polys = BuildBoundaryPoly(boundary_points)
+PlotRegion(boundary_poly = boundary_polys)
+
+# Plot region inside rings
+ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
+PlotRegion(boundary_poly = ring_regions)
+
+}

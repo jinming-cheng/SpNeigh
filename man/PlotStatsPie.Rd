@@ -35,3 +35,28 @@ PlotStatsPie(
 \description{
 Pie chart or donut chart of statistics of cells inside boundaries or rings
 }
+\examples{
+# Load coordinates
+load(system.file("extdata", "MouseBrainTinyCoords.rda",
+                 package = "SpNeigh"))
+head(coords)
+
+# Obtain statistics of cells inside boundaries
+boundary_points <- GetBoundary(data = coords, one_cluster = 2,
+                               eps = 120, minPts = 10)
+cells_inside <- GetCellsInside(data = coords, boundary =  boundary_points)
+stats_cells = StatsCellsInside(cells_inside)
+
+# Plot proportion using pie chart without adding percentage labels
+PlotStatsPie(stats_cells, add_labels = FALSE)
+
+# Plot proportion using pie chart showing labels of all percentages
+PlotStatsPie(stats_cells, label_cutoff = 0)
+
+# Plot proportion using pie chart showing labels of percentages greater than 1\%
+PlotStatsPie(stats_cells, label_cutoff = 0.01)
+
+# Plot proportion using donut chart
+PlotStatsPie(stats_cells, plot_donut = TRUE)
+
+}

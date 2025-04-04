@@ -16,3 +16,25 @@ GetRingRegion(boundary = NULL, outer_boundary = NULL, ...)
 \description{
 Get ring region between the original boundary and outer boundary
 }
+\examples{
+# Load coordinates
+load(system.file("extdata", "MouseBrainTinyCoords.rda",
+                 package = "SpNeigh"))
+head(coords)
+
+# Get boundary points of cluster 2
+boundary_points <- GetBoundary(data = coords, one_cluster = 2)
+
+# Get ring regions (outer regions with be automatically obtained)
+ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
+
+# Plot ring regions
+plot(ring_regions)
+
+# Alternatively, get ring region using the provided boundary and outer_boundary
+outer_boundary_polys <- GetOuterBoundary(boundary_points, dist = 100)
+ring_regions <- GetRingRegion(boundary = boundary_points,
+                              outer_boundary = outer_boundary_polys)
+plot(ring_regions)
+
+}

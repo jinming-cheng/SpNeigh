@@ -20,3 +20,16 @@ AddBoundary(
 \description{
 Add a boundary or boundaries to the plot
 }
+\examples{
+# Load coordinates
+load(system.file("extdata", "MouseBrainTinyCoords.rda",
+                 package = "SpNeigh"))
+head(coords)
+
+# Add boundaries to an existing plot
+boundary_points <- GetBoundary(data = coords, one_cluster = 2,
+                               subregion_method = "dbscan",
+                               eps = 120, minPts = 10)
+PlotBoundary(coords) + AddBoundary(boundary_points)
+
+}

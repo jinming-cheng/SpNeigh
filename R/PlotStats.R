@@ -7,7 +7,25 @@
 #' @param stat_column A column name in `cell_stats` and used for y axis.
 #' @param angle_x_label Angle to rotate the x-axis labels.
 #' @export
+#' @examples
+#' # Load coordinates
+#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
+#'                  package = "SpNeigh"))
+#' head(coords)
 #'
+#' # Obtain statistics of cells inside boundaries
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
+#'                                eps = 120, minPts = 10)
+#' cells_inside <- GetCellsInside(data = coords, boundary =  boundary_points)
+#' stats_cells = StatsCellsInside(cells_inside)
+#'
+#' # Plot proportion of cells in different clusters using bar plot
+#' PlotStatsBar(stats_cells, stat_column = "proportion")
+#'
+#' # Plot count of cells in different clusters using bar plot
+#' PlotStatsBar(stats_cells, stat_column = "count")
+#'
+
 PlotStatsBar <- function(cell_stats = NULL,
                          stat_column = c("proportion","count")[1],
                          colors = my_colors_15,
@@ -44,7 +62,31 @@ PlotStatsBar <- function(cell_stats = NULL,
 #' @param label_size Text size of the percentage labels.
 #' @param label_nudge_x Nudge x coordinate to adjust positions for the percentage labels.
 #' @export
+#' @examples
+#' # Load coordinates
+#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
+#'                  package = "SpNeigh"))
+#' head(coords)
 #'
+#' # Obtain statistics of cells inside boundaries
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
+#'                                eps = 120, minPts = 10)
+#' cells_inside <- GetCellsInside(data = coords, boundary =  boundary_points)
+#' stats_cells = StatsCellsInside(cells_inside)
+#'
+#' # Plot proportion using pie chart without adding percentage labels
+#' PlotStatsPie(stats_cells, add_labels = FALSE)
+#'
+#' # Plot proportion using pie chart showing labels of all percentages
+#' PlotStatsPie(stats_cells, label_cutoff = 0)
+#'
+#' # Plot proportion using pie chart showing labels of percentages greater than 1%
+#' PlotStatsPie(stats_cells, label_cutoff = 0.01)
+#'
+#' # Plot proportion using donut chart
+#' PlotStatsPie(stats_cells, plot_donut = TRUE)
+#'
+
 PlotStatsPie <- function(cell_stats = NULL,
                          plot_donut = FALSE,
                          add_labels = TRUE,

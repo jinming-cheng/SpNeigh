@@ -38,6 +38,31 @@ my_theme_ggplot <- function() {
 #' @param legend_size Legend size for ggplot.
 #' @param ... Parameters in `GetBoundary` function.
 #' @export
+#' @examples
+#' # Load coordinates
+#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
+#'                  package = "SpNeigh"))
+#' head(coords)
+#'
+#' # Plot coordinates without boundary
+#' PlotBoundary(coords)
+#'
+#' # Plot boundaries of cluster 2
+#' PlotBoundary(coords, one_cluster = 2)
+#'
+#' # Plot boundaries of cluster 2, and adjust subregion numbers
+#' # for dbscan method using eps and minPts parameters
+#' PlotBoundary(coords, one_cluster = 2,
+#'             multi_region = TRUE,
+#'             subregion_method = "dbscan",
+#'             eps = 120, minPts = 10)
+#'
+#' # Alternatively, the boundaries can be manually specified
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
+#'                                subregion_method = "dbscan",
+#'                                eps = 120, minPts = 10)
+#' PlotBoundary(data = coords, boundary = boundary_points)
+
 PlotBoundary <- function(data = NULL,
                          one_cluster = NULL,
                          boundary = NULL,
@@ -99,6 +124,17 @@ PlotBoundary <- function(data = NULL,
 #' @importFrom rlang .data
 #' @param boundary Boundary obtained from `GetBoundary` function.
 #' @export
+#' @examples
+#' # Load coordinates
+#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
+#'                  package = "SpNeigh"))
+#' head(coords)
+#'
+#' # Add boundaries to an existing plot
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
+#'                                subregion_method = "dbscan",
+#'                                eps = 120, minPts = 10)
+#' PlotBoundary(coords) + AddBoundary(boundary_points)
 #'
 AddBoundary <- function(boundary = NULL, color_boundary="black", linewidth_boundary=1.5) {
   ggplot2::geom_polygon(data = boundary,
@@ -115,7 +151,23 @@ AddBoundary <- function(boundary = NULL, color_boundary="black", linewidth_bound
 #' @importFrom rlang .data
 #' @param boundary_poly A sf object returned by `BuildBoundaryPoly()`, `GetOuterBoundary()` or `GetRingRegion()`.
 #' @export
+#' @examples
+#' # Load coordinates
+#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
+#'                  package = "SpNeigh"))
+#' head(coords)
 #'
+#' # Build boundary polygons from the boundary points
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
+#'                                subregion_method = "dbscan",
+#'                                eps = 120, minPts = 10)
+#' boundary_polys <- BuildBoundaryPoly(boundary_points)
+#'
+#' # Add boundary polygons to an existing plot
+#' PlotBoundary(coords) + AddBoundaryPoly(boundary_polys,
+#'                                        color="blue")
+#'
+
 AddBoundaryPoly <- function(boundary_poly, color_boundary="black", linewidth_boundary=1.5) {
   ggplot2::geom_sf(data = boundary_poly,
                    inherit.aes = FALSE,
@@ -124,7 +176,6 @@ AddBoundaryPoly <- function(boundary_poly, color_boundary="black", linewidth_bou
                    linewidth = linewidth_boundary)
 
 }
-
 
 
 #' Plot regions inside boundries or rings
@@ -137,6 +188,22 @@ AddBoundaryPoly <- function(boundary_poly, color_boundary="black", linewidth_bou
 #' @param linewidth_boundary Linewidth of the boundaries. Default is 1.
 #' @param ... Other paramters in `sf::geom_sf()` function.
 #' @export
+#' @examples
+#' # Load coordinates
+#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
+#'                  package = "SpNeigh"))
+#' head(coords)
+#'
+#' # Plot region inside boundaries
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
+#'                                eps = 120, minPts = 10)
+#' boundary_polys = BuildBoundaryPoly(boundary_points)
+#' PlotRegion(boundary_poly = boundary_polys)
+#'
+#' # Plot region inside rings
+#' ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
+#' PlotRegion(boundary_poly = ring_regions)
+#'
 PlotRegion <- function(boundary_poly = NULL,
                        alpha = 0.5,
                        color_boundary="black",

@@ -14,3 +14,27 @@ GetOuterBoundary(boundary = NULL, dist = 100)
 \description{
 Get outer boundary of the original boundary
 }
+\examples{
+# Load coordinates
+load(system.file("extdata", "MouseBrainTinyCoords.rda",
+                 package = "SpNeigh"))
+head(coords)
+
+# Get boundary points of cluster 2
+boundary_points <- GetBoundary(data = coords, one_cluster = 2)
+
+# Build boundary polygon from the boundary points
+boundary_polys = BuildBoundaryPoly(boundary_points)
+
+# Get outer boundary ploygons that are of a distance of 100 units from the original boundaries
+# both boundary points and boundary polygons can be used as input
+outer_boundary_polys <- GetOuterBoundary(boundary_points, dist = 100)
+outer_boundary_polys <- GetOuterBoundary(boundary_polys, dist = 100)
+
+# Plot original boundary polygons
+plot(boundary_polys)
+
+# Plot outer boundary polygons
+plot(outer_boundary_polys)
+
+}

@@ -12,3 +12,19 @@ BuildBoundaryPoly(boundary = NULL)
 \description{
 Build boundary polygon based on the boundary points
 }
+\examples{
+# Load coordinates
+load(system.file("extdata", "MouseBrainTinyCoords.rda",
+                 package = "SpNeigh"))
+head(coords)
+
+# Get boundary points of cluster 2
+boundary_points <- GetBoundary(data = coords, one_cluster = 2)
+
+# Build boundary polygon from the boundary points
+boundary_polys = BuildBoundaryPoly(boundary_points)
+
+# Plot boundary polygons
+plot(boundary_polys)
+
+}
