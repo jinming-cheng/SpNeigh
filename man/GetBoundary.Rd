@@ -10,7 +10,7 @@ GetBoundary(
   k = 5,
   distance_cutoff = 30,
   multi_region = TRUE,
-  subregion_method = c("dbscan", "kmeans")[1],
+  subregion_method = c("dbscan", "kmeans"),
   eps = 80,
   minPts = 10,
   n_subregions = 3

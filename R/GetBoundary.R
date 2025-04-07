@@ -68,6 +68,11 @@ ExtractCoords <- function(data = NULL){
     sp_coords <- Seurat::GetTissueCoordinates(data)
     sp_coords <- cbind.data.frame(sp_coords, cluster=data$seurat_clusters)
   }else{
+    required_cols <- c("x", "y", "cell",  "cluster")
+    if (!all(required_cols %in% colnames(data))) {
+      stop("Input data frame must contain columns: x, y, cell, cluster")
+    }
+
     # A data frame includes coordinates and cluster information for the spatial data
     sp_coords <- data
   }
@@ -131,10 +136,12 @@ GetBoundary <- function(data = NULL,
                         k = 5,
                         distance_cutoff = 30,
                         multi_region = TRUE,
-                        subregion_method = c("dbscan","kmeans")[1],
+                        subregion_method = c("dbscan","kmeans"),
                         eps = 80,
                         minPts = 10,
                         n_subregions = 3){
+
+  subregion_method <- match.arg(subregion_method)
 
   # extract coordinates from data
   sp_coords <- ExtractCoords(data = data)

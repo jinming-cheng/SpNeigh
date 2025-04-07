@@ -43,7 +43,7 @@ PlotCellsInside(cells_inside = cells_inside)
 
 # Get cells inside rings
 ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-cells_ring <- GetCellsInside(data = coords, boundary =  boundary_points)
+cells_ring <- GetCellsInside(data = coords, boundary =  ring_regions)
 PlotCellsInside(cells_inside = cells_ring)
 
 }

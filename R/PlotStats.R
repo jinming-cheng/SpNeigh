@@ -27,10 +27,13 @@
 #'
 
 PlotStatsBar <- function(cell_stats = NULL,
-                         stat_column = c("proportion","count")[1],
+                         stat_column = c("proportion","count"),
                          colors = my_colors_15,
                          angle_x_label = 0,
                          theme_ggplot = my_theme_ggplot()){
+
+  stat_column <- match.arg(stat_column)
+
   # Add names to colors
   named_colors <- colors[1:nlevels(cell_stats$cluster)]
   names(named_colors) <- levels(cell_stats$cluster)

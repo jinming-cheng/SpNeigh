@@ -6,7 +6,7 @@
 \usage{
 PlotStatsBar(
   cell_stats = NULL,
-  stat_column = c("proportion", "count")[1],
+  stat_column = c("proportion", "count"),
   colors = my_colors_15,
   angle_x_label = 0,
   theme_ggplot = my_theme_ggplot()
