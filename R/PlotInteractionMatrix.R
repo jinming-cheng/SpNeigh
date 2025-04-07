@@ -38,7 +38,7 @@ FactorNaturalOrder <- function(x) {
 #' interaction_matrix <- ComputeSpatialInteractionMatrix(coords_sub)
 #'
 #' # Plot interaction matrix
-#' PlotInteractionMatrixinteraction_matrix)
+#' PlotInteractionMatrix(interaction_matrix)
 
 PlotInteractionMatrix <- function(interaction_matrix,
                                   low_color = "blue",

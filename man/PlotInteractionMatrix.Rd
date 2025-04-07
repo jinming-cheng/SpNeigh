@@ -45,5 +45,5 @@ coords_sub <- subset(coords, cell \%in\% cells_ring$cell)
 interaction_matrix <- ComputeSpatialInteractionMatrix(coords_sub)
 
 # Plot interaction matrix
-PlotInteractionMatrixinteraction_matrix)
+PlotInteractionMatrix(interaction_matrix)
 }
