@@ -22,7 +22,7 @@ head(coords)
 boundary_points <- GetBoundary(data = coords, one_cluster = 2)
 
 # Build boundary polygon from the boundary points
-boundary_polys = BuildBoundaryPoly(boundary_points)
+boundary_polys <- BuildBoundaryPoly(boundary_points)
 
 # Plot boundary polygons
 plot(boundary_polys)

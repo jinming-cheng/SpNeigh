@@ -2,6 +2,7 @@
 
 export(AddBoundary)
 export(AddBoundaryPoly)
+export(BoundaryPolyToPoints)
 export(BuildBoundaryPoly)
 export(ComputeSpatialInteractionMatrix)
 export(ExtractCoords)

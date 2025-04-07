@@ -212,7 +212,7 @@ GetBoundary <- function(data = NULL,
 #' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
 #'
 #' # Build boundary polygon from the boundary points
-#' boundary_polys = BuildBoundaryPoly(boundary_points)
+#' boundary_polys <- BuildBoundaryPoly(boundary_points)
 #'
 #' # Plot boundary polygons
 #' plot(boundary_polys)
@@ -242,6 +242,55 @@ BuildBoundaryPoly <- function(boundary = NULL){
   boundary_polys
 }
 
+#' Extract boundary points from boundary polygons
+#'
+#' This function extracts x and y coordinates from a POLYGON `sf` object
+#' by casting it into POINT geometries.
+#' @param boundary_poly An `sf` object with POLYGON geometries.
+#' @return A `data.frame` with columns `x`, `y` and the specified `region_id`.
+#' @export
+#' @examples
+#' # Load coordinates
+#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
+#'                  package = "SpNeigh"))
+#' head(coords)
+#'
+#' # Build boundary polygons from the boundary points
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
+#' head(boundary_points)
+#' dim(boundary_points)
+#' boundary_polys <- BuildBoundaryPoly(boundary_points)
+#'
+#' # Convert boundary polygons to boundary points
+#' boundary_points2 <- BoundaryPolyToPoints(boundary_polys)
+#' head(boundary_points2)
+#' dim(boundary_points2)
+#'
+
+BoundaryPolyToPoints <- function(boundary_poly) {
+  if (!inherits(boundary_poly, "sf")) {
+    stop("Input must be an 'sf' object.")
+  }
+
+  # Sanity check: ensure all are POLYGON
+  if (!all(sf::st_geometry_type(boundary_poly) == "POLYGON")) {
+    stop("All geometries in the input must be of type POLYGON.")
+  }
+
+  # Explode polygons to points
+  boundary_points <- sf::st_cast(boundary_poly, "POINT", do_split = TRUE)
+
+  # Extract coordinates
+  coords <- sf::st_coordinates(boundary_points)
+
+  # Combine into data frame with attributes
+  df <- boundary_points |>
+    sf::st_drop_geometry() |>
+    dplyr::mutate(x = coords[, 1], y = coords[, 2]) |>
+    dplyr::select(.data$x, .data$y, .data$region_id)
+
+  return(df)
+}
 
 #' Get outer boundary of the original boundary
 #'
