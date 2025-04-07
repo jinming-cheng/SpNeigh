@@ -21,4 +21,7 @@ Imports:
     rlang,
     scales,
     Seurat,
-    sf
+    sf,
+    stringr,
+    tibble,
+    tidyr
