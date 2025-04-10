@@ -17,6 +17,7 @@ Imports:
     ggplot2,
     magrittr,
     methods,
+    patchwork,
     purrr,
     rlang,
     scales,
