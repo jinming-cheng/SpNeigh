@@ -6,8 +6,9 @@
 #' @importFrom methods is
 #' @param exp_mat A gene expression matrix or dgCMatrix. If `data` is a Seurat object, the `exp_mat` will be automatically obtained.
 #' @param genes Specify genes for plotting the expression.
-#' @param sub_plot A logical value indicates whether to only plot cells in one cluster. Default is FALSE.
-#' @param one_cluster Specify a cluster when `sub_plot` is TRUE.
+#' @param sub_plot A logical value indicates whether to only plot a subset of cells. Default is FALSE.
+#' @param one_cluster Specify a cluster to obtain a subset of cells for `sub_plot`.
+#' @param sub_cells Specify a subset of cells for `sub_plot`. If both `one_cluster` and `sub_cells` are provided, the common cells in both the specified cluster and the specified cell subset will be used.
 #' @param split_by A column name in the coordinate data.frame (from `data` parameter) used to split the plot.
 #' @param return_list A logical value indicates whether to return a list of ggplot objects. Default is FALSE.
 #' @param point_size Point size of cells. Default is 0.2.
@@ -45,6 +46,7 @@ PlotExpression <- function(data = NULL,
                            genes = NULL,
                            sub_plot = FALSE,
                            one_cluster = NULL,
+                           sub_cells = NULL,
                            split_by = NULL,
                            return_list = FALSE,
                            point_size = 0.2,
@@ -78,11 +80,22 @@ PlotExpression <- function(data = NULL,
 
   # Whether to plot one cluster or all clusters
   if(sub_plot){
-    # Obtain coordinates of the target cluster
-    coords_sub <- dplyr::filter(sp_coords,.data$cluster == one_cluster)
-    data_for_plot = coords_sub
+    if(!is.null(one_cluster)){
+      # Obtain coordinates of the target cluster
+      coords_sub <- dplyr::filter(sp_coords,.data$cluster == one_cluster)
+    }else{
+      coords_sub <- sp_coords
+    }
+
+    if(!is.null(sub_cells)){
+      # Obtain coordinates of the cell subset
+      coords_sub <- dplyr::filter(coords_sub,.data$cell %in% sub_cells)
+    }
+
+    data_for_plot <- coords_sub
+
   }else{
-    data_for_plot = sp_coords
+    data_for_plot <- sp_coords
   }
 
   # Plot expression of genes

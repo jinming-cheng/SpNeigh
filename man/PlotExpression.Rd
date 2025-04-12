@@ -10,6 +10,7 @@ PlotExpression(
   genes = NULL,
   sub_plot = FALSE,
   one_cluster = NULL,
+  sub_cells = NULL,
   split_by = NULL,
   return_list = FALSE,
   point_size = 0.2,
@@ -23,9 +24,11 @@ PlotExpression(
 
 \item{genes}{Specify genes for plotting the expression.}
 
-\item{sub_plot}{A logical value indicates whether to only plot cells in one cluster. Default is FALSE.}
+\item{sub_plot}{A logical value indicates whether to only plot a subset of cells. Default is FALSE.}
 
-\item{one_cluster}{Specify a cluster when \code{sub_plot} is TRUE.}
+\item{one_cluster}{Specify a cluster to obtain a subset of cells for \code{sub_plot}.}
+
+\item{sub_cells}{Specify a subset of cells for \code{sub_plot}. If both \code{one_cluster} and \code{sub_cells} are provided, the common cells in both the specified cluster and the specified cell subset will be used.}
 
 \item{split_by}{A column name in the coordinate data.frame (from \code{data} parameter) used to split the plot.}
 
