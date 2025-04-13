@@ -15,6 +15,7 @@ Imports:
     dplyr,
     FNN,
     ggplot2,
+    limma,
     magrittr,
     methods,
     patchwork,
@@ -23,6 +24,7 @@ Imports:
     scales,
     Seurat,
     sf,
+    splines,
     stringr,
     tibble,
     tidyr
