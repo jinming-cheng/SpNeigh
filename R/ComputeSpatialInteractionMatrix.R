@@ -36,7 +36,7 @@
 
 ComputeSpatialInteractionMatrix <- function(data = NULL, k = 10){
 
-  # extract coordinates from data
+  # Extract coordinates from data
   sp_coords <- ExtractCoords(data)
 
   #  Build KNN graph

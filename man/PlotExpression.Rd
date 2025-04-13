@@ -18,7 +18,7 @@ PlotExpression(
 )
 }
 \arguments{
-\item{data}{A data frame contains coordinates of the cells and cluster information. If the input is a Seurat object, the information will be extracted automatically.}
+\item{data}{A data frame with columns: \code{x}, \code{y}, \code{cell}, \code{cluster}. If the input is a Seurat object, the coordinates of cells and cluster information will be extracted automatically.}
 
 \item{exp_mat}{A gene expression matrix or dgCMatrix. If \code{data} is a Seurat object, the \code{exp_mat} will be automatically obtained.}
 

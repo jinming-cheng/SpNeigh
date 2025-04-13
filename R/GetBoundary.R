@@ -48,7 +48,7 @@ RemoveOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 
 #' Extract coordinates from a Seurat object or a data frame
 #'
-#' @param data A data frame contains coordinates of the cells and cluster information. If the input is a Seurat object, the information will be extracted automatically.
+#' @param data A data frame with columns: `x`, `y`, `cell`, `cluster`. If the input is a Seurat object, the coordinates of cells and cluster information will be extracted automatically.
 #' @export
 #' @examples
 #' # Load coordinates
@@ -85,7 +85,7 @@ ExtractCoords <- function(data = NULL){
 #' @inheritParams ExtractCoords
 #' @importFrom methods is
 #' @importFrom rlang .data
-#' @param one_cluster Specify one cluster to draw the boundary
+#' @param one_cluster Specify one cluster to draw the boundary.
 #' @param multi_region A logical value demonstrates whether a cluster has multiple regions on a spatial plot. Default is TRUE
 #' @param subregion_method If `multi_region` is TRUE, set a method to detect the subregions. Default is "dbscan". The "dbscan" method can be used to automatically detect subregions. Alternatively, "kmeans" method can be used to manually set the number of subregions.
 #' @param eps A parameter used when `subregion_method` is set to "dbscan". Size of the epsilon neighborhood.
@@ -143,7 +143,7 @@ GetBoundary <- function(data = NULL,
 
   subregion_method <- match.arg(subregion_method)
 
-  # extract coordinates from data
+  # Extract coordinates from data
   sp_coords <- ExtractCoords(data = data)
 
   # Obtain coordinates of the target cluster
@@ -158,7 +158,7 @@ GetBoundary <- function(data = NULL,
   hull <- as.data.frame(hull)
   hull$region_id <- 1
 
-  # rename V1 and V2 as x and y, respectively
+  # Rename V1 and V2 as x and y, respectively
   hull <- dplyr::rename(hull, x = "V1", y="V2")
 
   # If a cluster (or cell population) has multiple regions, obtain multiple boundaries
@@ -185,7 +185,7 @@ GetBoundary <- function(data = NULL,
 
     all_boundaries <- dplyr::bind_rows(boundary_list)
 
-    # rename V1 and V2 as x and y, respectively
+    # Rename V1 and V2 as x and y, respectively
     all_boundaries <- dplyr::rename(all_boundaries, x = "V1", y="V2")
   }
 

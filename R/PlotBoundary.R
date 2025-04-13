@@ -75,11 +75,11 @@ PlotBoundary <- function(data = NULL,
                          legend_size = 2,
                          ...){
 
-  # extract coordinates from data
+  # Extract coordinates from data
   sp_coords <- ExtractCoords(data = data)
 
 
-  # if the boundary of a cluster is not provided, get the boundary automatically
+  # If the boundary of a cluster is not provided, get the boundary automatically
   if( is.null(boundary) & (!is.null(one_cluster)) ){
     boundary <- GetBoundary(data = sp_coords,one_cluster = one_cluster, ...)
   }

@@ -19,7 +19,7 @@ PlotBoundary(
 )
 }
 \arguments{
-\item{data}{A data frame contains coordinates of the cells and cluster information. If the input is a Seurat object, the information will be extracted automatically.}
+\item{data}{A data frame with columns: \code{x}, \code{y}, \code{cell}, \code{cluster}. If the input is a Seurat object, the coordinates of cells and cluster information will be extracted automatically.}
 
 \item{one_cluster}{Specify one cluster to obtain its boundary. If \code{boundary} parameter is provided, it can be omitted. However, it must be provided, if \code{sub_plot} is TRUE.}
 

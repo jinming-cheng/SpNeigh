@@ -7,7 +7,7 @@
 ExtractCoords(data = NULL)
 }
 \arguments{
-\item{data}{A data frame contains coordinates of the cells and cluster information. If the input is a Seurat object, the information will be extracted automatically.}
+\item{data}{A data frame with columns: \code{x}, \code{y}, \code{cell}, \code{cluster}. If the input is a Seurat object, the coordinates of cells and cluster information will be extracted automatically.}
 }
 \description{
 Extract coordinates from a Seurat object or a data frame

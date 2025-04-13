@@ -17,9 +17,9 @@ GetBoundary(
 )
 }
 \arguments{
-\item{data}{A data frame contains coordinates of the cells and cluster information. If the input is a Seurat object, the information will be extracted automatically.}
+\item{data}{A data frame with columns: \code{x}, \code{y}, \code{cell}, \code{cluster}. If the input is a Seurat object, the coordinates of cells and cluster information will be extracted automatically.}
 
-\item{one_cluster}{Specify one cluster to draw the boundary}
+\item{one_cluster}{Specify one cluster to draw the boundary.}
 
 \item{k}{The maximum number of nearest neighbors to search, which is a parameter used in \code{get.knn} function. Default is set to 5.}
 

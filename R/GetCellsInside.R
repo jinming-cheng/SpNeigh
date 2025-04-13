@@ -25,7 +25,7 @@
 GetCellsInside <- function(data = NULL,
                            boundary = NULL){
 
-  # extract coordinates from data
+  # Extract coordinates from data
   sp_coords <- ExtractCoords(data = data)
 
   spatial_points <- sf::st_as_sf(x = sp_coords,coords = c("x", "y"), crs = NA)
