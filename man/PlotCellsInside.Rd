@@ -10,21 +10,21 @@ PlotCellsInside(
   colors = my_colors_15,
   theme_ggplot = my_theme_ggplot(),
   legend_size = 2,
-  ...
+  fixed_aspect_ratio = TRUE
 )
 }
 \arguments{
-\item{cells_inside}{A sf object. cells_inside returned by \code{GetCellsInside}.}
+\item{cells_inside}{A sf object. \code{cells_inside} is returned by \code{GetCellsInside}.}
 
 \item{point_size}{Point size of cells. Default is 0.5.}
 
-\item{colors}{A vector of colors used in plotting for clusters.}
+\item{colors}{A character vector specifying the colors for clusters.}
 
 \item{theme_ggplot}{Theme for ggplot.}
 
 \item{legend_size}{Legend size for ggplot.}
 
-\item{...}{Other paramters in \code{sf::geom_sf()} function.}
+\item{fixed_aspect_ratio}{Logical. Whether to plot using \code{sf::geom_sf()} function with 1:1 aspect ratio. Default is TRUE}
 }
 \description{
 Plot cells inside boundries or rings

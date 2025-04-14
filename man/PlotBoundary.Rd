@@ -23,17 +23,17 @@ PlotBoundary(
 
 \item{one_cluster}{Specify one cluster to obtain its boundary. If \code{boundary} parameter is provided, it can be omitted. However, it must be provided, if \code{sub_plot} is TRUE.}
 
-\item{boundary}{Boundary obtained from \code{GetBoundary} function. If it is NULL, get the boundary of the specified cluster automatically. If both \code{boundary} and \code{one_cluster} are NULL, plot coordinates only.}
+\item{boundary}{A data frame or sf object containing x, y and region_id information. If it is NULL, get the boundary of the specified cluster automatically. If both \code{boundary} and \code{one_cluster} are NULL, plot coordinates only.}
 
-\item{colors}{A vector of colors used in plotting for clusters.}
+\item{colors}{A character vector specifying the colors for clusters.}
 
 \item{point_size}{Point size of cells. Default is 0.5.}
 
 \item{color_boundary}{Color of the boundary for a cluster. Default is black.}
 
-\item{linewidth_boundary}{Linewidth of the boundary for a cluster. Default is 1.5.}
+\item{linewidth_boundary}{Linewidth of the boundary borders. Default is 1.5.}
 
-\item{sub_plot}{A logical value indicates whether to only plot cells in one cluster. If FALSE, plot all cells in all clusters. Default is FALSE.}
+\item{sub_plot}{Logical. Whether to plot cells in one cluster. If FALSE (default), plot all cells in all clusters.}
 
 \item{theme_ggplot}{Theme for ggplot.}
 

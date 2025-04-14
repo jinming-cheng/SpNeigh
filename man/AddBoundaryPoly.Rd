@@ -15,7 +15,7 @@ AddBoundaryPoly(
 
 \item{color_boundary}{Color of the boundary for a cluster. Default is black.}
 
-\item{linewidth_boundary}{Linewidth of the boundary for a cluster. Default is 1.5.}
+\item{linewidth_boundary}{Linewidth of the boundary borders. Default is 1.5.}
 }
 \description{
 Add a boundary poly to the plot

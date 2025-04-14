@@ -30,7 +30,7 @@ PlotStatsPie(
 
 \item{label_nudge_x}{Nudge x coordinate to adjust positions for the percentage labels.}
 
-\item{colors}{A vector of colors used in plotting for clusters.}
+\item{colors}{A character vector specifying the colors for clusters.}
 }
 \description{
 Pie chart or donut chart of statistics of cells inside boundaries or rings

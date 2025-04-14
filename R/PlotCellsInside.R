@@ -3,8 +3,8 @@
 #'
 #' @inheritParams PlotBoundary
 #' @importFrom rlang .data
-#' @param cells_inside A sf object. cells_inside returned by `GetCellsInside`.
-#' @param ... Other paramters in `sf::geom_sf()` function.
+#' @param cells_inside A sf object. `cells_inside` is returned by `GetCellsInside`.
+#' @param fixed_aspect_ratio Logical. Whether to plot using `sf::geom_sf()` function with 1:1 aspect ratio. Default is TRUE
 #' @export
 #' @examples
 #' # Load coordinates
@@ -28,16 +28,41 @@ PlotCellsInside <- function(cells_inside = NULL,
                             colors = my_colors_15,
                             theme_ggplot = my_theme_ggplot(),
                             legend_size = 2,
-                            ...){
-  # add names to colors
+                            fixed_aspect_ratio = TRUE){
+
+  # Make sure cluster is a factor
+  if(is.null(levels(cells_inside$cluster))){
+    cells_inside$cluster <- FactorNaturalOrder(cells_inside$cluster)
+  }
+
+  # Add names to colors
   named_colors <- colors[1:nlevels(cells_inside$cluster)]
   names(named_colors) <- levels(cells_inside$cluster)
 
-  ggplot2::ggplot() +
-    ggplot2::geom_sf(data = cells_inside,
-                     ggplot2::aes(color = .data$cluster), size = point_size, ...) +
-    theme_ggplot +
+  # Convert the sf object into a data frame
+  coords <- sf::st_coordinates(cells_inside)
+  colnames(coords) <- c("x","y")
+  df <- sf::st_drop_geometry(cells_inside)
+  df <- cbind(df, coords)
+  df$cluster <- factor(df$cluster, levels = levels(cells_inside$cluster) )
+
+  # Plot cells colored by cluster
+  if(fixed_aspect_ratio){
+    p <- ggplot2::ggplot() +
+      ggplot2::geom_sf(data = cells_inside, size = point_size,
+                       ggplot2::aes(color = .data$cluster))
+  }else{
+    p <- ggplot2::ggplot() +
+      ggplot2::geom_point(data = df, size = point_size,
+                          ggplot2::aes(x = .data$x, y = .data$y,
+                                       color = .data$cluster))
+  }
+
+  # Add theme and colors
+  p <- p +  theme_ggplot +
     ggplot2::scale_color_manual(values = named_colors) +
     ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(size=legend_size)))
+
+  p
 }
 

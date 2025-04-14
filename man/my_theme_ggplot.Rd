@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotBoundary.R
 \name{my_theme_ggplot}
 \alias{my_theme_ggplot}
-\title{A Custom ggplot2 Theme}
+\title{A custom ggplot2 theme}
 \usage{
 my_theme_ggplot()
 }

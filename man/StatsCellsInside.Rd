@@ -7,7 +7,7 @@
 StatsCellsInside(cells_inside = NULL)
 }
 \arguments{
-\item{cells_inside}{A sf object. cells_inside returned by \code{GetCellsInside}.}
+\item{cells_inside}{A sf object. \code{cells_inside} is returned by \code{GetCellsInside}.}
 }
 \description{
 Statistics of cells inside boundaries or rings

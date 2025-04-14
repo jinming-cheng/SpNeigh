@@ -17,7 +17,7 @@ PlotStatsBar(
 
 \item{stat_column}{A column name in \code{cell_stats} and used for y axis.}
 
-\item{colors}{A vector of colors used in plotting for clusters.}
+\item{colors}{A character vector specifying the colors for clusters.}
 
 \item{angle_x_label}{Angle to rotate the x-axis labels.}
 

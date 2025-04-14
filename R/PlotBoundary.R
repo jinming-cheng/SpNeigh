@@ -1,5 +1,5 @@
 
-#' A Custom ggplot2 Theme
+#' A custom ggplot2 theme
 #'
 #' This is a ggplot2 theme defined and used in this package.
 #'
@@ -24,16 +24,17 @@ my_theme_ggplot <- function() {
 
 #' Draw boundary for a cluster or cell population
 #'
+#'
 #' @inheritParams GetBoundary
 #' @inheritParams ExtractCoords
 #' @importFrom rlang .data
 #' @param one_cluster Specify one cluster to obtain its boundary. If `boundary` parameter is provided, it can be omitted. However, it must be provided, if `sub_plot` is TRUE.
-#' @param boundary Boundary obtained from `GetBoundary` function. If it is NULL, get the boundary of the specified cluster automatically. If both `boundary` and `one_cluster` are NULL, plot coordinates only.
-#' @param colors A vector of colors used in plotting for clusters.
+#' @param boundary A data frame or sf object containing x, y and region_id information. If it is NULL, get the boundary of the specified cluster automatically. If both `boundary` and `one_cluster` are NULL, plot coordinates only.
+#' @param colors A character vector specifying the colors for clusters.
 #' @param point_size Point size of cells. Default is 0.5.
 #' @param color_boundary Color of the boundary for a cluster. Default is black.
-#' @param linewidth_boundary Linewidth of the boundary for a cluster. Default is 1.5.
-#' @param sub_plot A logical value indicates whether to only plot cells in one cluster. If FALSE, plot all cells in all clusters. Default is FALSE.
+#' @param linewidth_boundary Linewidth of the boundary borders. Default is 1.5.
+#' @param sub_plot Logical. Whether to plot cells in one cluster. If FALSE (default), plot all cells in all clusters.
 #' @param theme_ggplot Theme for ggplot.
 #' @param legend_size Legend size for ggplot.
 #' @param ... Parameters in `GetBoundary` function.
@@ -78,7 +79,6 @@ PlotBoundary <- function(data = NULL,
   # Extract coordinates from data
   sp_coords <- ExtractCoords(data = data)
 
-
   # If the boundary of a cluster is not provided, get the boundary automatically
   if( is.null(boundary) & (!is.null(one_cluster)) ){
     boundary <- GetBoundary(data = sp_coords,one_cluster = one_cluster, ...)
@@ -106,12 +106,9 @@ PlotBoundary <- function(data = NULL,
 
   # whether to plot boundary
   if( !is.null(boundary) ){
-    p <- p +
-      ggplot2::geom_polygon(data = boundary,
-                            ggplot2::aes(x = .data$x, y = .data$y, group = .data$region_id),
-                            fill = NA,
-                            color = color_boundary,
-                            linewidth = linewidth_boundary)
+    p <- p + AddBoundary(boundary = boundary,
+                         color_boundary = color_boundary,
+                         linewidth_boundary = linewidth_boundary)
   }
 
   p
@@ -137,6 +134,22 @@ PlotBoundary <- function(data = NULL,
 #' PlotBoundary(coords) + AddBoundary(boundary_points)
 #'
 AddBoundary <- function(boundary = NULL, color_boundary="black", linewidth_boundary=1.5) {
+
+  # Check boundary format
+  if(!inherits(boundary,c("data.frame","sf"))){
+    stop("`boundary` should be a data.frame or an sf object.")
+  }
+
+  # Convert boundary polys to boundary points
+  if(inherits(boundary,"sf")){
+    boundary <- BoundaryPolyToPoints(boundary)
+  }
+
+  # Check required columns in boundary
+  if( !all(c("x","y","region_id") %in% colnames(boundary)) ){
+    stop("`boundary` must contain columns: 'x', 'y' and 'region_id'.")
+  }
+
   ggplot2::geom_polygon(data = boundary,
                         ggplot2::aes(x = .data$x, y = .data$y, group = .data$region_id),
                         fill = NA,
@@ -169,6 +182,12 @@ AddBoundary <- function(boundary = NULL, color_boundary="black", linewidth_bound
 #'
 
 AddBoundaryPoly <- function(boundary_poly, color_boundary="black", linewidth_boundary=1.5) {
+
+  # Check boundary_poly
+  if(!inherits(boundary_poly,c("sf"))){
+    stop("`boundary_poly` should be an sf object.")
+  }
+
   ggplot2::geom_sf(data = boundary_poly,
                    inherit.aes = FALSE,
                    fill=NA,
@@ -210,9 +229,19 @@ PlotRegion <- function(boundary_poly = NULL,
                        linewidth_boundary = 1,
                        theme_ggplot = my_theme_ggplot(),
                        ...){
+  # Check boundary_poly
+  if(!inherits(boundary_poly,c("sf"))){
+    stop("`boundary_poly` should be an sf object.")
+  }
+
+  # Make region_id a factor of natural orders
+  if(is.null(levels(boundary_poly$region_id))){
+    boundary_poly$region_id <- FactorNaturalOrder(boundary_poly$region_id)
+  }
+
   ggplot2::ggplot() +
     ggplot2::geom_sf(data = boundary_poly,
-                     ggplot2::aes(fill = as.factor(.data$region_id)),
+                     ggplot2::aes(fill = .data$region_id),
                      alpha = alpha,
                      color = color_boundary,
                      linewidth = linewidth_boundary, ...) +

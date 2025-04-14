@@ -48,6 +48,7 @@ RemoveOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 
 #' Extract coordinates from a Seurat object or a data frame
 #'
+#' @importFrom methods is
 #' @param data A data frame with columns: `x`, `y`, `cell`, `cluster`. If the input is a Seurat object, the coordinates of cells and cluster information will be extracted automatically.
 #' @export
 #' @examples
@@ -246,6 +247,8 @@ BuildBoundaryPoly <- function(boundary = NULL){
 #'
 #' This function extracts x and y coordinates from a POLYGON `sf` object
 #' by casting it into POINT geometries.
+#'
+#' @importFrom rlang .data
 #' @param boundary_poly An `sf` object with POLYGON geometries.
 #' @return A `data.frame` with columns `x`, `y` and the specified `region_id`.
 #' @export
@@ -278,7 +281,9 @@ BoundaryPolyToPoints <- function(boundary_poly) {
   }
 
   # Explode polygons to points
-  boundary_points <- sf::st_cast(boundary_poly, "POINT", do_split = TRUE)
+  boundary_points <- suppressWarnings(
+    sf::st_cast(boundary_poly, "POINT", do_split = TRUE)
+  )
 
   # Extract coordinates
   coords <- sf::st_coordinates(boundary_points)
@@ -365,7 +370,7 @@ GetOuterBoundary <- function(boundary = NULL, dist = 100){
 #'
 GetRingRegion <- function(boundary = NULL, outer_boundary = NULL,...){
   # Build safe polygons
-  if(is(boundary,"sf")){
+  if(inherits(boundary,"sf")){
     boundary_polys <- boundary
   }else{
     boundary_polys <- BuildBoundaryPoly(boundary)

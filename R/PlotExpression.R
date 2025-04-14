@@ -2,6 +2,7 @@
 #' Plot expression of genes in cells on the spatial plot
 #'
 #' @inheritParams ExtractCoords
+#' @importFrom methods is
 #' @importFrom rlang .data
 #' @param exp_mat A gene expression matrix or dgCMatrix. If `data` is a Seurat object, the `exp_mat` will be automatically obtained.
 #' @param genes Specify genes for plotting the expression.
@@ -56,7 +57,7 @@ PlotExpression <- function(data = NULL,
                            theme_ggplot = my_theme_ggplot()){
 
   # Obtain the expression data automatically if data is a Seurat object
-  if( inherits(data,"Seurat") ){
+  if( is(data,"Seurat") ){
     exp_mat <- Seurat::GetAssayData(data)
   }else{
 
