@@ -41,18 +41,22 @@ RunLimmaDE <- function(exp_mat = NULL,
       stop("'weights' should be a named vector, and length of 'weights' must match the total number of selected cells.")
     }
 
+    # Make the weights of correct order
+    weights <- weights[all_cells]
   }
 
-  # Make the weights of correct order
-  weights <- weights[all_cells]
+  # --- Convert exp_mat into sparse matrix if it is a matrix ---
+  if( inherits(exp_mat,"matrix") ){
+    exp_mat <- Matrix::Matrix(exp_mat, sparse = TRUE)
+    }
 
   # --- Subset expression matrix ---
   expr <- exp_mat[, all_cells, drop = FALSE]
 
   # --- Compute percentage of expressing cells per group ---
   df_pct <- data.frame(
-    pct.reference = rowMeans(expr[, cells_reference] > 0),
-    pct.target = rowMeans(expr[, cells_target] > 0)
+    pct.reference = Matrix::rowMeans(expr[, cells_reference] > 0),
+    pct.target = Matrix::rowMeans(expr[, cells_target] > 0)
   )
   rownames(df_pct) <- rownames(expr)
 

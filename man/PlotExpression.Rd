@@ -14,6 +14,8 @@ PlotExpression(
   split_by = NULL,
   return_list = FALSE,
   point_size = 0.2,
+  angle_x_label = 0,
+  shuffle = FALSE,
   theme_ggplot = my_theme_ggplot()
 )
 }
@@ -24,7 +26,7 @@ PlotExpression(
 
 \item{genes}{Specify genes for plotting the expression.}
 
-\item{sub_plot}{A logical value indicates whether to only plot a subset of cells. Default is FALSE.}
+\item{sub_plot}{A logical value indicating whether to only plot a subset of cells. Default is FALSE.}
 
 \item{one_cluster}{Specify a cluster to obtain a subset of cells for \code{sub_plot}.}
 
@@ -32,9 +34,13 @@ PlotExpression(
 
 \item{split_by}{A column name in the coordinate data.frame (from \code{data} parameter) used to split the plot.}
 
-\item{return_list}{A logical value indicates whether to return a list of ggplot objects. Default is FALSE.}
+\item{return_list}{Logical. Whether to return a list of ggplot objects. Default is FALSE.}
 
 \item{point_size}{Point size of cells. Default is 0.2.}
+
+\item{angle_x_label}{Angle to rotate the x-axis labels.}
+
+\item{shuffle}{Logical. Whether to shuffle the order of cells before plotting. If \code{FALSE} (default), cells with larger values are plotted last, so they appear on top.}
 
 \item{theme_ggplot}{Theme for ggplot.}
 }

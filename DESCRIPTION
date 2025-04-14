@@ -17,6 +17,7 @@ Imports:
     ggplot2,
     limma,
     magrittr,
+    Matrix,
     methods,
     patchwork,
     purrr,

@@ -211,8 +211,11 @@ PlotRegion <- function(boundary_poly = NULL,
                        theme_ggplot = my_theme_ggplot(),
                        ...){
   ggplot2::ggplot() +
-    ggplot2::geom_sf(data = boundary_poly, ggplot2::aes(fill = as.factor(.data$region_id)),
-            alpha = alpha, color = color_boundary, linewidth = linewidth_boundary, ...) +
+    ggplot2::geom_sf(data = boundary_poly,
+                     ggplot2::aes(fill = as.factor(.data$region_id)),
+                     alpha = alpha,
+                     color = color_boundary,
+                     linewidth = linewidth_boundary, ...) +
     ggplot2::labs(fill = "Region ID") +
     theme_ggplot
 }
