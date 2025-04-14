@@ -145,6 +145,7 @@ RunSpatialDE <- function(exp_mat = NULL,
   R_rank <- QR$qr[1:r,1:r]
   Z <- t(backsolve(R_rank,t(A),transpose=TRUE))
   Z <- Z[,-1]
+  if(cor(Z[,1], t1) < 0) { Z[,1] <- -Z[,1]}
   design <- stats::model.matrix(~ Z)
 
   # --- Run limma ---
