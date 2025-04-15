@@ -14,8 +14,8 @@ Extract coordinates from a Seurat object or a data frame
 }
 \examples{
 # Load coordinates
-load(system.file("extdata", "MouseBrainTinyCoords.rda",
-                 package = "SpNeigh"))
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+                              package = "SpNeigh"))
 
 # An exmaple of the coordinate data.frame used for analysis
 head(coords)

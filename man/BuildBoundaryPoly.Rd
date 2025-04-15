@@ -14,8 +14,8 @@ Build boundary polygon based on the boundary points
 }
 \examples{
 # Load coordinates
-load(system.file("extdata", "MouseBrainTinyCoords.rda",
-                 package = "SpNeigh"))
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+                              package = "SpNeigh"))
 head(coords)
 
 # Get boundary points of cluster 2

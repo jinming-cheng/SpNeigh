@@ -22,8 +22,8 @@ Add a boundary or boundaries to the plot
 }
 \examples{
 # Load coordinates
-load(system.file("extdata", "MouseBrainTinyCoords.rda",
-                 package = "SpNeigh"))
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+                              package = "SpNeigh"))
 head(coords)
 
 # Add boundaries to an existing plot

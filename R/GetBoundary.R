@@ -53,8 +53,8 @@ RemoveOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 #' @export
 #' @examples
 #' # Load coordinates
-#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
-#'                  package = "SpNeigh"))
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
 #'
 #' # An exmaple of the coordinate data.frame used for analysis
 #' head(coords)
@@ -95,8 +95,8 @@ ExtractCoords <- function(data = NULL){
 #' @export
 #' @examples
 #' # Load coordinates
-#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
-#'                  package = "SpNeigh"))
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
 #' head(coords)
 #'
 #' # Get boundary points of cluster 1 using dbscan method by default
@@ -205,8 +205,8 @@ GetBoundary <- function(data = NULL,
 #' @export
 #' @examples
 #' # Load coordinates
-#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
-#'                  package = "SpNeigh"))
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
 #' head(coords)
 #'
 #' # Get boundary points of cluster 2
@@ -254,8 +254,8 @@ BuildBoundaryPoly <- function(boundary = NULL){
 #' @export
 #' @examples
 #' # Load coordinates
-#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
-#'                  package = "SpNeigh"))
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
 #' head(coords)
 #'
 #' # Build boundary polygons from the boundary points
@@ -304,8 +304,8 @@ BoundaryPolyToPoints <- function(boundary_poly) {
 #' @export
 #' @examples
 #' # Load coordinates
-#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
-#'                  package = "SpNeigh"))
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
 #' head(coords)
 #'
 #' # Get boundary points of cluster 2
@@ -349,8 +349,8 @@ GetOuterBoundary <- function(boundary = NULL, dist = 100){
 #' @export
 #' @examples
 #' # Load coordinates
-#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
-#'                  package = "SpNeigh"))
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
 #' head(coords)
 #'
 #' # Get boundary points of cluster 2

@@ -19,8 +19,8 @@ The spatial neighborhood interaction matrix is computed based on counting the nu
 }
 \examples{
 # Load coordinates
-load(system.file("extdata", "MouseBrainTinyCoords.rda",
-                 package = "SpNeigh"))
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+                              package = "SpNeigh"))
 head(coords)
 
 # Compute KNN spatial interaction matrix of all cells

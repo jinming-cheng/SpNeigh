@@ -41,8 +41,8 @@ my_theme_ggplot <- function() {
 #' @export
 #' @examples
 #' # Load coordinates
-#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
-#'                  package = "SpNeigh"))
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
 #' head(coords)
 #'
 #' # Plot coordinates without boundary
@@ -123,8 +123,8 @@ PlotBoundary <- function(data = NULL,
 #' @export
 #' @examples
 #' # Load coordinates
-#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
-#'                  package = "SpNeigh"))
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
 #' head(coords)
 #'
 #' # Add boundaries to an existing plot
@@ -166,8 +166,8 @@ AddBoundary <- function(boundary = NULL, color_boundary="black", linewidth_bound
 #' @export
 #' @examples
 #' # Load coordinates
-#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
-#'                  package = "SpNeigh"))
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
 #' head(coords)
 #'
 #' # Build boundary polygons from the boundary points
@@ -209,8 +209,8 @@ AddBoundaryPoly <- function(boundary_poly, color_boundary="black", linewidth_bou
 #' @export
 #' @examples
 #' # Load coordinates
-#' load(system.file("extdata", "MouseBrainTinyCoords.rda",
-#'                  package = "SpNeigh"))
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
 #' head(coords)
 #'
 #' # Plot region inside boundaries

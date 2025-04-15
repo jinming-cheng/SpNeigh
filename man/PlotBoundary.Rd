@@ -46,8 +46,8 @@ Draw boundary for a cluster or cell population
 }
 \examples{
 # Load coordinates
-load(system.file("extdata", "MouseBrainTinyCoords.rda",
-                 package = "SpNeigh"))
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+                              package = "SpNeigh"))
 head(coords)
 
 # Plot coordinates without boundary
