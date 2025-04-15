@@ -2,7 +2,7 @@
 #' Differential expression analysis between two group of cells using `limma`
 #'
 #' Performs differential expression analysis between two groups of cells using the
-#' \code{limma} package. Supports optional observation-level weights and filters genes
+#' `limma` package. Supports optional observation-level weights and filters genes
 #' based on minimum expression percent in either group.
 #'
 #' @param exp_mat A normalized gene expression matrix with genes as rows and cells as columns. For example, the log-normalized data in a Seurat object.
@@ -15,6 +15,48 @@
 #' @return A data frame of differentially expressed genes between two cell groups
 #'
 #' @export
+#'
+#' @examples
+#'
+#' # Load coordinates of cells in mouse brain
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
+#' head(coords)
+#' table(coords$cluster)
+#'
+#' # Load log normalized expression data of mouse brain,
+#' # only cells in cluster 0 and cluster 6 are included
+#' logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
+#'                               package = "SpNeigh"))
+#' class(logNorm_expr)
+#'
+#' # Obtain reference cells and target cells for DE anallysis
+#' cells_ref <- subset(coords, cluster==0)[,"cell"]
+#' cells_tar <- subset(coords, cluster==6)[,"cell"]
+#'
+#' # Perform DE analysis of target (C6) vs reference (C0) cells,
+#' # Keep genes expressed >= 25% in either target or reference cells
+#' tab <- RunLimmaDE(exp_mat = logNorm_expr,
+#'                   cells_reference = cells_ref,
+#'                   cells_target = cells_tar,
+#'                   min.pct = 0.25)
+#' head(tab)
+#' head(tab[,c(1,5,7:9)])
+#'
+#' # Set cell names as rownames for coords
+#' rownames(coords) <- coords$cell
+#'
+#' # Combine reference and target cells
+#' all_cells <- c(cells_ref, cells_tar)
+#'
+#' # Plot expression of top DE genes,
+#' # Make sure cell names in data and exp_mat match
+#' PlotExpression(data = coords[all_cells,],
+#'                exp_mat = logNorm_expr[,all_cells],
+#'                genes = tab$gene[1],
+#'                split_by = "cluster",
+#'                angle_x_label = 45)
+#'
 RunLimmaDE <- function(exp_mat = NULL,
                        cells_reference = NULL,
                        cells_target = NULL,
@@ -97,14 +139,53 @@ RunLimmaDE <- function(exp_mat = NULL,
 #'
 #'
 #' @inheritParams RunLimmaDE
-#' @param cells_ids A vector of cell IDs in `exp_mat` for spatial differential expression analysis.
+#' @param cell_ids A vector of cell IDs in `exp_mat` for spatial differential expression analysis.
 #' @param spatial_distance A numeric vector of the spatial distance for each cell. Scaled distance rather than real distance is is recommended.
 #'
 #' @return A data.frame of differentially expressed genes along spatial distance. Positive trend means positive correlation of the gene expression with the spatial distance (Up regulated), and negative trend means negative correlation (Down regulated).
 #'
 #' @export
+#'
+#' @examples
+#'
+#' # Load coordinates of cells in mouse brain
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
+#' head(coords)
+#'
+#' # Load log normalized expression data of mouse brain,
+#' # only cells in cluster 0 and cluster 6 are included
+#' logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
+#'                               package = "SpNeigh"))
+#' class(logNorm_expr)
+#'
+#' # Get and plot boundary of cluster 0
+#' bon_c0 <- GetBoundary(data = coords, one_cluster = 0)
+#' PlotBoundary(data = coords) + AddBoundary(bon_c0)
+#'
+#' # Compute boundary weights and plot weights
+#' cells_c0 <- subset(coords, cluster==0)[,"cell"]
+#' weights_bon <- ComputeBoundaryWeights(data = coords,
+#'                                       cell_ids = cells_c0,
+#'                                       boundary = bon_c0)
+#' PlotWeights(data = coords, weights = weights_bon)
+#'
+#' # Perform DE analysis for cells in cluster 0
+#' # along the distance (weights) to the boundaries
+#' tab <- RunSpatialDE(exp_mat = logNorm_expr,
+#'                     cell_ids = cells_c0,
+#'                     spatial_distance = weights_bon)
+#' head(tab)
+#'
+#' # Plot expression of top DE genes,
+#' # Make sure cell names in data and exp_mat match
+#' PlotExpression(data = coords[cells_c0,],
+#'                exp_mat = logNorm_expr[,cells_c0],
+#'                genes = tab$gene[1],
+#'                angle_x_label = 45)
+#'
 RunSpatialDE <- function(exp_mat = NULL,
-                         cells_ids = NULL,
+                         cell_ids = NULL,
                          spatial_distance = NULL,
                          adj_p.value = 0.05
                          ) {
@@ -114,15 +195,15 @@ RunSpatialDE <- function(exp_mat = NULL,
     stop("'exp_mat' must be a non-null numeric matrix (genes by cells).")
   }
 
-  if (is.null(cells_ids)) {
-    stop("'cells_ids' must be provided.")
+  if (is.null(cell_ids)) {
+    stop("'cell_ids' must be provided.")
   }
 
-  if (!all(cells_ids %in% colnames(exp_mat))) {
+  if (!all(cell_ids %in% colnames(exp_mat))) {
     stop("Some cell IDs not found in column names of 'exp_mat'.")
   }
 
-  all_cells <- cells_ids
+  all_cells <- cell_ids
 
   if (!is.null(spatial_distance)){
     if( is.null(names(spatial_distance)) || (length(spatial_distance) != length(all_cells)) ) {

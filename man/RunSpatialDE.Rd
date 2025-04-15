@@ -6,7 +6,7 @@
 \usage{
 RunSpatialDE(
   exp_mat = NULL,
-  cells_ids = NULL,
+  cell_ids = NULL,
   spatial_distance = NULL,
   adj_p.value = 0.05
 )
@@ -14,7 +14,7 @@ RunSpatialDE(
 \arguments{
 \item{exp_mat}{A normalized gene expression matrix with genes as rows and cells as columns. For example, the log-normalized data in a Seurat object.}
 
-\item{cells_ids}{A vector of cell IDs in \code{exp_mat} for spatial differential expression analysis.}
+\item{cell_ids}{A vector of cell IDs in \code{exp_mat} for spatial differential expression analysis.}
 
 \item{spatial_distance}{A numeric vector of the spatial distance for each cell. Scaled distance rather than real distance is is recommended.}
 
@@ -25,4 +25,43 @@ A data.frame of differentially expressed genes along spatial distance. Positive 
 }
 \description{
 Differential expression analysis along spatial distance gradients
+}
+\examples{
+
+# Load coordinates of cells in mouse brain
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+                              package = "SpNeigh"))
+head(coords)
+
+# Load log normalized expression data of mouse brain,
+# only cells in cluster 0 and cluster 6 are included
+logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
+                              package = "SpNeigh"))
+class(logNorm_expr)
+
+# Get and plot boundary of cluster 0
+bon_c0 <- GetBoundary(data = coords, one_cluster = 0)
+PlotBoundary(data = coords) + AddBoundary(bon_c0)
+
+# Compute boundary weights and plot weights
+cells_c0 <- subset(coords, cluster==0)[,"cell"]
+weights_bon <- ComputeBoundaryWeights(data = coords,
+                                      cell_ids = cells_c0,
+                                      boundary = bon_c0)
+PlotWeights(data = coords, weights = weights_bon)
+
+# Perform DE analysis for cells in cluster 0
+# along the distance (weights) to the boundaries
+tab <- RunSpatialDE(exp_mat = logNorm_expr,
+                    cell_ids = cells_c0,
+                    spatial_distance = weights_bon)
+head(tab)
+
+# Plot expression of top DE genes,
+# Make sure cell names in data and exp_mat match
+PlotExpression(data = coords[cells_c0,],
+               exp_mat = logNorm_expr[,cells_c0],
+               genes = tab$gene[1],
+               angle_x_label = 45)
+
 }

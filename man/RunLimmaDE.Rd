@@ -34,3 +34,45 @@ Performs differential expression analysis between two groups of cells using the
 \code{limma} package. Supports optional observation-level weights and filters genes
 based on minimum expression percent in either group.
 }
+\examples{
+
+# Load coordinates of cells in mouse brain
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+                              package = "SpNeigh"))
+head(coords)
+table(coords$cluster)
+
+# Load log normalized expression data of mouse brain,
+# only cells in cluster 0 and cluster 6 are included
+logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
+                              package = "SpNeigh"))
+class(logNorm_expr)
+
+# Obtain reference cells and target cells for DE anallysis
+cells_ref <- subset(coords, cluster==0)[,"cell"]
+cells_tar <- subset(coords, cluster==6)[,"cell"]
+
+# Perform DE analysis of target (C6) vs reference (C0) cells,
+# Keep genes expressed >= 25\% in either target or reference cells
+tab <- RunLimmaDE(exp_mat = logNorm_expr,
+                  cells_reference = cells_ref,
+                  cells_target = cells_tar,
+                  min.pct = 0.25)
+head(tab)
+head(tab[,c(1,5,7:9)])
+
+# Set cell names as rownames for coords
+rownames(coords) <- coords$cell
+
+# Combine reference and target cells
+all_cells <- c(cells_ref, cells_tar)
+
+# Plot expression of top DE genes,
+# Make sure cell names in data and exp_mat match
+PlotExpression(data = coords[all_cells,],
+               exp_mat = logNorm_expr[,all_cells],
+               genes = tab$gene[1],
+               split_by = "cluster",
+               angle_x_label = 45)
+
+}

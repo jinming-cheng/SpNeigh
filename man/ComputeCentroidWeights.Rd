@@ -32,3 +32,15 @@ Computes spatial weights for a set of cells based on their distance to
 the centroid of their group. Supports multiple decay methods and optional
 distance scaling.
 }
+\examples{
+# Load coordinates
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+                              package = "SpNeigh"))
+head(coords)
+
+# Compute spatial weights to centroid for cells in cluster 2
+cells_c2 <- subset(coords, cluster==2)[,"cell"]
+weights <- ComputeCentroidWeights(data = coords, cell_ids = cells_c2)
+weights[1:3]
+
+}

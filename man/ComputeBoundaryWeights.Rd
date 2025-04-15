@@ -35,3 +35,22 @@ This function assigns each cell to the nearest polygon boundary and computes
 a spatial weight based on its distance to that boundary. Supports inverse,
 Gaussian, linear, and quadratic decay methods.
 }
+\examples{
+# Load coordinates
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+                              package = "SpNeigh"))
+head(coords)
+
+# Get boundaries for cells in cluster 2
+boundary_points <- GetBoundary(data = coords, one_cluster = 2)
+boundary_polys <- BuildBoundaryPoly(boundary_points)
+
+# Plot boundary regions
+PlotRegion(boundary_polys)
+
+# Compute spatial weights to the boundary of region 1 for cells in cluster 2
+cells_c2 <- subset(coords, cluster==2)[,"cell"]
+weights <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c2,
+                                  boundary = boundary_polys[1,])
+weights[1:3]
+}

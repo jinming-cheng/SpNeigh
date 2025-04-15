@@ -9,8 +9,26 @@
 #' @param point_size Point size in the plot. Default is 0.2.
 #' @param theme_ggplot Theme for ggplot.
 #'
-#'
 #' @export
+#' @examples
+#' # Load coordinates
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
+#' head(coords)
+#'
+#' # Obtain cells in cluster 2 and focus on these cells
+#' cells_c2 <- subset(coords, cluster==2)[,"cell"]
+#'
+#' # Obtain and plot centroid weights
+#' weights_cen <- ComputeCentroidWeights(data = coords, cell_ids = cells_c2)
+#' PlotWeights(data = coords, weights = weights_cen)
+#'
+#' # Obtain and plot boundary weights
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
+#' weights_bon <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c2,
+#'                                       boundary = boundary_points)
+#' PlotWeights(data = coords, weights = weights_bon)
+#'
 PlotWeights <- function(data = NULL,
                         weights = NULL,
                         point_size = 0.2,

@@ -11,12 +11,20 @@
 #' @param method A string specifying the decay method. One of \code{"inverse"},
 #'   \code{"gaussian"}, \code{"linear"}, or \code{"quadratic"}.
 #' @param sigma Standard deviation for the Gaussian decay function. Default is 0.5 for scaled distance. If `scale = FALSE`, choose a value that is about half the region’s width.
-
 #'
 #' @return A named numeric vector of weights, one per cell in `cell_ids`.
-#'
-#'
 #' @export
+#' @examples
+#' # Load coordinates
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
+#' head(coords)
+#'
+#' # Compute spatial weights to centroid for cells in cluster 2
+#' cells_c2 <- subset(coords, cluster==2)[,"cell"]
+#' weights <- ComputeCentroidWeights(data = coords, cell_ids = cells_c2)
+#' weights[1:3]
+#'
 ComputeCentroidWeights <- function(data = NULL,
                                    cell_ids = NULL,
                                    scale = TRUE,
@@ -83,7 +91,24 @@ ComputeCentroidWeights <- function(data = NULL,
 #' @return A named numeric vector of weights, one per cell in `cell_ids`.
 #'
 #' @export
-
+#' @examples
+#' # Load coordinates
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
+#' head(coords)
+#'
+#' # Get boundaries for cells in cluster 2
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
+#' boundary_polys <- BuildBoundaryPoly(boundary_points)
+#'
+#' # Plot boundary regions
+#' PlotRegion(boundary_polys)
+#'
+#' # Compute spatial weights to the boundary of region 1 for cells in cluster 2
+#' cells_c2 <- subset(coords, cluster==2)[,"cell"]
+#' weights <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c2,
+#'                                   boundary = boundary_polys[1,])
+#' weights[1:3]
 ComputeBoundaryWeights <- function(data = NULL,
                                    cell_ids = NULL,
                                    boundary = NULL,
