@@ -119,7 +119,7 @@ PlotBoundary <- function(data = NULL,
 #'
 #' @inheritParams PlotBoundary
 #' @importFrom rlang .data
-#' @param boundary Boundary obtained from `GetBoundary` function.
+#' @param boundary A data frame or sf object containing x, y and region_id information.
 #' @export
 #' @examples
 #' # Load coordinates
@@ -162,7 +162,7 @@ AddBoundary <- function(boundary = NULL, color_boundary="black", linewidth_bound
 #'
 #' @inheritParams PlotBoundary
 #' @importFrom rlang .data
-#' @param boundary_poly A sf object returned by `BuildBoundaryPoly()`, `GetOuterBoundary()` or `GetRingRegion()`.
+#' @param boundary_poly An sf object containing x, y and region_id information.
 #' @export
 #' @examples
 #' # Load coordinates
@@ -205,7 +205,7 @@ AddBoundaryPoly <- function(boundary_poly, color_boundary="black", linewidth_bou
 #' @param alpha The transparency for the fill aesthetics of a geom in ggplot.
 #' @param color_boundary Color of the boundaries. Default is black.
 #' @param linewidth_boundary Linewidth of the boundaries. Default is 1.
-#' @param ... Other paramters in `sf::geom_sf()` function.
+#' @param ... Other parameters in `sf::geom_sf()` function.
 #' @export
 #' @examples
 #' # Load coordinates
@@ -249,3 +249,50 @@ PlotRegion <- function(boundary_poly = NULL,
     theme_ggplot
 }
 
+#' Plot boundary edge
+#'
+#' @inheritParams PlotBoundary
+#' @inheritParams AddBoundaryPoly
+#' @importFrom rlang .data
+#' @param linewidth_boundary Linewidth of the boundaries. Default is 1.
+#' @param ... Other parameters in `sf::geom_sf()` function.
+#' @export
+#' @examples
+#' # Load coordinates
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
+#' head(coords)
+#'
+#' # Plot region inside boundaries
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
+#'                                eps = 120, minPts = 10)
+#' boundary_polys = BuildBoundaryPoly(boundary_points)
+#' PlotEdge(boundary_poly = boundary_polys)
+#'
+#' # Split boundary polygon 1 into two edges
+#' boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1,])
+#' PlotEdge(boundary_edges)
+#'
+PlotEdge <- function(boundary_poly = NULL,
+                     linewidth_boundary = 1,
+                     theme_ggplot = my_theme_ggplot(),
+                     ...){
+  # Check boundary_poly
+  if(!inherits(boundary_poly,c("sf"))){
+    stop("`boundary_poly` should be an sf object.")
+  }
+
+  # Make region_id a factor of natural orders
+  if(is.null(levels(boundary_poly$region_id))){
+    boundary_poly$region_id <- FactorNaturalOrder(boundary_poly$region_id)
+  }
+
+  ggplot2::ggplot() +
+    ggplot2::geom_sf(data = boundary_poly,
+                     ggplot2::aes(color = .data$region_id),
+                     fill = NA,
+                     linewidth = linewidth_boundary, ...) +
+    ggplot2::labs(color = "Region ID") +
+    theme_ggplot
+
+}

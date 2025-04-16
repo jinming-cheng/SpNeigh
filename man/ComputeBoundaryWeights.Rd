@@ -2,7 +2,7 @@
 % Please edit documentation in R/ComputeWeights.R
 \name{ComputeBoundaryWeights}
 \alias{ComputeBoundaryWeights}
-\title{Compute Spatial Weights Based on Distance to Nearest Polygon Boundary}
+\title{Compute spatial weights based on distance to nearest boundary}
 \usage{
 ComputeBoundaryWeights(
   data = NULL,
@@ -18,7 +18,7 @@ ComputeBoundaryWeights(
 
 \item{cell_ids}{A vector of cell IDs to subset from data.}
 
-\item{boundary}{An \code{sf} object containing polygon boundaries (e.g. rings).}
+\item{boundary}{An sf object (POLYGON or LINESTRING) or a data.frame of boundary points.}
 
 \item{scale}{A logical value indicating whether to scale distances to [0, 1] before computing weights. Scaling is recommended, and default is TRUE.}
 
@@ -31,7 +31,7 @@ ComputeBoundaryWeights(
 A named numeric vector of weights, one per cell in \code{cell_ids}.
 }
 \description{
-This function assigns each cell to the nearest polygon boundary and computes
+This function assigns each cell to the nearest boundary and computes
 a spatial weight based on its distance to that boundary. Supports inverse,
 Gaussian, linear, and quadratic decay methods.
 }
@@ -53,4 +53,13 @@ cells_c2 <- subset(coords, cluster==2)[,"cell"]
 weights <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c2,
                                   boundary = boundary_polys[1,])
 weights[1:3]
+
+# Compute spatial weights to the boundary edge2 of region 1 for cells in cluster 2
+boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1,])
+PlotEdge(boundary_edges)
+weights <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c2,
+                                  boundary = boundary_edges[2,])
+weights[1:3]
+PlotWeights(coords, weights)
+
 }

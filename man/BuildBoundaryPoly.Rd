@@ -7,7 +7,7 @@
 BuildBoundaryPoly(boundary = NULL)
 }
 \arguments{
-\item{boundary}{Boundary result returned by \code{GetBoundary} function.}
+\item{boundary}{A data frame. Boundary result returned by \code{GetBoundary} function.}
 }
 \description{
 Build boundary polygon based on the boundary points

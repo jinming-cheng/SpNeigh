@@ -80,13 +80,13 @@ ComputeCentroidWeights <- function(data = NULL,
 
 
 
-#' Compute Spatial Weights Based on Distance to Nearest Polygon Boundary
+#' Compute spatial weights based on distance to nearest boundary
 #'
-#' This function assigns each cell to the nearest polygon boundary and computes
+#' This function assigns each cell to the nearest boundary and computes
 #' a spatial weight based on its distance to that boundary. Supports inverse,
 #' Gaussian, linear, and quadratic decay methods.
 #' @inheritParams ComputeCentroidWeights
-#' @param boundary An \code{sf} object containing polygon boundaries (e.g. rings).
+#' @param boundary An sf object (POLYGON or LINESTRING) or a data.frame of boundary points.
 #'
 #' @return A named numeric vector of weights, one per cell in `cell_ids`.
 #'
@@ -109,6 +109,15 @@ ComputeCentroidWeights <- function(data = NULL,
 #' weights <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c2,
 #'                                   boundary = boundary_polys[1,])
 #' weights[1:3]
+#'
+#' # Compute spatial weights to the boundary edge2 of region 1 for cells in cluster 2
+#' boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1,])
+#' PlotEdge(boundary_edges)
+#' weights <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c2,
+#'                                   boundary = boundary_edges[2,])
+#' weights[1:3]
+#' PlotWeights(coords, weights)
+#'
 ComputeBoundaryWeights <- function(data = NULL,
                                    cell_ids = NULL,
                                    boundary = NULL,
@@ -129,7 +138,7 @@ ComputeBoundaryWeights <- function(data = NULL,
   }
 
   if (!inherits(boundary, c("sf", "data.frame"))) {
-    stop("'boundary' must be an sf object containing boundary polygons or a data.frame containing boundary points.")
+    stop("'boundary' must be an sf object (POLYGON or LINESTRING) or a data.frame containing boundary points.")
   }
 
   # Build safe polygons
@@ -147,8 +156,14 @@ ComputeBoundaryWeights <- function(data = NULL,
 
   cell_sf <- sf::st_as_sf(sub_coords, coords = c("x", "y"), crs = NA)
 
-  # Extract polygon boundary as LINESTRING
-  boundary_lines <- sf::st_boundary(boundary)
+
+  if (all(sf::st_geometry_type(boundary) == "LINESTRING")) {
+    # Already LINESTRING
+    boundary_lines <- boundary
+  } else {
+    # Extract polygon boundary as LINESTRING
+    boundary_lines <- sf::st_boundary(boundary)
+  }
 
   # Compute distances to all region boundaries → matrix: [cells × regions]
   dist_mat <- sf::st_distance(cell_sf, boundary_lines)

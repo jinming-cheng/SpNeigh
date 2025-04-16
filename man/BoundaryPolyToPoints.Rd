@@ -7,13 +7,13 @@
 BoundaryPolyToPoints(boundary_poly)
 }
 \arguments{
-\item{boundary_poly}{An \code{sf} object with POLYGON geometries.}
+\item{boundary_poly}{An \code{sf} object with POLYGON or LINESTRING geometries.}
 }
 \value{
 A \code{data.frame} with columns \code{x}, \code{y} and the specified \code{region_id}.
 }
 \description{
-This function extracts x and y coordinates from a POLYGON \code{sf} object
+This function extracts x and y coordinates from a POLYGON or LINESTRING \code{sf} object
 by casting it into POINT geometries.
 }
 \examples{

@@ -201,7 +201,7 @@ GetBoundary <- function(data = NULL,
 
 #' Build boundary polygon based on the boundary points
 #'
-#' @param boundary Boundary result returned by `GetBoundary` function.
+#' @param boundary A data frame. Boundary result returned by `GetBoundary` function.
 #' @export
 #' @examples
 #' # Load coordinates
@@ -245,11 +245,11 @@ BuildBoundaryPoly <- function(boundary = NULL){
 
 #' Extract boundary points from boundary polygons
 #'
-#' This function extracts x and y coordinates from a POLYGON `sf` object
+#' This function extracts x and y coordinates from a POLYGON or LINESTRING `sf` object
 #' by casting it into POINT geometries.
 #'
 #' @importFrom rlang .data
-#' @param boundary_poly An `sf` object with POLYGON geometries.
+#' @param boundary_poly An `sf` object with POLYGON or LINESTRING geometries.
 #' @return A `data.frame` with columns `x`, `y` and the specified `region_id`.
 #' @export
 #' @examples
@@ -275,9 +275,10 @@ BoundaryPolyToPoints <- function(boundary_poly) {
     stop("Input must be an 'sf' object.")
   }
 
-  # Sanity check: ensure all are POLYGON
-  if (!all(sf::st_geometry_type(boundary_poly) == "POLYGON")) {
-    stop("All geometries in the input must be of type POLYGON.")
+  # Sanity check: ensure all are POLYGON or LINESTRING
+  if (!(all(sf::st_geometry_type(boundary_poly) == "POLYGON") ||
+        all(sf::st_geometry_type(boundary_poly) == "LINESTRING") ) ) {
+    stop("All geometries in the input must be of type POLYGON or LINESTRING.")
   }
 
   # Explode polygons to points
@@ -327,7 +328,7 @@ BoundaryPolyToPoints <- function(boundary_poly) {
 #'
 GetOuterBoundary <- function(boundary = NULL, dist = 100){
   # Build a safe polygon
-  if(is(boundary,"sf")){
+  if(inherits(boundary,"sf")){
     boundary_polys <- boundary
   }else{
     boundary_polys <- BuildBoundaryPoly(boundary)
@@ -398,3 +399,78 @@ GetRingRegion <- function(boundary = NULL, outer_boundary = NULL,...){
 
 }
 
+
+#' Split a polygon boundary into two parts using anchor points
+#'
+#' This function takes an sf POLYGON object and two anchor points (or infers them)
+#' to split the polygon boundary into two LINESTRING edge segments.
+#'
+#' @param boundary_poly An sf POLYGON object.
+#' @param pt1 A numeric vector of length 2 (x, y) or NULL. If NULL, the leftmost boundary point is used.
+#' @param pt2 A numeric vector of length 2 (x, y) or NULL. If NULL, the rightmost boundary point is used.
+#'
+#' @return An sf object with two LINESTRING features and a 'region_id' column indicating edge1 and edge2.
+#'
+#' @examples
+#' # Load coordinates
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
+#' head(coords)
+#'
+#' # Build boundary polygons from the boundary points
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
+#'                                subregion_method = "dbscan",
+#'                                eps = 120, minPts = 10)
+#' boundary_polys <- BuildBoundaryPoly(boundary_points)
+#'
+#' # Split boundary polygon 1 into two edges using leftmost and rightmost anchor points
+#' boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1,])
+#' plot(boundary_edges, lwd = 2)
+#'
+#' # Split boundary polygon 1 into two edges using two anchor points
+#' pt1 <- c(4000, 1500)
+#' pt2 <- c(2000, 3000)
+#' boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1,],
+#'                                             pt1 = pt1,
+#'                                             pt2 = pt2)
+#' plot(boundary_edges, lwd = 2)
+#'
+#' @export
+SplitBoundaryPolyByAnchor <- function(boundary_poly = NULL,
+                                      pt1 = NULL,
+                                      pt2 = NULL) {
+  if (!inherits(boundary_poly, "sf") || !all(sf::st_geometry_type(boundary_poly) == "POLYGON")) {
+    stop("Input must be an sf object with POLYGON geometry.")
+  }
+
+  coords <- sf::st_coordinates(sf::st_geometry(boundary_poly)[[1]])[, 1:2]
+
+  # Auto-infer pt1 and pt2 if NULL
+  if (is.null(pt1)) {
+    pt1 <- coords[which.min(coords[, 1]), ]
+  }
+  if (is.null(pt2)) {
+    pt2 <- coords[which.max(coords[, 1]), ]
+  }
+
+  if (!is.numeric(pt1) || length(pt1) != 2 || !is.numeric(pt2) || length(pt2) != 2) {
+    stop("pt1 and pt2 must each be a numeric vector of length 2 (x, y) or NULL.")
+  }
+
+  # Find nearest boundary points to pt1 and pt2
+  d1 <- sqrt(rowSums((coords - matrix(pt1, nrow(coords), 2, byrow = TRUE))^2))
+  d2 <- sqrt(rowSums((coords - matrix(pt2, nrow(coords), 2, byrow = TRUE))^2))
+  idx1 <- which.min(d1)
+  idx2 <- which.min(d2)
+
+  n <- nrow(coords)
+  path1 <- coords[c(idx1:idx2), ]
+  path2 <- coords[c(idx2:n, 1:idx1), ]
+
+  # Construct LINESTRINGs
+  line1 <- sf::st_linestring(path1)
+  line2 <- sf::st_linestring(path2)
+
+  lines <- sf::st_sfc(line1, line2, crs = sf::st_crs(boundary_poly))
+  sf::st_sf(region_id = c("edge1", "edge2"), geometry = lines)
+}

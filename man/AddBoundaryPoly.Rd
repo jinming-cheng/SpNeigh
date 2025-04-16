@@ -11,7 +11,7 @@ AddBoundaryPoly(
 )
 }
 \arguments{
-\item{boundary_poly}{A sf object returned by \code{BuildBoundaryPoly()}, \code{GetOuterBoundary()} or \code{GetRingRegion()}.}
+\item{boundary_poly}{An sf object containing x, y and region_id information.}
 
 \item{color_boundary}{Color of the boundary for a cluster. Default is black.}
 

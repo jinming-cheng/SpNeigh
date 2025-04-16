@@ -11,7 +11,7 @@ AddBoundary(
 )
 }
 \arguments{
-\item{boundary}{Boundary obtained from \code{GetBoundary} function.}
+\item{boundary}{A data frame or sf object containing x, y and region_id information.}
 
 \item{color_boundary}{Color of the boundary for a cluster. Default is black.}
 

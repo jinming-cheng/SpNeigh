@@ -31,7 +31,7 @@ GetCellsInside <- function(data = NULL,
   spatial_points <- sf::st_as_sf(x = sp_coords,coords = c("x", "y"), crs = NA)
 
   # Build safe polygons
-  if(is(boundary,"sf")){
+  if(inherits(boundary,"sf")){
     boundary_polys <- boundary
   }else{
     boundary_polys <- BuildBoundaryPoly(boundary)
