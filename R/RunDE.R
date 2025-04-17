@@ -137,12 +137,20 @@ RunLimmaDE <- function(exp_mat = NULL,
 
 #' Differential expression analysis along spatial distance gradients
 #'
+#' Performs differential expression (DE) testing along a continuous spatial distance gradient.
+#' Gene expression is modeled as a smooth function of spatial proximity using a natural spline basis.
+#' This approach is useful for detecting genes with spatially varying expression relative to a boundary or centroid.
 #'
 #' @inheritParams RunLimmaDE
+#' @inheritParams SplineDesign
 #' @param cell_ids A vector of cell IDs in `exp_mat` for spatial differential expression analysis.
 #' @param spatial_distance A numeric vector of the spatial distance for each cell. Scaled distance rather than real distance is is recommended.
 #'
-#' @return A data.frame of differentially expressed genes along spatial distance. Positive trend means positive correlation of the gene expression with the spatial distance (Up regulated), and negative trend means negative correlation (Down regulated).
+#' @return A data frame of differentially expressed genes, including p-values, adjusted p-values,
+#'         and a directional trend column. The sign of Z1 gives the direction of the trend.
+#'         A positive trend indicates increasing expression with distance;
+#'         a negative trend indicates decreasing expression with distance.
+#'         The values of Z1, Z2 and Z3 are not meaningful.
 #'
 #' @export
 #'
@@ -187,7 +195,8 @@ RunLimmaDE <- function(exp_mat = NULL,
 RunSpatialDE <- function(exp_mat = NULL,
                          cell_ids = NULL,
                          spatial_distance = NULL,
-                         adj_p.value = 0.05
+                         adj_p.value = 0.05,
+                         df = 3
                          ) {
 
   # --- Input checks ---
@@ -219,14 +228,8 @@ RunSpatialDE <- function(exp_mat = NULL,
   expr <- exp_mat[, all_cells, drop = FALSE]
 
   # ---  Design matrix ---
-  X <- splines::ns(as.numeric(t1),df = 3)
-  A <- cbind(1,t1,X)
-  QR <- qr(A)
-  r <- QR$rank
-  R_rank <- QR$qr[1:r,1:r]
-  Z <- t(backsolve(R_rank,t(A),transpose=TRUE))
-  Z <- Z[,-1]
-  if(stats::cor(Z[,1], t1) < 0) { Z[,1] <- -Z[,1]}
+  Z <- SplineDesign(t1, df = df)
+
   design <- stats::model.matrix(~ Z)
 
   # --- Run limma ---
@@ -244,5 +247,56 @@ RunSpatialDE <- function(exp_mat = NULL,
   tab$trend <- ifelse(tab$Z1 > 0, "Positive", "Negative")
 
   return(tab)
+}
+
+
+#' Generate a spline-based orthonormal design matrix from a numeric covariate
+#'
+#' This function transforms a numeric input vector (e.g., spatial distance)
+#' into a natural cubic spline basis and returns an orthonormalized design matrix
+#' suitable for smooth trend modeling.
+#' The first column of the output matrix is guaranteed to be positively correlated
+#' with the input vector and typically captures the primary linear trend.
+#'
+#' @param x A numeric vector representing a continuous variable.
+#' @param df Degrees of freedom for the spline basis. Default is 3.
+#'
+#' @return A numeric matrix with orthonormal columns derived from the spline-transformed input.
+#'         The first column is aligned to show the main linear trend with respect to `x`.
+#'
+#' @export
+#' @examples
+#' x <- runif(100)
+#' Z <- SplineDesign(x)
+#'
+#' # The first column of Z is positvely correlated with x
+#' cor(Z[,1], x)
+#'
+SplineDesign <- function(x, df = 3) {
+  if (!is.numeric(x)) {
+    stop("'x' must be a numeric vector.")
+  }
+
+  # Spline basis
+  X <- splines::ns(as.numeric(x), df = df)
+
+  # Augment with intercept and original variable
+  A <- cbind(1, x, X)
+
+  # Orthonormalize via QR decomposition
+  QR <- qr(A)
+  r <- QR$rank
+  R_rank <- QR$qr[1:r, 1:r]
+  Z <- t(backsolve(R_rank, t(A), transpose = TRUE))
+
+  # Remove intercept column
+  Z <- Z[, -1]
+
+  # Align first component with positive trend
+  if (stats::cor(Z[, 1], x) < 0) {
+    Z[, 1] <- -Z[, 1]
+  }
+
+  return(Z)
 }
 

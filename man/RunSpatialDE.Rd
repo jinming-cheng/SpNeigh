@@ -8,7 +8,8 @@ RunSpatialDE(
   exp_mat = NULL,
   cell_ids = NULL,
   spatial_distance = NULL,
-  adj_p.value = 0.05
+  adj_p.value = 0.05,
+  df = 3
 )
 }
 \arguments{
@@ -19,12 +20,20 @@ RunSpatialDE(
 \item{spatial_distance}{A numeric vector of the spatial distance for each cell. Scaled distance rather than real distance is is recommended.}
 
 \item{adj_p.value}{Adjusted p-value threshold for significance to obtain differentially expressed genes. Default is 0.05.}
+
+\item{df}{Degrees of freedom for the spline basis. Default is 3.}
 }
 \value{
-A data.frame of differentially expressed genes along spatial distance. Positive trend means positive correlation of the gene expression with the spatial distance (Up regulated), and negative trend means negative correlation (Down regulated).
+A data frame of differentially expressed genes, including p-values, adjusted p-values,
+and a directional trend column. The sign of Z1 gives the direction of the trend.
+A positive trend indicates increasing expression with distance;
+a negative trend indicates decreasing expression with distance.
+The values of Z1, Z2 and Z3 are not meaningful.
 }
 \description{
-Differential expression analysis along spatial distance gradients
+Performs differential expression (DE) testing along a continuous spatial distance gradient.
+Gene expression is modeled as a smooth function of spatial proximity using a natural spline basis.
+This approach is useful for detecting genes with spatially varying expression relative to a boundary or centroid.
 }
 \examples{
 
