@@ -150,11 +150,10 @@ AddBoundary <- function(boundary = NULL, color_boundary="black", linewidth_bound
     stop("`boundary` must contain columns: 'x', 'y' and 'region_id'.")
   }
 
-  ggplot2::geom_polygon(data = boundary,
-                        ggplot2::aes(x = .data$x, y = .data$y, group = .data$region_id),
-                        fill = NA,
-                        color = color_boundary,
-                        linewidth = linewidth_boundary)
+  ggplot2::geom_path(data = boundary,
+                     ggplot2::aes(x = .data$x, y = .data$y, group = .data$region_id),
+                     color = color_boundary,
+                     linewidth = linewidth_boundary)
 
 }
 
