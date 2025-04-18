@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotBoundary.R
 \name{AddBoundaryPoly}
 \alias{AddBoundaryPoly}
-\title{Add a boundary poly to the plot}
+\title{Add boundary polygons to a spatial plot}
 \usage{
 AddBoundaryPoly(
   boundary_poly,
@@ -11,29 +11,31 @@ AddBoundaryPoly(
 )
 }
 \arguments{
-\item{boundary_poly}{An sf object containing x, y and region_id information.}
+\item{boundary_poly}{An \code{sf} object containing \code{POLYGON} or \code{LINESTRING} geometries and a \code{region_id} column.}
 
-\item{color_boundary}{Color of the boundary for a cluster. Default is black.}
+\item{color_boundary}{Color for boundary lines. Default is \code{"black"}.}
 
-\item{linewidth_boundary}{Linewidth of the boundary borders. Default is 1.5.}
+\item{linewidth_boundary}{Numeric. Line width for boundary outlines. Default is 1.5.}
+}
+\value{
+A \code{ggplot2::geom_sf} layer that can be added to an existing plot.
 }
 \description{
-Add a boundary poly to the plot
+Overlays boundary polygons (typically from \code{BuildBoundaryPoly()} or \code{GetOuterBoundary()})
+on a spatial \code{ggplot2} plot. This function adds an \code{sf} geometry layer to display complete
+boundary shapes for visualizing spatial clusters, rings, or enriched zones.
 }
 \examples{
-# Load coordinates
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
                               package = "SpNeigh"))
-head(coords)
 
-# Build boundary polygons from the boundary points
 boundary_points <- GetBoundary(data = coords, one_cluster = 2,
                                subregion_method = "dbscan",
                                eps = 120, minPts = 10)
 boundary_polys <- BuildBoundaryPoly(boundary_points)
 
-# Add boundary polygons to an existing plot
-PlotBoundary(coords) + AddBoundaryPoly(boundary_polys,
-                                       color="blue")
+# Add boundary polygons to the plot
+PlotBoundary(coords) +
+  AddBoundaryPoly(boundary_polys, color_boundary = "blue")
 
 }

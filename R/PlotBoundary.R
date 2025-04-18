@@ -22,22 +22,36 @@ my_theme_ggplot <- function() {
 
 
 
-#' Draw boundary for a cluster or cell population
+#' Plot spatial cell coordinates with cluster boundaries
 #'
+#' Plots spatial cell locations and overlays cluster or population boundaries if available.
+#' If `boundary` is not provided and `one_cluster` is specified, the boundary will be automatically
+#' generated using the `GetBoundary()` function. This function supports plotting either all clusters
+#' or a specific cluster using `sub_plot = TRUE`. Boundaries can be overlaid as polygons to visualize
+#' spatial subregions.
 #'
 #' @inheritParams GetBoundary
 #' @inheritParams ExtractCoords
 #' @importFrom rlang .data
-#' @param one_cluster Specify one cluster to obtain its boundary. If `boundary` parameter is provided, it can be omitted. However, it must be provided, if `sub_plot` is TRUE.
-#' @param boundary A data frame or sf object containing x, y and region_id information. If it is NULL, get the boundary of the specified cluster automatically. If both `boundary` and `one_cluster` are NULL, plot coordinates only.
-#' @param colors A character vector specifying the colors for clusters.
-#' @param point_size Point size of cells. Default is 0.5.
-#' @param color_boundary Color of the boundary for a cluster. Default is black.
-#' @param linewidth_boundary Linewidth of the boundary borders. Default is 1.5.
-#' @param sub_plot Logical. Whether to plot cells in one cluster. If FALSE (default), plot all cells in all clusters.
-#' @param theme_ggplot Theme for ggplot.
-#' @param legend_size Legend size for ggplot.
-#' @param ... Parameters in `GetBoundary` function.
+#' @param one_cluster The cluster ID to plot and optionally compute its boundary.
+#'        Required if `sub_plot = TRUE` and `boundary` is not provided.
+#' @param boundary A data frame or `sf` object containing boundary points or polygons,
+#'        including columns `x`, `y`, and `region_id`.
+#' @param colors A vector of cluster colors. Default uses `my_colors_15`.
+#' @param point_size Numeric. Point size for cell scatter plot. Default is 0.5.
+#' @param color_boundary Color for boundary lines. Default is `"black"`.
+#' @param linewidth_boundary Numeric. Line width for boundary outlines. Default is 1.5.
+#' @param sub_plot Logical. If `TRUE`, only cells from the specified `one_cluster` are plotted.
+#'        If `FALSE` (default), all clusters are plotted.
+#' @param split_by Optional column name in `data` to facet the plot by (e.g., sample, condition).
+#' @param angle_x_label Numeric angle (in degrees) to rotate the x-axis labels.
+#'        Useful for improving label readability in faceted or dense plots.
+#'        Default is 0 (no rotation).
+#' @param theme_ggplot A ggplot2 theme object. Default is `my_theme_ggplot()`.
+#' @param legend_size Numeric. Size of legend keys. Default is 2.
+#' @param ... Additional arguments passed to `GetBoundary()` when auto-generating boundaries.
+#'
+#' @return A ggplot object displaying the spatial layout of cells, with optional boundary overlays.
 #' @export
 #' @examples
 #' # Load coordinates
@@ -45,25 +59,17 @@ my_theme_ggplot <- function() {
 #'                               package = "SpNeigh"))
 #' head(coords)
 #'
-#' # Plot coordinates without boundary
+#' # Plot all cells without boundaries
 #' PlotBoundary(coords)
 #'
-#' # Plot boundaries of cluster 2
+#' # Plot one cluster and its boundary
 #' PlotBoundary(coords, one_cluster = 2)
 #'
-#' # Plot boundaries of cluster 2, and adjust subregion numbers
-#' # for dbscan method using eps and minPts parameters
-#' PlotBoundary(coords, one_cluster = 2,
-#'             multi_region = TRUE,
-#'             subregion_method = "dbscan",
-#'             eps = 120, minPts = 10)
-#'
-#' # Alternatively, the boundaries can be manually specified
+#' # Manually compute boundary and plot
 #' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
-#'                                subregion_method = "dbscan",
 #'                                eps = 120, minPts = 10)
 #' PlotBoundary(data = coords, boundary = boundary_points)
-
+#'
 PlotBoundary <- function(data = NULL,
                          one_cluster = NULL,
                          boundary = NULL,
@@ -72,153 +78,185 @@ PlotBoundary <- function(data = NULL,
                          color_boundary = "black",
                          linewidth_boundary = 1.5,
                          sub_plot = FALSE,
+                         split_by = NULL,
+                         angle_x_label = 0,
                          theme_ggplot = my_theme_ggplot(),
                          legend_size = 2,
-                         ...){
+                         ...) {
 
   # Extract coordinates from data
   sp_coords <- ExtractCoords(data = data)
 
-  # If the boundary of a cluster is not provided, get the boundary automatically
-  if( is.null(boundary) & (!is.null(one_cluster)) ){
-    boundary <- GetBoundary(data = sp_coords,one_cluster = one_cluster, ...)
+  # Auto-generate boundary if needed
+  if (is.null(boundary) && !is.null(one_cluster)) {
+    boundary <- GetBoundary(data = sp_coords, one_cluster = one_cluster, ...)
   }
 
-  # Whether to plot one cluster or all clusters
-  if(sub_plot){
-    # Obtain coordinates of the target cluster
-    coords_sub <- dplyr::filter(sp_coords,.data$cluster == one_cluster)
-    data_for_plot = coords_sub
-  }else{
-    data_for_plot = sp_coords
+  # Choose plotting data: full or single cluster
+  if (sub_plot) {
+    if (is.null(one_cluster)) {
+      stop("`one_cluster` must be specified when `sub_plot = TRUE`.")
+    }
+    data_for_plot <- dplyr::filter(sp_coords, .data$cluster == one_cluster)
+  } else {
+    data_for_plot <- sp_coords
   }
 
-  # add names to colors
+  # Prepare named color vector
   named_colors <- colors[1:nlevels(sp_coords$cluster)]
   names(named_colors) <- levels(sp_coords$cluster)
 
-  # Plot boundary
+  # Base plot
   p <- ggplot2::ggplot(data_for_plot, ggplot2::aes(x = .data$x, y = .data$y)) +
-    ggplot2::geom_point(ggplot2::aes(color = .data$cluster), alpha = 1, size = point_size) +
+    ggplot2::geom_point(ggplot2::aes(color = .data$cluster), size = point_size) +
     theme_ggplot +
     ggplot2::scale_color_manual(values = named_colors) +
-    ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(size=legend_size)))
+    ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(size = legend_size))) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = angle_x_label, hjust = 1))
 
-  # whether to plot boundary
-  if( !is.null(boundary) ){
+  # Add boundary if provided or generated
+  if (!is.null(boundary)) {
     p <- p + AddBoundary(boundary = boundary,
                          color_boundary = color_boundary,
                          linewidth_boundary = linewidth_boundary)
   }
 
-  p
+  # Make faceted plots if split_by is provided
+  if (!is.null(split_by) && split_by %in% colnames(data_for_plot)) {
+    p <- p + ggplot2::facet_wrap(stats::as.formula(paste("~", split_by)))
+  }
 
+  return(p)
 }
 
-#' Add a boundary or boundaries to the plot
+#' Add boundary outlines to a spatial ggplot
+#'
+#' Overlays spatial boundaries (from points or polygons) onto a `ggplot2` object.
+#' The input can be either a data frame of boundary points or an `sf` object of `POLYGON` geometries.
+#' This function is typically used as an additive layer (`+ AddBoundary(...)`) in conjunction with
+#' a base plot created using `PlotBoundary()`.
 #'
 #' @inheritParams PlotBoundary
 #' @importFrom rlang .data
-#' @param boundary A data frame or sf object containing x, y and region_id information.
+#' @param boundary A data frame with columns `x`, `y`, and `region_id` (e.g., from `GetBoundary()`),
+#'                 or an `sf` object of `POLYGON` or `LINESTRING` geometries.
+#' @return A `ggplot2::geom_path` layer that can be added to an existing plot.
+#'
 #' @export
 #' @examples
-#' # Load coordinates
 #' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 #'                               package = "SpNeigh"))
-#' head(coords)
 #'
-#' # Add boundaries to an existing plot
+#' # Automatically get boundary for a cluster
 #' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
 #'                                subregion_method = "dbscan",
 #'                                eps = 120, minPts = 10)
+#'
+#' # Plot with boundary overlay
 #' PlotBoundary(coords) + AddBoundary(boundary_points)
 #'
-AddBoundary <- function(boundary = NULL, color_boundary="black", linewidth_boundary=1.5) {
+AddBoundary <- function(boundary = NULL,
+                        color_boundary = "black",
+                        linewidth_boundary = 1.5) {
 
-  # Check boundary format
-  if(!inherits(boundary,c("data.frame","sf"))){
+  # Check boundary type
+  if (!inherits(boundary, c("data.frame", "sf"))) {
     stop("`boundary` should be a data.frame or an sf object.")
   }
 
-  # Convert boundary polys to boundary points
-  if(inherits(boundary,"sf")){
+  # Convert polygons to boundary points if needed
+  if (inherits(boundary, "sf")) {
     boundary <- BoundaryPolyToPoints(boundary)
   }
 
-  # Check required columns in boundary
-  if( !all(c("x","y","region_id") %in% colnames(boundary)) ){
-    stop("`boundary` must contain columns: 'x', 'y' and 'region_id'.")
+  # Ensure required columns
+  if (!all(c("x", "y", "region_id") %in% colnames(boundary))) {
+    stop("`boundary` must contain columns: 'x', 'y', and 'region_id'.")
   }
 
-  ggplot2::geom_path(data = boundary,
-                     ggplot2::aes(x = .data$x, y = .data$y, group = .data$region_id),
-                     color = color_boundary,
-                     linewidth = linewidth_boundary)
-
+  ggplot2::geom_path(
+    data = boundary,
+    ggplot2::aes(x = .data$x, y = .data$y, group = .data$region_id),
+    color = color_boundary,
+    linewidth = linewidth_boundary
+  )
 }
 
-#' Add a boundary poly to the plot
+
+#' Add boundary polygons to a spatial plot
+#'
+#' Overlays boundary polygons (typically from `BuildBoundaryPoly()` or `GetOuterBoundary()`)
+#' on a spatial `ggplot2` plot. This function adds an `sf` geometry layer to display complete
+#' boundary shapes for visualizing spatial clusters, rings, or enriched zones.
 #'
 #' @inheritParams PlotBoundary
 #' @importFrom rlang .data
-#' @param boundary_poly An sf object containing x, y and region_id information.
+#' @param boundary_poly An `sf` object containing `POLYGON` or `LINESTRING` geometries and a `region_id` column.
+#' @return A `ggplot2::geom_sf` layer that can be added to an existing plot.
+#'
 #' @export
 #' @examples
-#' # Load coordinates
 #' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 #'                               package = "SpNeigh"))
-#' head(coords)
 #'
-#' # Build boundary polygons from the boundary points
 #' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
 #'                                subregion_method = "dbscan",
 #'                                eps = 120, minPts = 10)
 #' boundary_polys <- BuildBoundaryPoly(boundary_points)
 #'
-#' # Add boundary polygons to an existing plot
-#' PlotBoundary(coords) + AddBoundaryPoly(boundary_polys,
-#'                                        color="blue")
+#' # Add boundary polygons to the plot
+#' PlotBoundary(coords) +
+#'   AddBoundaryPoly(boundary_polys, color_boundary = "blue")
 #'
 
-AddBoundaryPoly <- function(boundary_poly, color_boundary="black", linewidth_boundary=1.5) {
+AddBoundaryPoly <- function(boundary_poly,
+                            color_boundary = "black",
+                            linewidth_boundary = 1.5) {
 
-  # Check boundary_poly
-  if(!inherits(boundary_poly,c("sf"))){
-    stop("`boundary_poly` should be an sf object.")
+  # Validate input
+  if (!inherits(boundary_poly, "sf")) {
+    stop("`boundary_poly` must be an sf object.")
   }
 
-  ggplot2::geom_sf(data = boundary_poly,
-                   inherit.aes = FALSE,
-                   fill=NA,
-                   color = color_boundary,
-                   linewidth = linewidth_boundary)
-
+  ggplot2::geom_sf(
+    data = boundary_poly,
+    inherit.aes = FALSE,
+    fill = NA,
+    color = color_boundary,
+    linewidth = linewidth_boundary
+  )
 }
 
 
-#' Plot regions inside boundries or rings
+#' Plot filled spatial regions inside boundaries or rings
 #'
-#' @inheritParams PlotBoundary
-#' @inheritParams AddBoundaryPoly
+#' Creates a ggplot of spatial regions (e.g., subregions or ring areas) using filled polygons.
+#' Each region is automatically assigned a fill color based on its `region_id`. This function is
+#' commonly used to visualize the area inside spatial boundaries or surrounding rings, such as those
+#' created by `BuildBoundaryPoly()` or `GetRingRegion()`.
+#'
 #' @importFrom rlang .data
-#' @param alpha The transparency for the fill aesthetics of a geom in ggplot.
-#' @param color_boundary Color of the boundaries. Default is black.
-#' @param linewidth_boundary Linewidth of the boundaries. Default is 1.
-#' @param ... Other parameters in `sf::geom_sf()` function.
+#' @param boundary_poly An `sf` object of `POLYGON` geometries containing a `region_id` column.
+#'        Typically created by `BuildBoundaryPoly()` or `GetRingRegion()`.
+#' @param alpha Numeric value controlling the transparency of the filled regions. Default is `0.5`.
+#' @param color_boundary Color of the region outlines. Default is `"black"`.
+#' @param linewidth_boundary Numeric line width of the region borders. Default is `1`.
+#' @param theme_ggplot A custom `ggplot2` theme object. Default is `my_theme_ggplot()`.
+#' @param ... Additional arguments passed to `ggplot2::geom_sf()`.
+#'
+#' @return A `ggplot` object displaying filled spatial regions by `region_id`.
 #' @export
 #' @examples
-#' # Load coordinates
 #' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 #'                               package = "SpNeigh"))
-#' head(coords)
 #'
-#' # Plot region inside boundaries
+#' # Plot filled boundary regions
 #' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
 #'                                eps = 120, minPts = 10)
-#' boundary_polys = BuildBoundaryPoly(boundary_points)
+#' boundary_polys <- BuildBoundaryPoly(boundary_points)
 #' PlotRegion(boundary_poly = boundary_polys)
 #'
-#' # Plot region inside rings
+#' # Plot filled ring regions
 #' ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
 #' PlotRegion(boundary_poly = ring_regions)
 #'
@@ -228,12 +266,12 @@ PlotRegion <- function(boundary_poly = NULL,
                        linewidth_boundary = 1,
                        theme_ggplot = my_theme_ggplot(),
                        ...){
-  # Check boundary_poly
+  # Check input
   if(!inherits(boundary_poly,c("sf"))){
     stop("`boundary_poly` should be an sf object.")
   }
 
-  # Make region_id a factor of natural orders
+  # Ensure region_id is a factor for consistent fill coloring
   if(is.null(levels(boundary_poly$region_id))){
     boundary_poly$region_id <- FactorNaturalOrder(boundary_poly$region_id)
   }
@@ -248,40 +286,46 @@ PlotRegion <- function(boundary_poly = NULL,
     theme_ggplot
 }
 
-#' Plot boundary edge
+
+#' Plot boundary edges or segmented boundary lines
 #'
-#' @inheritParams PlotBoundary
-#' @inheritParams AddBoundaryPoly
+#' Plots boundary edges as colored `LINESTRING` or `POLYGON` outlines using `ggplot2`.
+#' This function is especially useful for visualizing specific edges extracted from
+#' a polygon using `SplitBoundaryPolyByAnchor()`.
+#'
 #' @importFrom rlang .data
-#' @param linewidth_boundary Linewidth of the boundaries. Default is 1.
-#' @param ... Other parameters in `sf::geom_sf()` function.
+#' @param boundary_poly An `sf` object containing boundary edges or polygons.
+#'        Must include a `region_id` column for color grouping.
+#' @param linewidth_boundary Numeric value specifying the line width of the edge. Default is `1`.
+#' @param theme_ggplot A ggplot2 theme to apply to the plot. Default is `my_theme_ggplot()`.
+#' @param ... Additional arguments passed to `ggplot2::geom_sf()`.
+#'
+#' @return A `ggplot` object displaying the edge outlines colored by `region_id`.
 #' @export
 #' @examples
-#' # Load coordinates
 #' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 #'                               package = "SpNeigh"))
-#' head(coords)
 #'
-#' # Plot region inside boundaries
+#' # Build boundary polygon and plot its outline
 #' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
 #'                                eps = 120, minPts = 10)
-#' boundary_polys = BuildBoundaryPoly(boundary_points)
+#' boundary_polys <- BuildBoundaryPoly(boundary_points)
 #' PlotEdge(boundary_poly = boundary_polys)
 #'
-#' # Split boundary polygon 1 into two edges
-#' boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1,])
-#' PlotEdge(boundary_edges)
+#' # Split a polygon into edge segments and plot
+#' boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1, ])
+#' PlotEdge(boundary_poly = boundary_edges)
 #'
 PlotEdge <- function(boundary_poly = NULL,
                      linewidth_boundary = 1,
                      theme_ggplot = my_theme_ggplot(),
                      ...){
-  # Check boundary_poly
+  # Check input
   if(!inherits(boundary_poly,c("sf"))){
     stop("`boundary_poly` should be an sf object.")
   }
 
-  # Make region_id a factor of natural orders
+  # Ensure region_id is a factor for grouped coloring
   if(is.null(levels(boundary_poly$region_id))){
     boundary_poly$region_id <- FactorNaturalOrder(boundary_poly$region_id)
   }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotBoundary.R
 \name{PlotEdge}
 \alias{PlotEdge}
-\title{Plot boundary edge}
+\title{Plot boundary edges or segmented boundary lines}
 \usage{
 PlotEdge(
   boundary_poly = NULL,
@@ -12,31 +12,35 @@ PlotEdge(
 )
 }
 \arguments{
-\item{boundary_poly}{An sf object containing x, y and region_id information.}
+\item{boundary_poly}{An \code{sf} object containing boundary edges or polygons.
+Must include a \code{region_id} column for color grouping.}
 
-\item{linewidth_boundary}{Linewidth of the boundaries. Default is 1.}
+\item{linewidth_boundary}{Numeric value specifying the line width of the edge. Default is \code{1}.}
 
-\item{theme_ggplot}{Theme for ggplot.}
+\item{theme_ggplot}{A ggplot2 theme to apply to the plot. Default is \code{my_theme_ggplot()}.}
 
-\item{...}{Other parameters in \code{sf::geom_sf()} function.}
+\item{...}{Additional arguments passed to \code{ggplot2::geom_sf()}.}
+}
+\value{
+A \code{ggplot} object displaying the edge outlines colored by \code{region_id}.
 }
 \description{
-Plot boundary edge
+Plots boundary edges as colored \code{LINESTRING} or \code{POLYGON} outlines using \code{ggplot2}.
+This function is especially useful for visualizing specific edges extracted from
+a polygon using \code{SplitBoundaryPolyByAnchor()}.
 }
 \examples{
-# Load coordinates
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
                               package = "SpNeigh"))
-head(coords)
 
-# Plot region inside boundaries
+# Build boundary polygon and plot its outline
 boundary_points <- GetBoundary(data = coords, one_cluster = 2,
                                eps = 120, minPts = 10)
-boundary_polys = BuildBoundaryPoly(boundary_points)
+boundary_polys <- BuildBoundaryPoly(boundary_points)
 PlotEdge(boundary_poly = boundary_polys)
 
-# Split boundary polygon 1 into two edges
-boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1,])
-PlotEdge(boundary_edges)
+# Split a polygon into edge segments and plot
+boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1, ])
+PlotEdge(boundary_poly = boundary_edges)
 
 }

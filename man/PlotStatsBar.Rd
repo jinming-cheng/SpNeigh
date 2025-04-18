@@ -17,11 +17,11 @@ PlotStatsBar(
 
 \item{stat_column}{A column name in \code{cell_stats} and used for y axis.}
 
-\item{colors}{A character vector specifying the colors for clusters.}
+\item{colors}{A vector of cluster colors. Default uses \code{my_colors_15}.}
 
 \item{angle_x_label}{Angle to rotate the x-axis labels.}
 
-\item{theme_ggplot}{Theme for ggplot.}
+\item{theme_ggplot}{A ggplot2 theme object. Default is \code{my_theme_ggplot()}.}
 }
 \description{
 Bar plot of statistics of cells inside boundaries or rings

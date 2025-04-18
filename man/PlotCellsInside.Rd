@@ -16,13 +16,13 @@ PlotCellsInside(
 \arguments{
 \item{cells_inside}{A sf object. \code{cells_inside} is returned by \code{GetCellsInside}.}
 
-\item{point_size}{Point size of cells. Default is 0.5.}
+\item{point_size}{Numeric. Point size for cell scatter plot. Default is 0.5.}
 
-\item{colors}{A character vector specifying the colors for clusters.}
+\item{colors}{A vector of cluster colors. Default uses \code{my_colors_15}.}
 
-\item{theme_ggplot}{Theme for ggplot.}
+\item{theme_ggplot}{A ggplot2 theme object. Default is \code{my_theme_ggplot()}.}
 
-\item{legend_size}{Legend size for ggplot.}
+\item{legend_size}{Numeric. Size of legend keys. Default is 2.}
 
 \item{fixed_aspect_ratio}{Logical. Whether to plot using \code{sf::geom_sf()} function with 1:1 aspect ratio. Default is TRUE}
 }

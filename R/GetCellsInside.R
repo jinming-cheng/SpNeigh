@@ -1,9 +1,18 @@
 
-#' Get cells inside boundaries or rings
+#' Identify cells located within spatial boundaries or ring regions
+#'
+#' Returns the subset of cells from the input data that fall spatially within a given boundary or ring.
+#' The boundary can be provided either as raw boundary points (from `GetBoundary()`), as polygons
+#' (from `BuildBoundaryPoly()`), or as ring regions (from `GetRingRegion()`).
+#' The function uses spatial point-in-polygon matching via `sf::st_within`.
 #'
 #' @importFrom rlang .data
 #' @inheritParams GetBoundary
-#' @param boundary A sf object or a data frame. Boundary result returned by `GetBoundary` or `GetBoundaryPoly` functions. Or ring regions returned by `GetRingRegion`.
+#' @param boundary An `sf` object (polygon or ring) or a data frame of boundary points
+#'        returned by `GetBoundary()`, `BuildBoundaryPoly()`, or `GetRingRegion()`.
+#'
+#' @return A data frame (tibble) of cells located inside the given spatial region(s),
+#'         with region assignment in a `region_id` column.
 #' @export
 #' @examples
 #' # Load coordinates
@@ -22,24 +31,25 @@
 #' cells_ring <- GetCellsInside(data = coords, boundary =  ring_regions)
 #' cells_ring
 #'
-GetCellsInside <- function(data = NULL,
-                           boundary = NULL){
-
-  # Extract coordinates from data
+GetCellsInside <- function(data = NULL, boundary = NULL) {
+  # Extract coordinate data
   sp_coords <- ExtractCoords(data = data)
 
-  spatial_points <- sf::st_as_sf(x = sp_coords,coords = c("x", "y"), crs = NA)
+  # Convert to sf point geometry
+  spatial_points <- sf::st_as_sf(sp_coords, coords = c("x", "y"), crs = NA)
 
-  # Build safe polygons
-  if(inherits(boundary,"sf")){
-    boundary_polys <- boundary
-  }else{
-    boundary_polys <- BuildBoundaryPoly(boundary)
+  # Ensure polygon format
+  boundary_polys <- if (inherits(boundary, "sf")) {
+    boundary
+  } else {
+    BuildBoundaryPoly(boundary)
   }
 
+  # Spatial join: find cells inside polygons
   cells_in_poly <- sf::st_join(spatial_points, boundary_polys, join = sf::st_within)
 
-  # Obtain cells inside the boundary
-  cells_inside <- dplyr::filter(cells_in_poly,!is.na(.data$region_id))
-  cells_inside
+  # Keep only cells that intersect with a region
+  cells_inside <- dplyr::filter(cells_in_poly, !is.na(.data$region_id))
+
+  return(cells_inside)
 }

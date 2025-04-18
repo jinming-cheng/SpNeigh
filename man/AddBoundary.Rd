@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotBoundary.R
 \name{AddBoundary}
 \alias{AddBoundary}
-\title{Add a boundary or boundaries to the plot}
+\title{Add boundary outlines to a spatial ggplot}
 \usage{
 AddBoundary(
   boundary = NULL,
@@ -11,25 +11,32 @@ AddBoundary(
 )
 }
 \arguments{
-\item{boundary}{A data frame or sf object containing x, y and region_id information.}
+\item{boundary}{A data frame with columns \code{x}, \code{y}, and \code{region_id} (e.g., from \code{GetBoundary()}),
+or an \code{sf} object of \code{POLYGON} or \code{LINESTRING} geometries.}
 
-\item{color_boundary}{Color of the boundary for a cluster. Default is black.}
+\item{color_boundary}{Color for boundary lines. Default is \code{"black"}.}
 
-\item{linewidth_boundary}{Linewidth of the boundary borders. Default is 1.5.}
+\item{linewidth_boundary}{Numeric. Line width for boundary outlines. Default is 1.5.}
+}
+\value{
+A \code{ggplot2::geom_path} layer that can be added to an existing plot.
 }
 \description{
-Add a boundary or boundaries to the plot
+Overlays spatial boundaries (from points or polygons) onto a \code{ggplot2} object.
+The input can be either a data frame of boundary points or an \code{sf} object of \code{POLYGON} geometries.
+This function is typically used as an additive layer (\code{+ AddBoundary(...)}) in conjunction with
+a base plot created using \code{PlotBoundary()}.
 }
 \examples{
-# Load coordinates
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
                               package = "SpNeigh"))
-head(coords)
 
-# Add boundaries to an existing plot
+# Automatically get boundary for a cluster
 boundary_points <- GetBoundary(data = coords, one_cluster = 2,
                                subregion_method = "dbscan",
                                eps = 120, minPts = 10)
+
+# Plot with boundary overlay
 PlotBoundary(coords) + AddBoundary(boundary_points)
 
 }

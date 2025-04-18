@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotBoundary.R
 \name{PlotRegion}
 \alias{PlotRegion}
-\title{Plot regions inside boundries or rings}
+\title{Plot filled spatial regions inside boundaries or rings}
 \usage{
 PlotRegion(
   boundary_poly = NULL,
@@ -14,34 +14,39 @@ PlotRegion(
 )
 }
 \arguments{
-\item{boundary_poly}{An sf object containing x, y and region_id information.}
+\item{boundary_poly}{An \code{sf} object of \code{POLYGON} geometries containing a \code{region_id} column.
+Typically created by \code{BuildBoundaryPoly()} or \code{GetRingRegion()}.}
 
-\item{alpha}{The transparency for the fill aesthetics of a geom in ggplot.}
+\item{alpha}{Numeric value controlling the transparency of the filled regions. Default is \code{0.5}.}
 
-\item{color_boundary}{Color of the boundaries. Default is black.}
+\item{color_boundary}{Color of the region outlines. Default is \code{"black"}.}
 
-\item{linewidth_boundary}{Linewidth of the boundaries. Default is 1.}
+\item{linewidth_boundary}{Numeric line width of the region borders. Default is \code{1}.}
 
-\item{theme_ggplot}{Theme for ggplot.}
+\item{theme_ggplot}{A custom \code{ggplot2} theme object. Default is \code{my_theme_ggplot()}.}
 
-\item{...}{Other parameters in \code{sf::geom_sf()} function.}
+\item{...}{Additional arguments passed to \code{ggplot2::geom_sf()}.}
+}
+\value{
+A \code{ggplot} object displaying filled spatial regions by \code{region_id}.
 }
 \description{
-Plot regions inside boundries or rings
+Creates a ggplot of spatial regions (e.g., subregions or ring areas) using filled polygons.
+Each region is automatically assigned a fill color based on its \code{region_id}. This function is
+commonly used to visualize the area inside spatial boundaries or surrounding rings, such as those
+created by \code{BuildBoundaryPoly()} or \code{GetRingRegion()}.
 }
 \examples{
-# Load coordinates
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
                               package = "SpNeigh"))
-head(coords)
 
-# Plot region inside boundaries
+# Plot filled boundary regions
 boundary_points <- GetBoundary(data = coords, one_cluster = 2,
                                eps = 120, minPts = 10)
-boundary_polys = BuildBoundaryPoly(boundary_points)
+boundary_polys <- BuildBoundaryPoly(boundary_points)
 PlotRegion(boundary_poly = boundary_polys)
 
-# Plot region inside rings
+# Plot filled ring regions
 ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
 PlotRegion(boundary_poly = ring_regions)
 

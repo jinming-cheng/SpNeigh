@@ -2,17 +2,25 @@
 % Please edit documentation in R/GetCellsInside.R
 \name{GetCellsInside}
 \alias{GetCellsInside}
-\title{Get cells inside boundaries or rings}
+\title{Identify cells located within spatial boundaries or ring regions}
 \usage{
 GetCellsInside(data = NULL, boundary = NULL)
 }
 \arguments{
 \item{data}{Either a Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell} and \code{cluster}.}
 
-\item{boundary}{A sf object or a data frame. Boundary result returned by \code{GetBoundary} or \code{GetBoundaryPoly} functions. Or ring regions returned by \code{GetRingRegion}.}
+\item{boundary}{An \code{sf} object (polygon or ring) or a data frame of boundary points
+returned by \code{GetBoundary()}, \code{BuildBoundaryPoly()}, or \code{GetRingRegion()}.}
+}
+\value{
+A data frame (tibble) of cells located inside the given spatial region(s),
+with region assignment in a \code{region_id} column.
 }
 \description{
-Get cells inside boundaries or rings
+Returns the subset of cells from the input data that fall spatially within a given boundary or ring.
+The boundary can be provided either as raw boundary points (from \code{GetBoundary()}), as polygons
+(from \code{BuildBoundaryPoly()}), or as ring regions (from \code{GetRingRegion()}).
+The function uses spatial point-in-polygon matching via \code{sf::st_within}.
 }
 \examples{
 # Load coordinates
