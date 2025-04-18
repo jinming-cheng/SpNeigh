@@ -1,9 +1,15 @@
 
-#' Removes outlier cells that are too far from their neighbors in a cluster or cell population
+#' Removes spatial outlier cells based on local k-nearest neighbor distances
 #'
-#' @param coords coordinates of the cells
-#' @param k The maximum number of nearest neighbors to search, which is a parameter used in `get.knn` function. Default is set to 5.
-#' @param distance_cutoff K-nearest neighbor distance threshold. Default is set to 30. k and distance_cutoff are used to remove outlier points.
+#' Identifies and removes spatial outliers based on local density. For each cell,
+#' the average distance to its k nearest neighbors is computed. Cells with a mean
+#' k-NN distance greater than a specified cutoff are considered outliers and removed.
+#' This helps retain densely connected cells while filtering isolated ones.
+#'
+#' @param coords A data frame or matrix of cell coordinates.
+#' @param k The number of nearest neighbors to use for computing local distances. Default is 5.
+#' @param distance_cutoff A numeric threshold on the average distance to neighbors.
+#'        Cells with a higher mean distance will be removed. Default is 30.
 #' @export
 #' @examples
 #' # Set seed for reproducibility
@@ -33,10 +39,18 @@
 #'
 #' # Returns TRUE meaning outliers have been removed in new_coords
 #' all((new_coords$x == x1) & (new_coords$y == y1))
-
+#'
 
 
 RemoveOutliers <- function(coords, k = 5, distance_cutoff = 30) {
+
+  if (!is.data.frame(coords) && !is.matrix(coords)) {
+    stop("'coords' must be a data frame or matrix.")
+  }
+  if ( !(ncol(coords) == 2) ) {
+    stop("'coords' must have two columns representing x and y coordinates.")
+  }
+
   knn_res <- FNN::get.knn(coords, k = k)
   mean_dist <- rowMeans(knn_res$nn.dist)
   coords$mean_knn_dist <- mean_dist
@@ -46,10 +60,16 @@ RemoveOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 }
 
 
-#' Extract coordinates from a Seurat object or a data frame
+#' Extract spatial coordinates and cluster information
+#'
+#' Extracts a spatial coordinate data frame from either a Seurat object or a user-supplied data frame.
+#' If a Seurat object is provided, the function retrieves the tissue coordinates along with cell cluster identities.
+#' If a data frame is provided, it is returned as-is, after verifying that it contains the required columns.
 #'
 #' @importFrom methods is
-#' @param data A data frame with columns: `x`, `y`, `cell`, `cluster`. If the input is a Seurat object, the coordinates of cells and cluster information will be extracted automatically.
+#' @param data Either a Seurat object or a data frame with columns: `x`, `y`, `cell` and `cluster`.
+#' @return A data frame with columns `x`, `y`, `cell`, and `cluster` representing spatial cell coordinates and cluster assignments.
+#'
 #' @export
 #' @examples
 #' # Load coordinates
@@ -80,18 +100,28 @@ ExtractCoords <- function(data = NULL){
   sp_coords
 }
 
-#' Get boundary points for a cluster or cell population
+
+#' Extract spatial boundary points for a cluster or cell population
+#'
+#' Identifies and returns smoothed spatial boundary points for a specified cell cluster or population
+#' using a concave hull algorithm. The function supports both single-region and multi-region boundaries.
+#' In multi-region mode, subregions can be detected automatically via DBSCAN or manually using k-means clustering.
+#' Outlier cells are first removed using a k-nearest neighbor distance filter to ensure boundary smoothness.
 #'
 #' @inheritParams RemoveOutliers
 #' @inheritParams ExtractCoords
-#' @importFrom methods is
 #' @importFrom rlang .data
-#' @param one_cluster Specify one cluster to draw the boundary.
-#' @param multi_region A logical value demonstrates whether a cluster has multiple regions on a spatial plot. Default is TRUE
-#' @param subregion_method If `multi_region` is TRUE, set a method to detect the subregions. Default is "dbscan". The "dbscan" method can be used to automatically detect subregions. Alternatively, "kmeans" method can be used to manually set the number of subregions.
-#' @param eps A parameter used when `subregion_method` is set to "dbscan". Size of the epsilon neighborhood.
-#' @param minPts A parameter used when `subregion_method` is set to "dbscan". Number of minimum points required in the eps neighborhood for core points. The `eps` and `minPts` parameters are used to adjust the subregion numbers for "dbscan" method.
-#' @param n_subregions A parameter used when `subregion_method` is set to "kmeans". Manually set the number of subregions. Default is 3.
+#' @param one_cluster The cluster ID (numeric or character) to extract the boundary for.
+#' @param multi_region Logical. If `TRUE`, identifies multiple spatial subregions within the cluster. Default is `TRUE`.
+#' @param subregion_method Subregion detection method when `multi_region = TRUE`. Choose from `"dbscan"` (automatic) or `"kmeans"` (manual). Default is `"dbscan"`.
+#' @param eps Neighborhood radius for DBSCAN subregion detection. Only used if `subregion_method = "dbscan"`. Default is 80.
+#' @param minPts Minimum number of points for DBSCAN core point. Only used if `subregion_method = "dbscan"`. Default is 10.
+#' @param n_subregions Number of subregions to use if `subregion_method = "kmeans"`. Default is 3.
+#'
+#' @return A data frame containing boundary points with columns `x`, `y`, and `region_id`.
+#'         If `multi_region = TRUE`, multiple boundaries are returned and labeled by `region_id`.
+#'         Otherwise, a single boundary is returned with `region_id = 1`.
+#'
 #' @export
 #' @examples
 #' # Load coordinates
@@ -199,97 +229,109 @@ GetBoundary <- function(data = NULL,
 }
 
 
-#' Build boundary polygon based on the boundary points
+#' Convert boundary points into valid polygon geometries
 #'
-#' @param boundary A data frame. Boundary result returned by `GetBoundary` function.
+#' Constructs spatial polygon objects from boundary points generated by the `GetBoundary()` function.
+#' Each set of boundary points (grouped by `region_id`) is converted into a closed polygon.
+#' This function ensures that each polygon is valid and ready for downstream spatial analysis.
+#'
+#' @param boundary A data frame of boundary points, typically returned by `GetBoundary()`.
+#'                 Must contain columns `x`, `y`, and `region_id`.
+#'
+#' @return An `sf` object containing one or more valid `POLYGON` geometries with a `region_id` column.
+#'
 #' @export
+#'
 #' @examples
 #' # Load coordinates
 #' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 #'                               package = "SpNeigh"))
-#' head(coords)
 #'
-#' # Get boundary points of cluster 2
+#' # Get boundary points for cluster 2
 #' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
 #'
-#' # Build boundary polygon from the boundary points
+#' # Convert to polygon
 #' boundary_polys <- BuildBoundaryPoly(boundary_points)
 #'
-#' # Plot boundary polygons
+#' # Plot the resulting polygons
 #' plot(boundary_polys)
 #'
-BuildBoundaryPoly <- function(boundary = NULL){
-  # Build safe polygons
-  polygon_list <- lapply(split(boundary,
-                               boundary$region_id),
-                         function(df) {
-                           coords <- as.matrix(df[, c("x", "y")])
+BuildBoundaryPoly <- function(boundary = NULL) {
+  if (is.null(boundary) || !all(c("x", "y", "region_id") %in% colnames(boundary))) {
+    stop("Input must be a data frame with columns: x, y, and region_id.")
+  }
 
-                           # Ensure it's closed
-                           if (!all(coords[1, ] == coords[nrow(coords), ])) {
-                             coords <- rbind(coords, coords[1, ])}
+  # Build polygon list per region
+  polygon_list <- lapply(split(boundary, boundary$region_id), function(df) {
+    coords <- as.matrix(df[, c("x", "y")])
 
-                           # Create polygon and make it valid
-                           poly <- sf::st_polygon(list(coords))
-                           sf::st_make_valid(poly)}
-  )
+    # Ensure the polygon is closed
+    if (!all(coords[1, ] == coords[nrow(coords), ])) {
+      coords <- rbind(coords, coords[1, ])
+    }
 
-  # Combine into sf object — use NA CRS or 3857 to avoid longlat issues
+    poly <- sf::st_polygon(list(coords))
+    sf::st_make_valid(poly)
+  })
+
+  # Combine into sf object
   boundary_polys <- sf::st_sf(
     region_id = names(polygon_list),
     geometry = sf::st_sfc(polygon_list),
-    crs = NA)
+    crs = NA  # Neutral CRS to avoid longlat warnings
+  )
 
-  boundary_polys
+  return(boundary_polys)
 }
 
-#' Extract boundary points from boundary polygons
+
+#' Convert boundary polygons to boundary point coordinates
 #'
-#' This function extracts x and y coordinates from a POLYGON or LINESTRING `sf` object
-#' by casting it into POINT geometries.
+#' Extracts the vertex coordinates (`x`, `y`) of boundary geometries from an `sf` object
+#' containing `POLYGON` or `LINESTRING` features. This is useful for recovering the original
+#' boundary points from smoothed or labeled polygonal regions.
 #'
-#' @importFrom rlang .data
-#' @param boundary_poly An `sf` object with POLYGON or LINESTRING geometries.
-#' @return A `data.frame` with columns `x`, `y` and the specified `region_id`.
+#' @param boundary_poly An `sf` object containing only `POLYGON` or `LINESTRING` geometries.
+#'                      Must include a `region_id` column for labeling subregions.
+#'
+#' @return A data frame with columns `x`, `y`, and `region_id`, containing the vertex coordinates
+#'         of the boundary geometries.
+#'
 #' @export
+#'
 #' @examples
-#' # Load coordinates
+#' # Load coordinates and generate boundary
 #' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 #'                               package = "SpNeigh"))
-#' head(coords)
-#'
-#' # Build boundary polygons from the boundary points
 #' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
-#' head(boundary_points)
-#' dim(boundary_points)
 #' boundary_polys <- BuildBoundaryPoly(boundary_points)
 #'
-#' # Convert boundary polygons to boundary points
-#' boundary_points2 <- BoundaryPolyToPoints(boundary_polys)
-#' head(boundary_points2)
-#' dim(boundary_points2)
+#' # Convert back to boundary points
+#' boundary_pts <- BoundaryPolyToPoints(boundary_polys)
+#' head(boundary_pts)
 #'
-
 BoundaryPolyToPoints <- function(boundary_poly) {
   if (!inherits(boundary_poly, "sf")) {
     stop("Input must be an 'sf' object.")
   }
 
-  # Sanity check: ensure all are POLYGON or LINESTRING
-  if (!(all(sf::st_geometry_type(boundary_poly) == "POLYGON") ||
-        all(sf::st_geometry_type(boundary_poly) == "LINESTRING") ) ) {
-    stop("All geometries in the input must be of type POLYGON or LINESTRING.")
+  # Ensure geometry type is either POLYGON or LINESTRING
+  valid_types <- c("POLYGON", "LINESTRING")
+  geom_type <- unique(sf::st_geometry_type(boundary_poly))
+
+  if (!all(geom_type %in% valid_types)) {
+    stop("All geometries in the input must be either POLYGON or LINESTRING.")
   }
 
-  # Explode polygons to points
+  # Convert to POINT geometries
   boundary_points <- suppressWarnings(
     sf::st_cast(boundary_poly, "POINT", do_split = TRUE)
   )
 
-  # Extract coordinates
+  # Extract point coordinates
   coords <- sf::st_coordinates(boundary_points)
 
-  # Combine into data frame with attributes
+  # Return data frame with region_id and (x, y)
   df <- boundary_points |>
     sf::st_drop_geometry() |>
     dplyr::mutate(x = coords[, 1], y = coords[, 2]) |>
@@ -298,55 +340,128 @@ BoundaryPolyToPoints <- function(boundary_poly) {
   return(df)
 }
 
-#' Get outer boundary of the original boundary
+
+#' Generate an outer or inner boundary polygon by buffering an existing boundary
 #'
-#' @param boundary A data frame or sf object. Boundary result returned by `GetBoundary` or `GetBoundaryPoly` function.
-#' @param dist Distance of the outer boundary from the existing boundary.
+#' Computes an expanded or shrunken boundary by applying a spatial buffer to an existing polygon.
+#' The input can be either boundary points (as returned by `GetBoundary()`) or polygon geometries
+#' (as returned by `BuildBoundaryPoly()`). This is useful for defining outer spatial neighborhoods
+#' or for shrinking boundaries inward to define inner regions.
+#'
+#' Be careful: when using a negative buffer distance (for inner boundaries),
+#' polygons may collapse, become invalid, or disappear entirely if the buffer width exceeds the shape's interior size.
+#'
+#'
+#' @param boundary A data frame of boundary points (with columns `x`, `y`, `region_id`) or an `sf` object.
+#' @param dist A numeric value specifying the buffer distance in spatial units.
+#'        Use positive values to expand (outer boundary), and negative values to shrink (inner boundary). Default is 100.
+#'
+#' @return An `sf` object of expanded outer boundary polygons with the same `region_id` values as the original input.
+#'
+#' @seealso [GetInnerBoundary()] for a simplified wrapper for inward shrinking.
+#'
 #' @export
+#'
 #' @examples
 #' # Load coordinates
 #' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 #'                               package = "SpNeigh"))
-#' head(coords)
 #'
 #' # Get boundary points of cluster 2
 #' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
 #'
-#' # Build boundary polygon from the boundary points
-#' boundary_polys = BuildBoundaryPoly(boundary_points)
+#' # Build polygons from boundary points
+#' boundary_polys <- BuildBoundaryPoly(boundary_points)
 #'
-#' # Get outer boundary ploygons that are of a distance of 100 units from the original boundaries
-#' # both boundary points and boundary polygons can be used as input
-#' outer_boundary_polys <- GetOuterBoundary(boundary_points, dist = 100)
-#' outer_boundary_polys <- GetOuterBoundary(boundary_polys, dist = 100)
+#' # Generate outer boundaries with 100-unit buffer
+#' outer1 <- GetOuterBoundary(boundary_points, dist = 100)
+#' outer2 <- GetOuterBoundary(boundary_polys, dist = 100)
 #'
-#' # Plot original boundary polygons
+#' # Plot original and expanded boundaries
 #' plot(boundary_polys)
+#' plot(outer2, add = TRUE, border = "red")
 #'
-#' # Plot outer boundary polygons
-#' plot(outer_boundary_polys)
-#'
-GetOuterBoundary <- function(boundary = NULL, dist = 100){
-  # Build a safe polygon
-  if(inherits(boundary,"sf")){
+GetOuterBoundary <- function(boundary = NULL, dist = 100) {
+  # Convert to sf POLYGON if needed
+  if (inherits(boundary, "sf")) {
     boundary_polys <- boundary
-  }else{
+  } else {
     boundary_polys <- BuildBoundaryPoly(boundary)
   }
 
-  outer_boundaries <- dplyr::mutate(boundary_polys,
-                                    geometry = sf::st_buffer(.data$geometry, dist = dist))
+  # Expand boundary using a buffer
+  outer_boundaries <- dplyr::mutate(
+    boundary_polys,
+    geometry = sf::st_buffer(.data$geometry, dist = dist)
+  )
 
-  outer_boundaries
-
+  return(outer_boundaries)
 }
 
 
-#' Get ring region between the original boundary and outer boundary
+#' Generate an inner boundary polygon by shrinking an existing boundary inward
+#'
+#' Computes an inward-shifted (contracted) boundary by applying a negative spatial buffer
+#' to an existing boundary polygon. This function is a wrapper around `GetOuterBoundary()`
+#' and is useful for defining an inner region around a spatial cluster or structure.
+#'
+#' Be careful: if the shrinkage distance is too large, the resulting geometry may become invalid
+#' or disappear entirely, especially for narrow or irregular shapes.
+#'
+#' @param boundary A data frame of boundary points (with columns `x`, `y`, `region_id`)
+#'        or an `sf` object of `POLYGON` geometries.
+#' @param dist A positive numeric value specifying how far inward to shrink the boundary.
+#'        This is automatically converted to a negative buffer distance. Default is 50.
+#'
+#' @return An `sf` object containing the inward-shrunk polygons, one per `region_id`.
+#'
+#' @seealso [GetOuterBoundary()] for the outward (positive) buffer version.
+#'
+#' @export
+#'
+#' @examples
+#' # Load coordinates
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'                               package = "SpNeigh"))
+#'
+#' # Get boundary polygons of cluster 2
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
+#' boundary_polys <- BuildBoundaryPoly(boundary_points)
+#' plot(boundary_polys)
+#'
+#' # Generate inner boundary with 50-unit buffer for boundary region 1
+#' inner_boundary <- GetInnerBoundary(boundary_polys)
+#' plot(inner_boundary)
+#'
+
+GetInnerBoundary <- function(boundary = NULL, dist = 50) {
+  if (!is.numeric(dist) || dist <= 0) {
+    stop("'dist' must be a positive number.")
+  }
+
+  inner <- GetOuterBoundary(boundary, dist = -abs(dist))
+
+  # Optional: warn about empty geometries (fully collapsed)
+  if (any(sf::st_is_empty(inner))) {
+    warning("Some inner boundaries may have collapsed or disappeared due to excessive shrinkage.")
+  }
+
+  return(inner)
+}
+
+
+
+#' Generate ring regions between a boundary and its outer buffer
+#'
+#' Computes spatial ring-shaped regions by subtracting the original boundary polygons
+#' from their corresponding outer buffered polygons. If the `outer_boundary` is not supplied,
+#' it will be automatically computed using `GetOuterBoundary()`. This is useful for
+#' analyzing periphery-enriched cell types or gradient-based features near a boundary.
 #'
 #' @inheritParams GetOuterBoundary
-#' @param outer_boundary A sf object. Outer boundary returned by `GetOuterBoundary` function.
-#' @param ... Parameters in `GetOuterBoundary`
+#' @param outer_boundary Optional `sf` object containing buffered (outer) boundary polygons.
+#'        If not provided, it will be automatically computed using `GetOuterBoundary()`.
+#' @param ...  Additional arguments passed to `GetOuterBoundary()` if `outer_boundary` is not provided.
 #' @export
 #' @examples
 #' # Load coordinates
@@ -357,17 +472,14 @@ GetOuterBoundary <- function(boundary = NULL, dist = 100){
 #' # Get boundary points of cluster 2
 #' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
 #'
-#' # Get ring regions (outer regions with be automatically obtained)
+#' # Automatically compute outer boundary and get rings
 #' ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-#'
-#' # Plot ring regions
 #' plot(ring_regions)
 #'
-#' # Alternatively, get ring region using the provided boundary and outer_boundary
-#' outer_boundary_polys <- GetOuterBoundary(boundary_points, dist = 100)
-#' ring_regions <- GetRingRegion(boundary = boundary_points,
-#'                               outer_boundary = outer_boundary_polys)
-#' plot(ring_regions)
+#' # Or provide both inner and outer boundaries explicitly
+#' outer <- GetOuterBoundary(boundary_points, dist = 100)
+#' rings <- GetRingRegion(boundary = boundary_points, outer_boundary = outer)
+#' plot(rings)
 #'
 GetRingRegion <- function(boundary = NULL, outer_boundary = NULL,...){
   # Build safe polygons

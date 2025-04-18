@@ -2,35 +2,32 @@
 % Please edit documentation in R/GetBoundary.R
 \name{BoundaryPolyToPoints}
 \alias{BoundaryPolyToPoints}
-\title{Extract boundary points from boundary polygons}
+\title{Convert boundary polygons to boundary point coordinates}
 \usage{
 BoundaryPolyToPoints(boundary_poly)
 }
 \arguments{
-\item{boundary_poly}{An \code{sf} object with POLYGON or LINESTRING geometries.}
+\item{boundary_poly}{An \code{sf} object containing only \code{POLYGON} or \code{LINESTRING} geometries.
+Must include a \code{region_id} column for labeling subregions.}
 }
 \value{
-A \code{data.frame} with columns \code{x}, \code{y} and the specified \code{region_id}.
+A data frame with columns \code{x}, \code{y}, and \code{region_id}, containing the vertex coordinates
+of the boundary geometries.
 }
 \description{
-This function extracts x and y coordinates from a POLYGON or LINESTRING \code{sf} object
-by casting it into POINT geometries.
+Extracts the vertex coordinates (\code{x}, \code{y}) of boundary geometries from an \code{sf} object
+containing \code{POLYGON} or \code{LINESTRING} features. This is useful for recovering the original
+boundary points from smoothed or labeled polygonal regions.
 }
 \examples{
-# Load coordinates
+# Load coordinates and generate boundary
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
                               package = "SpNeigh"))
-head(coords)
-
-# Build boundary polygons from the boundary points
 boundary_points <- GetBoundary(data = coords, one_cluster = 2)
-head(boundary_points)
-dim(boundary_points)
 boundary_polys <- BuildBoundaryPoly(boundary_points)
 
-# Convert boundary polygons to boundary points
-boundary_points2 <- BoundaryPolyToPoints(boundary_polys)
-head(boundary_points2)
-dim(boundary_points2)
+# Convert back to boundary points
+boundary_pts <- BoundaryPolyToPoints(boundary_polys)
+head(boundary_pts)
 
 }

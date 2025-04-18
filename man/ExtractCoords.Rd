@@ -2,15 +2,20 @@
 % Please edit documentation in R/GetBoundary.R
 \name{ExtractCoords}
 \alias{ExtractCoords}
-\title{Extract coordinates from a Seurat object or a data frame}
+\title{Extract spatial coordinates and cluster information}
 \usage{
 ExtractCoords(data = NULL)
 }
 \arguments{
-\item{data}{A data frame with columns: \code{x}, \code{y}, \code{cell}, \code{cluster}. If the input is a Seurat object, the coordinates of cells and cluster information will be extracted automatically.}
+\item{data}{Either a Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell} and \code{cluster}.}
+}
+\value{
+A data frame with columns \code{x}, \code{y}, \code{cell}, and \code{cluster} representing spatial cell coordinates and cluster assignments.
 }
 \description{
-Extract coordinates from a Seurat object or a data frame
+Extracts a spatial coordinate data frame from either a Seurat object or a user-supplied data frame.
+If a Seurat object is provided, the function retrieves the tissue coordinates along with cell cluster identities.
+If a data frame is provided, it is returned as-is, after verifying that it contains the required columns.
 }
 \examples{
 # Load coordinates

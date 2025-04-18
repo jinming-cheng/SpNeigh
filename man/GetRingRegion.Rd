@@ -2,19 +2,23 @@
 % Please edit documentation in R/GetBoundary.R
 \name{GetRingRegion}
 \alias{GetRingRegion}
-\title{Get ring region between the original boundary and outer boundary}
+\title{Generate ring regions between a boundary and its outer buffer}
 \usage{
 GetRingRegion(boundary = NULL, outer_boundary = NULL, ...)
 }
 \arguments{
-\item{boundary}{A data frame or sf object. Boundary result returned by \code{GetBoundary} or \code{GetBoundaryPoly} function.}
+\item{boundary}{A data frame of boundary points (with columns \code{x}, \code{y}, \code{region_id}) or an \code{sf} object.}
 
-\item{outer_boundary}{A sf object. Outer boundary returned by \code{GetOuterBoundary} function.}
+\item{outer_boundary}{Optional \code{sf} object containing buffered (outer) boundary polygons.
+If not provided, it will be automatically computed using \code{GetOuterBoundary()}.}
 
-\item{...}{Parameters in \code{GetOuterBoundary}}
+\item{...}{Additional arguments passed to \code{GetOuterBoundary()} if \code{outer_boundary} is not provided.}
 }
 \description{
-Get ring region between the original boundary and outer boundary
+Computes spatial ring-shaped regions by subtracting the original boundary polygons
+from their corresponding outer buffered polygons. If the \code{outer_boundary} is not supplied,
+it will be automatically computed using \code{GetOuterBoundary()}. This is useful for
+analyzing periphery-enriched cell types or gradient-based features near a boundary.
 }
 \examples{
 # Load coordinates
@@ -25,16 +29,13 @@ head(coords)
 # Get boundary points of cluster 2
 boundary_points <- GetBoundary(data = coords, one_cluster = 2)
 
-# Get ring regions (outer regions with be automatically obtained)
+# Automatically compute outer boundary and get rings
 ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-
-# Plot ring regions
 plot(ring_regions)
 
-# Alternatively, get ring region using the provided boundary and outer_boundary
-outer_boundary_polys <- GetOuterBoundary(boundary_points, dist = 100)
-ring_regions <- GetRingRegion(boundary = boundary_points,
-                              outer_boundary = outer_boundary_polys)
-plot(ring_regions)
+# Or provide both inner and outer boundaries explicitly
+outer <- GetOuterBoundary(boundary_points, dist = 100)
+rings <- GetRingRegion(boundary = boundary_points, outer_boundary = outer)
+plot(rings)
 
 }

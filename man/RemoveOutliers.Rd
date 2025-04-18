@@ -2,19 +2,23 @@
 % Please edit documentation in R/GetBoundary.R
 \name{RemoveOutliers}
 \alias{RemoveOutliers}
-\title{Removes outlier cells that are too far from their neighbors in a cluster or cell population}
+\title{Removes spatial outlier cells based on local k-nearest neighbor distances}
 \usage{
 RemoveOutliers(coords, k = 5, distance_cutoff = 30)
 }
 \arguments{
-\item{coords}{coordinates of the cells}
+\item{coords}{A data frame or matrix of cell coordinates.}
 
-\item{k}{The maximum number of nearest neighbors to search, which is a parameter used in \code{get.knn} function. Default is set to 5.}
+\item{k}{The number of nearest neighbors to use for computing local distances. Default is 5.}
 
-\item{distance_cutoff}{K-nearest neighbor distance threshold. Default is set to 30. k and distance_cutoff are used to remove outlier points.}
+\item{distance_cutoff}{A numeric threshold on the average distance to neighbors.
+Cells with a higher mean distance will be removed. Default is 30.}
 }
 \description{
-Removes outlier cells that are too far from their neighbors in a cluster or cell population
+Identifies and removes spatial outliers based on local density. For each cell,
+the average distance to its k nearest neighbors is computed. Cells with a mean
+k-NN distance greater than a specified cutoff are considered outliers and removed.
+This helps retain densely connected cells while filtering isolated ones.
 }
 \examples{
 # Set seed for reproducibility
@@ -44,4 +48,5 @@ dim(new_coords)
 
 # Returns TRUE meaning outliers have been removed in new_coords
 all((new_coords$x == x1) & (new_coords$y == y1))
+
 }

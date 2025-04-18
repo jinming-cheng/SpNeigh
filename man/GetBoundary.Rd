@@ -2,7 +2,7 @@
 % Please edit documentation in R/GetBoundary.R
 \name{GetBoundary}
 \alias{GetBoundary}
-\title{Get boundary points for a cluster or cell population}
+\title{Extract spatial boundary points for a cluster or cell population}
 \usage{
 GetBoundary(
   data = NULL,
@@ -17,26 +17,35 @@ GetBoundary(
 )
 }
 \arguments{
-\item{data}{A data frame with columns: \code{x}, \code{y}, \code{cell}, \code{cluster}. If the input is a Seurat object, the coordinates of cells and cluster information will be extracted automatically.}
+\item{data}{Either a Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell} and \code{cluster}.}
 
-\item{one_cluster}{Specify one cluster to draw the boundary.}
+\item{one_cluster}{The cluster ID (numeric or character) to extract the boundary for.}
 
-\item{k}{The maximum number of nearest neighbors to search, which is a parameter used in \code{get.knn} function. Default is set to 5.}
+\item{k}{The number of nearest neighbors to use for computing local distances. Default is 5.}
 
-\item{distance_cutoff}{K-nearest neighbor distance threshold. Default is set to 30. k and distance_cutoff are used to remove outlier points.}
+\item{distance_cutoff}{A numeric threshold on the average distance to neighbors.
+Cells with a higher mean distance will be removed. Default is 30.}
 
-\item{multi_region}{A logical value demonstrates whether a cluster has multiple regions on a spatial plot. Default is TRUE}
+\item{multi_region}{Logical. If \code{TRUE}, identifies multiple spatial subregions within the cluster. Default is \code{TRUE}.}
 
-\item{subregion_method}{If \code{multi_region} is TRUE, set a method to detect the subregions. Default is "dbscan". The "dbscan" method can be used to automatically detect subregions. Alternatively, "kmeans" method can be used to manually set the number of subregions.}
+\item{subregion_method}{Subregion detection method when \code{multi_region = TRUE}. Choose from \code{"dbscan"} (automatic) or \code{"kmeans"} (manual). Default is \code{"dbscan"}.}
 
-\item{eps}{A parameter used when \code{subregion_method} is set to "dbscan". Size of the epsilon neighborhood.}
+\item{eps}{Neighborhood radius for DBSCAN subregion detection. Only used if \code{subregion_method = "dbscan"}. Default is 80.}
 
-\item{minPts}{A parameter used when \code{subregion_method} is set to "dbscan". Number of minimum points required in the eps neighborhood for core points. The \code{eps} and \code{minPts} parameters are used to adjust the subregion numbers for "dbscan" method.}
+\item{minPts}{Minimum number of points for DBSCAN core point. Only used if \code{subregion_method = "dbscan"}. Default is 10.}
 
-\item{n_subregions}{A parameter used when \code{subregion_method} is set to "kmeans". Manually set the number of subregions. Default is 3.}
+\item{n_subregions}{Number of subregions to use if \code{subregion_method = "kmeans"}. Default is 3.}
+}
+\value{
+A data frame containing boundary points with columns \code{x}, \code{y}, and \code{region_id}.
+If \code{multi_region = TRUE}, multiple boundaries are returned and labeled by \code{region_id}.
+Otherwise, a single boundary is returned with \code{region_id = 1}.
 }
 \description{
-Get boundary points for a cluster or cell population
+Identifies and returns smoothed spatial boundary points for a specified cell cluster or population
+using a concave hull algorithm. The function supports both single-region and multi-region boundaries.
+In multi-region mode, subregions can be detected automatically via DBSCAN or manually using k-means clustering.
+Outlier cells are first removed using a k-nearest neighbor distance filter to ensure boundary smoothness.
 }
 \examples{
 # Load coordinates

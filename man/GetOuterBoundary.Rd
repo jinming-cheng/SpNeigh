@@ -2,39 +2,49 @@
 % Please edit documentation in R/GetBoundary.R
 \name{GetOuterBoundary}
 \alias{GetOuterBoundary}
-\title{Get outer boundary of the original boundary}
+\title{Generate an outer or inner boundary polygon by buffering an existing boundary}
 \usage{
 GetOuterBoundary(boundary = NULL, dist = 100)
 }
 \arguments{
-\item{boundary}{A data frame or sf object. Boundary result returned by \code{GetBoundary} or \code{GetBoundaryPoly} function.}
+\item{boundary}{A data frame of boundary points (with columns \code{x}, \code{y}, \code{region_id}) or an \code{sf} object.}
 
-\item{dist}{Distance of the outer boundary from the existing boundary.}
+\item{dist}{A numeric value specifying the buffer distance in spatial units.
+Use positive values to expand (outer boundary), and negative values to shrink (inner boundary). Default is 100.}
+}
+\value{
+An \code{sf} object of expanded outer boundary polygons with the same \code{region_id} values as the original input.
 }
 \description{
-Get outer boundary of the original boundary
+Computes an expanded or shrunken boundary by applying a spatial buffer to an existing polygon.
+The input can be either boundary points (as returned by \code{GetBoundary()}) or polygon geometries
+(as returned by \code{BuildBoundaryPoly()}). This is useful for defining outer spatial neighborhoods
+or for shrinking boundaries inward to define inner regions.
+}
+\details{
+Be careful: when using a negative buffer distance (for inner boundaries),
+polygons may collapse, become invalid, or disappear entirely if the buffer width exceeds the shape's interior size.
 }
 \examples{
 # Load coordinates
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
                               package = "SpNeigh"))
-head(coords)
 
 # Get boundary points of cluster 2
 boundary_points <- GetBoundary(data = coords, one_cluster = 2)
 
-# Build boundary polygon from the boundary points
-boundary_polys = BuildBoundaryPoly(boundary_points)
+# Build polygons from boundary points
+boundary_polys <- BuildBoundaryPoly(boundary_points)
 
-# Get outer boundary ploygons that are of a distance of 100 units from the original boundaries
-# both boundary points and boundary polygons can be used as input
-outer_boundary_polys <- GetOuterBoundary(boundary_points, dist = 100)
-outer_boundary_polys <- GetOuterBoundary(boundary_polys, dist = 100)
+# Generate outer boundaries with 100-unit buffer
+outer1 <- GetOuterBoundary(boundary_points, dist = 100)
+outer2 <- GetOuterBoundary(boundary_polys, dist = 100)
 
-# Plot original boundary polygons
+# Plot original and expanded boundaries
 plot(boundary_polys)
+plot(outer2, add = TRUE, border = "red")
 
-# Plot outer boundary polygons
-plot(outer_boundary_polys)
-
+}
+\seealso{
+\code{\link[=GetInnerBoundary]{GetInnerBoundary()}} for a simplified wrapper for inward shrinking.
 }
