@@ -1,29 +1,4 @@
 
-#' Create a factor with natural (human-friendly) ordering
-#'
-#' Converts a character or numeric vector into a factor where the levels are
-#' ordered naturally (e.g., `a1`, `a2`, ..., `a10` instead of lexicographically as `a1`, `a10`, `a2`, ...).
-#' This is useful for plotting or labeling grouped data where numeric substrings should follow numeric order.
-#'
-#' @param x A character or numeric vector to convert to a factor with natural order.
-#'
-#' @return A factor with levels sorted in natural (human-readable) order.
-#'
-#' @export
-#'
-#' @examples
-#' # Numeric vector
-#' FactorNaturalOrder(10:1)
-#'
-#' # Character vector with embedded numbers
-#' FactorNaturalOrder(c("a11", "a12", "a1", "a2", "a"))
-#'
-FactorNaturalOrder <- function(x) {
-  x <- as.character(x)
-  ord <- stringr::str_order(x, numeric = TRUE)
-  factor(x, levels = unique(x[ord]))
-}
-
 
 #' Plot a heatmap of a row-scaled spatial interaction matrix
 #'

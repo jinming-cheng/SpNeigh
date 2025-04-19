@@ -42,7 +42,8 @@ PlotCellsInside <- function(cells_inside = NULL,
   }
 
   # Assign colors to clusters
-  named_colors <- colors[1:nlevels(cells_inside$cluster)]
+  n_clusters <- nlevels(cells_inside$cluster)
+  named_colors <- SafeColorPalette(n_clusters = n_clusters, base_colors = colors)
   names(named_colors) <- levels(cells_inside$cluster)
 
   # Extract coords if using geom_point

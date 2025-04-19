@@ -1,27 +1,4 @@
 
-#' A custom ggplot2 theme
-#'
-#' This is a ggplot2 theme defined and used in this package.
-#'
-#' @return A ggplot2 theme object.
-#' @export
-#'
-#' @examples
-#' library(ggplot2)
-#' ggplot(mtcars, aes(mpg, wt)) +
-#'   geom_point() +
-#'   my_theme_ggplot()
-
-my_theme_ggplot <- function() {
-  ggplot2::theme_classic() +
-    ggplot2::theme(axis.text = ggplot2::element_text(size=12),
-                   axis.title = ggplot2::element_text(size=15,face="bold"),
-                   strip.text = ggplot2::element_text(size=12, face="bold"),
-                   plot.title = ggplot2::element_text(size=15,face="bold",hjust=0.5),
-                   plot.margin = ggplot2::margin(0.5, 0.5, 0.5, 0.5, "cm"))}
-
-
-
 #' Plot spatial cell coordinates with cluster boundaries
 #'
 #' Plots spatial cell locations and overlays cluster or population boundaries if available.
@@ -102,8 +79,9 @@ PlotBoundary <- function(data = NULL,
     data_for_plot <- sp_coords
   }
 
-  # Prepare named color vector
-  named_colors <- colors[1:nlevels(sp_coords$cluster)]
+  # Assign colors to clusters
+  n_clusters <- nlevels(sp_coords$cluster)
+  named_colors <- SafeColorPalette(n_clusters = n_clusters, base_colors = colors)
   names(named_colors) <- levels(sp_coords$cluster)
 
   # Base plot

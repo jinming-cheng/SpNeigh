@@ -40,8 +40,9 @@ PlotStatsBar <- function(cell_stats = NULL,
     cell_stats$cluster <- FactorNaturalOrder(cell_stats$cluster)
   }
 
-  # Assign cluster colors
-  named_colors <- colors[1:nlevels(cell_stats$cluster)]
+  # Assign colors to clusters
+  n_clusters <- nlevels(cell_stats$cluster)
+  named_colors <- SafeColorPalette(n_clusters = n_clusters, base_colors = colors)
   names(named_colors) <- levels(cell_stats$cluster)
 
   # Create plot
@@ -116,8 +117,9 @@ PlotStatsPie <- function(cell_stats = NULL,
     cell_stats$cluster <- FactorNaturalOrder(cell_stats$cluster)
   }
 
-  # Assign cluster colors
-  named_colors <- colors[1:nlevels(cell_stats$cluster)]
+  # Assign colors to clusters
+  n_clusters <- nlevels(cell_stats$cluster)
+  named_colors <- SafeColorPalette(n_clusters = n_clusters, base_colors = colors)
   names(named_colors) <- levels(cell_stats$cluster)
 
   # Calculate label positions and cumulative slices
