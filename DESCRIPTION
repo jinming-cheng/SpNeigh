@@ -1,10 +1,15 @@
 Package: SpNeigh
-Title: Neighbourhood analysis for spatial transcriptomics data
-Version: 0.1.0
+Title: Weighted Spatial Neighborhood Analysis for Transcriptomics
+Version: 0.8.0
 Authors@R: 
     person("Jinming", "Cheng", email="cheng.j@wehi.edu.au", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-3806-4694"))
-Description: This package demonstrates the neighbourhood analysis for spatial transcriptomics data.
+Description: SpNeigh provides methods for neighborhood-aware spatial transcriptomics analysis. 
+    It supports boundary detection, spatial weighting (centroid- and boundary-based), 
+    spatially-informed differential expression using spline-based models, and spatial 
+    enrichment scoring via the Spatial Enrichment Index (SEI). Designed for seamless 
+    integration with Seurat objects and spatial data frames, SpNeigh enables interpretable 
+    and publication-quality analyses of spatial expression patterns.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
