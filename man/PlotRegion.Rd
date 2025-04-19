@@ -23,7 +23,7 @@ Typically created by \code{BuildBoundaryPoly()} or \code{GetRingRegion()}.}
 
 \item{linewidth_boundary}{Numeric line width of the region borders. Default is \code{1}.}
 
-\item{theme_ggplot}{A custom \code{ggplot2} theme object. Default is \code{my_theme_ggplot()}.}
+\item{theme_ggplot}{A ggplot2 theme object. Default is \code{my_theme_ggplot()}.}
 
 \item{...}{Additional arguments passed to \code{ggplot2::geom_sf()}.}
 }

@@ -11,7 +11,7 @@ AddBoundary(
 )
 }
 \arguments{
-\item{boundary}{A data frame with columns \code{x}, \code{y}, and \code{region_id} (e.g., from \code{GetBoundary()}),
+\item{boundary}{A data frame with columns \code{x}, \code{y}, and \code{region_id}
 or an \code{sf} object of \code{POLYGON} or \code{LINESTRING} geometries.}
 
 \item{color_boundary}{Color for boundary lines. Default is \code{"black"}.}

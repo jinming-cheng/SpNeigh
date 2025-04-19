@@ -2,7 +2,7 @@
 % Please edit documentation in R/ComputeWeights.R
 \name{ComputeCentroidWeights}
 \alias{ComputeCentroidWeights}
-\title{Compute spatial weights based on distance to centroid}
+\title{Compute spatial weights based on distance to the centroid}
 \usage{
 ComputeCentroidWeights(
   data = NULL,
@@ -13,34 +13,34 @@ ComputeCentroidWeights(
 )
 }
 \arguments{
-\item{data}{A data frame or Seurat object containng at least three columns: \code{x}, \code{y} and \code{cell}.}
+\item{data}{A data frame or Seurat object containing spatial coordinates. Must include columns: \code{cell}, \code{x}, and \code{y}.}
 
-\item{cell_ids}{A vector of cell IDs to subset from data.}
+\item{cell_ids}{A character vector of cell IDs to use for weight computation.}
 
-\item{scale}{A logical value indicating whether to scale distances to [0, 1] before computing weights. Scaling is recommended, and default is TRUE.}
+\item{scale}{Logical. Whether to scale distances to the range [0, 1] before applying decay functions. Default is \code{TRUE}.}
 
-\item{method}{A string specifying the decay method. One of \code{"inverse"},
-\code{"gaussian"}, \code{"linear"}, or \code{"quadratic"}.}
+\item{method}{Decay function to convert distances to weights. One of: \code{"inverse"}, \code{"gaussian"}, \code{"linear"}, or \code{"quadratic"}.}
 
-\item{sigma}{Standard deviation for the Gaussian decay function. Default is 0.5 for scaled distance. If \code{scale = FALSE}, choose a value that is about half the region’s width.}
+\item{sigma}{Standard deviation for the Gaussian decay (used only if \code{method = "gaussian"}). Default is \code{0.5} (recommended for scaled distances).}
 }
 \value{
-A named numeric vector of weights, one per cell in \code{cell_ids}.
+A named numeric vector of weights (length = number of cells in \code{cell_ids}). Higher weights correspond to cells closer to the centroid.
 }
 \description{
-Computes spatial weights for a set of cells based on their distance to
-the centroid of their group. Supports multiple decay methods and optional
-distance scaling.
+Computes spatial weights for a set of cells based on their Euclidean distance
+to the centroid of the selected group of cells. This is useful for modeling
+gradient-like spatial expression centered around a cluster or region.
+Supports multiple decay methods and optional distance scaling.
 }
 \examples{
-# Load coordinates
-coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-                              package = "SpNeigh"))
-head(coords)
+# Load spatial coordinates
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds", package = "SpNeigh"))
 
-# Compute spatial weights to centroid for cells in cluster 2
-cells_c2 <- subset(coords, cluster==2)[,"cell"]
+# Select cells from cluster 2
+cells_c2 <- subset(coords, cluster == 2)$cell
+
+# Compute centroid-based weights using default settings
 weights <- ComputeCentroidWeights(data = coords, cell_ids = cells_c2)
-weights[1:3]
+head(weights)
 
 }

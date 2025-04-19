@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotCellsInside.R
 \name{PlotCellsInside}
 \alias{PlotCellsInside}
-\title{Plot cells inside boundries or rings}
+\title{Plot cells located within spatial boundaries or ring regions}
 \usage{
 PlotCellsInside(
   cells_inside = NULL,
@@ -14,9 +14,9 @@ PlotCellsInside(
 )
 }
 \arguments{
-\item{cells_inside}{A sf object. \code{cells_inside} is returned by \code{GetCellsInside}.}
+\item{cells_inside}{An \code{sf} object of cells returned by \code{GetCellsInside()}. Must contain \code{cluster} and \code{region_id} columns.}
 
-\item{point_size}{Numeric. Point size for cell scatter plot. Default is 0.5.}
+\item{point_size}{Numeric. Size of the points representing cells. Default is 0.5.}
 
 \item{colors}{A vector of cluster colors. Default uses \code{my_colors_15}.}
 
@@ -24,26 +24,30 @@ PlotCellsInside(
 
 \item{legend_size}{Numeric. Size of legend keys. Default is 2.}
 
-\item{fixed_aspect_ratio}{Logical. Whether to plot using \code{sf::geom_sf()} function with 1:1 aspect ratio. Default is TRUE}
+\item{fixed_aspect_ratio}{Logical. If \code{TRUE}, uses \code{geom_sf()} to preserve spatial scale.
+If \code{FALSE}, uses \code{geom_point()} with extracted coordinates. Default is \code{TRUE}.}
+}
+\value{
+A \code{ggplot} object showing the cells colored by cluster within spatial regions.
 }
 \description{
-Plot cells inside boundries or rings
+Visualizes cells that fall within defined spatial regions (boundaries or rings),
+typically obtained using the \code{GetCellsInside()} function. The cells are colored by cluster,
+and the function offers two plotting modes: using \code{geom_sf()} (with fixed 1:1 aspect ratio)
+or \code{geom_point()} (with more flexible layout).
 }
 \examples{
-# Load coordinates
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
                               package = "SpNeigh"))
-head(coords)
 
-# Get cells inside boundaries
-boundary_points <- GetBoundary(data = coords, one_cluster = 2,
-                               eps = 120, minPts = 10)
-cells_inside <- GetCellsInside(data = coords, boundary =  boundary_points)
-PlotCellsInside(cells_inside = cells_inside)
+# Plot cells inside boundaries
+boundary_points <- GetBoundary(data = coords, one_cluster = 2)
+cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
+PlotCellsInside(cells_inside)
 
-# Get cells inside rings
+# Plot cells inside rings
 ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-cells_ring <- GetCellsInside(data = coords, boundary =  ring_regions)
-PlotCellsInside(cells_inside = cells_ring)
+cells_ring <- GetCellsInside(data = coords, boundary = ring_regions)
+PlotCellsInside(cells_ring, fixed_aspect_ratio = FALSE)
 
 }

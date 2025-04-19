@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotBoundary.R
 \name{AddBoundaryPoly}
 \alias{AddBoundaryPoly}
-\title{Add boundary polygons to a spatial plot}
+\title{Add boundary polygons or linestrings to a spatial plot}
 \usage{
 AddBoundaryPoly(
   boundary_poly,
@@ -21,7 +21,7 @@ AddBoundaryPoly(
 A \code{ggplot2::geom_sf} layer that can be added to an existing plot.
 }
 \description{
-Overlays boundary polygons (typically from \code{BuildBoundaryPoly()} or \code{GetOuterBoundary()})
+Overlays boundary polygons or linestrings
 on a spatial \code{ggplot2} plot. This function adds an \code{sf} geometry layer to display complete
 boundary shapes for visualizing spatial clusters, rings, or enriched zones.
 }

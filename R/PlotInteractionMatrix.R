@@ -1,10 +1,22 @@
 
-#' Make a factor of natural order
-#' @param x A vector
+#' Create a factor with natural (human-friendly) ordering
+#'
+#' Converts a character or numeric vector into a factor where the levels are
+#' ordered naturally (e.g., `a1`, `a2`, ..., `a10` instead of lexicographically as `a1`, `a10`, `a2`, ...).
+#' This is useful for plotting or labeling grouped data where numeric substrings should follow numeric order.
+#'
+#' @param x A character or numeric vector to convert to a factor with natural order.
+#'
+#' @return A factor with levels sorted in natural (human-readable) order.
+#'
 #' @export
+#'
 #' @examples
+#' # Numeric vector
 #' FactorNaturalOrder(10:1)
-#' FactorNaturalOrder( c("a11", "a12", "a1","a2", "a") )
+#'
+#' # Character vector with embedded numbers
+#' FactorNaturalOrder(c("a11", "a12", "a1", "a2", "a"))
 #'
 FactorNaturalOrder <- function(x) {
   x <- as.character(x)
@@ -12,33 +24,40 @@ FactorNaturalOrder <- function(x) {
   factor(x, levels = unique(x[ord]))
 }
 
-#' Heatmap of row-scaled interaction matrix
+
+#' Plot a heatmap of a row-scaled spatial interaction matrix
+#'
+#' Visualizes a spatial interaction matrix using a heatmap, where rows represent focal clusters
+#' and columns represent neighbor clusters. Each row is scaled using z-scores to highlight
+#' relative enrichment patterns across neighbor types. This is useful for detecting
+#' spatial proximity patterns between cell populations.
+#'
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
-#' @param interaction_matrix A numeric matrix where rows represent focal clusters and columns represent neighbor clusters. For example, the output `interaction_matrix` from `ComputeSpatialInteractionMatrix`.
-#' @param low_color Color for low values. Default is blue.
-#' @param mid_color Color for mid-range values. Default is white.
-#' @param high_color Color for high values. Default: red.
-#' @param angle_x_label Angle to rotate the x-axis labels.
+#' @param interaction_matrix A numeric matrix with focal clusters as rows and neighbor clusters as columns.
+#'        Typically the output from `ComputeSpatialInteractionMatrix()`.
+#' @param low_color Color representing low z-score values. Default is `"blue"`.
+#' @param mid_color Color representing the midpoint (z-score = 0). Default is `"white"`.
+#' @param high_color Color representing high z-score values. Default is `"red"`.
+#' @param angle_x_label Angle (in degrees) to rotate x-axis labels. Default is `45`.
 #' @param title Title for the heatmap.
+#'
+#' @return A `ggplot` object representing the row-scaled heatmap of the interaction matrix.
+#'
 #' @export
 #' @examples
-#' # Load coordinates
 #' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 #'                               package = "SpNeigh"))
-#' head(coords)
 #'
-#'
-#' # Compute KNN spatial interaction matrix of cells insides boundaries
 #' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
 #'                                eps = 120, minPts = 10)
 #' ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-#' cells_ring <- GetCellsInside(data = coords, boundary =  ring_regions)
+#' cells_ring <- GetCellsInside(data = coords, boundary = ring_regions)
 #' coords_sub <- subset(coords, cell %in% cells_ring$cell)
 #' interaction_matrix <- ComputeSpatialInteractionMatrix(coords_sub)
 #'
-#' # Plot interaction matrix
 #' PlotInteractionMatrix(interaction_matrix)
+#'
 
 PlotInteractionMatrix <- function(interaction_matrix,
                                   low_color = "blue",
@@ -48,7 +67,7 @@ PlotInteractionMatrix <- function(interaction_matrix,
                                   title = "Row-Scaled Interaction Matrix (Z-scores)") {
   # Ensure it's a matrix
   if (!is.matrix(interaction_matrix)) {
-    stop("interaction_matrix must be a numeric matrix.")
+    stop("`interaction_matrix` must be a numeric matrix.")
   }
 
   # Row-scale (z-score per row)
@@ -59,11 +78,11 @@ PlotInteractionMatrix <- function(interaction_matrix,
     tibble::rownames_to_column("Focal") %>%
     tidyr::pivot_longer(-.data$Focal, names_to = "Neighbor", values_to = "Zscore")
 
-  # Make Focal and Neigbor clusters factors and with natural order levels
+  # Factorize Focal and Neighbor with natural ordering
   df_long$Focal <- FactorNaturalOrder(df_long$Focal)
   df_long$Neighbor <- FactorNaturalOrder(df_long$Neighbor)
 
-  # Plot with ggplot
+  # Plot
   ggplot2::ggplot(df_long, ggplot2::aes(x = .data$Neighbor, y = .data$Focal,
                                         fill = .data$Zscore)) +
     ggplot2::geom_tile(color = "white") +
@@ -73,6 +92,8 @@ PlotInteractionMatrix <- function(interaction_matrix,
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = angle_x_label, hjust = 1),
                    plot.title = ggplot2::element_text(hjust = 0.5, face = "bold"),
                    panel.grid = ggplot2::element_blank()) +
-    ggplot2::labs(title = title, x = "Neighbor Cluster",
-                  y = "Focal Cluster", fill = "Z-score")
+    ggplot2::labs(title = title,
+                  x = "Neighbor Cluster",
+                  y = "Focal Cluster",
+                  fill = "Z-score")
 }

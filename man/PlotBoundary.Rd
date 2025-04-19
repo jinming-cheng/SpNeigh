@@ -26,12 +26,12 @@ PlotBoundary(
 \item{one_cluster}{The cluster ID to plot and optionally compute its boundary.
 Required if \code{sub_plot = TRUE} and \code{boundary} is not provided.}
 
-\item{boundary}{A data frame or \code{sf} object containing boundary points or polygons,
-including columns \code{x}, \code{y}, and \code{region_id}.}
+\item{boundary}{A data frame with columns \code{x}, \code{y}, and \code{region_id}
+or an \code{sf} object of \code{POLYGON} or \code{LINESTRING} geometries.}
 
 \item{colors}{A vector of cluster colors. Default uses \code{my_colors_15}.}
 
-\item{point_size}{Numeric. Point size for cell scatter plot. Default is 0.5.}
+\item{point_size}{Numeric. Size of the points representing cells. Default is 0.5.}
 
 \item{color_boundary}{Color for boundary lines. Default is \code{"black"}.}
 

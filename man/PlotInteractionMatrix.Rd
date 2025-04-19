@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotInteractionMatrix.R
 \name{PlotInteractionMatrix}
 \alias{PlotInteractionMatrix}
-\title{Heatmap of row-scaled interaction matrix}
+\title{Plot a heatmap of a row-scaled spatial interaction matrix}
 \usage{
 PlotInteractionMatrix(
   interaction_matrix,
@@ -14,36 +14,39 @@ PlotInteractionMatrix(
 )
 }
 \arguments{
-\item{interaction_matrix}{A numeric matrix where rows represent focal clusters and columns represent neighbor clusters. For example, the output \code{interaction_matrix} from \code{ComputeSpatialInteractionMatrix}.}
+\item{interaction_matrix}{A numeric matrix with focal clusters as rows and neighbor clusters as columns.
+Typically the output from \code{ComputeSpatialInteractionMatrix()}.}
 
-\item{low_color}{Color for low values. Default is blue.}
+\item{low_color}{Color representing low z-score values. Default is \code{"blue"}.}
 
-\item{mid_color}{Color for mid-range values. Default is white.}
+\item{mid_color}{Color representing the midpoint (z-score = 0). Default is \code{"white"}.}
 
-\item{high_color}{Color for high values. Default: red.}
+\item{high_color}{Color representing high z-score values. Default is \code{"red"}.}
 
-\item{angle_x_label}{Angle to rotate the x-axis labels.}
+\item{angle_x_label}{Angle (in degrees) to rotate x-axis labels. Default is \code{45}.}
 
 \item{title}{Title for the heatmap.}
 }
+\value{
+A \code{ggplot} object representing the row-scaled heatmap of the interaction matrix.
+}
 \description{
-Heatmap of row-scaled interaction matrix
+Visualizes a spatial interaction matrix using a heatmap, where rows represent focal clusters
+and columns represent neighbor clusters. Each row is scaled using z-scores to highlight
+relative enrichment patterns across neighbor types. This is useful for detecting
+spatial proximity patterns between cell populations.
 }
 \examples{
-# Load coordinates
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
                               package = "SpNeigh"))
-head(coords)
 
-
-# Compute KNN spatial interaction matrix of cells insides boundaries
 boundary_points <- GetBoundary(data = coords, one_cluster = 2,
                                eps = 120, minPts = 10)
 ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-cells_ring <- GetCellsInside(data = coords, boundary =  ring_regions)
+cells_ring <- GetCellsInside(data = coords, boundary = ring_regions)
 coords_sub <- subset(coords, cell \%in\% cells_ring$cell)
 interaction_matrix <- ComputeSpatialInteractionMatrix(coords_sub)
 
-# Plot interaction matrix
 PlotInteractionMatrix(interaction_matrix)
+
 }

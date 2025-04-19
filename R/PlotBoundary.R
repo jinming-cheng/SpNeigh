@@ -35,10 +35,10 @@ my_theme_ggplot <- function() {
 #' @importFrom rlang .data
 #' @param one_cluster The cluster ID to plot and optionally compute its boundary.
 #'        Required if `sub_plot = TRUE` and `boundary` is not provided.
-#' @param boundary A data frame or `sf` object containing boundary points or polygons,
-#'        including columns `x`, `y`, and `region_id`.
+#' @param boundary A data frame with columns `x`, `y`, and `region_id`
+#'                 or an `sf` object of `POLYGON` or `LINESTRING` geometries.
 #' @param colors A vector of cluster colors. Default uses `my_colors_15`.
-#' @param point_size Numeric. Point size for cell scatter plot. Default is 0.5.
+#' @param point_size Numeric. Size of the points representing cells. Default is 0.5.
 #' @param color_boundary Color for boundary lines. Default is `"black"`.
 #' @param linewidth_boundary Numeric. Line width for boundary outlines. Default is 1.5.
 #' @param sub_plot Logical. If `TRUE`, only cells from the specified `one_cluster` are plotted.
@@ -138,8 +138,7 @@ PlotBoundary <- function(data = NULL,
 #'
 #' @inheritParams PlotBoundary
 #' @importFrom rlang .data
-#' @param boundary A data frame with columns `x`, `y`, and `region_id` (e.g., from `GetBoundary()`),
-#'                 or an `sf` object of `POLYGON` or `LINESTRING` geometries.
+#'
 #' @return A `ggplot2::geom_path` layer that can be added to an existing plot.
 #'
 #' @export
@@ -183,9 +182,9 @@ AddBoundary <- function(boundary = NULL,
 }
 
 
-#' Add boundary polygons to a spatial plot
+#' Add boundary polygons or linestrings to a spatial plot
 #'
-#' Overlays boundary polygons (typically from `BuildBoundaryPoly()` or `GetOuterBoundary()`)
+#' Overlays boundary polygons or linestrings
 #' on a spatial `ggplot2` plot. This function adds an `sf` geometry layer to display complete
 #' boundary shapes for visualizing spatial clusters, rings, or enriched zones.
 #'
@@ -236,12 +235,12 @@ AddBoundaryPoly <- function(boundary_poly,
 #' created by `BuildBoundaryPoly()` or `GetRingRegion()`.
 #'
 #' @importFrom rlang .data
+#' @inheritParams PlotBoundary
 #' @param boundary_poly An `sf` object of `POLYGON` geometries containing a `region_id` column.
 #'        Typically created by `BuildBoundaryPoly()` or `GetRingRegion()`.
 #' @param alpha Numeric value controlling the transparency of the filled regions. Default is `0.5`.
 #' @param color_boundary Color of the region outlines. Default is `"black"`.
 #' @param linewidth_boundary Numeric line width of the region borders. Default is `1`.
-#' @param theme_ggplot A custom `ggplot2` theme object. Default is `my_theme_ggplot()`.
 #' @param ... Additional arguments passed to `ggplot2::geom_sf()`.
 #'
 #' @return A `ggplot` object displaying filled spatial regions by `region_id`.
@@ -294,10 +293,9 @@ PlotRegion <- function(boundary_poly = NULL,
 #' a polygon using `SplitBoundaryPolyByAnchor()`.
 #'
 #' @importFrom rlang .data
-#' @param boundary_poly An `sf` object containing boundary edges or polygons.
-#'        Must include a `region_id` column for color grouping.
+#' @inheritParams PlotBoundary
+#' @inheritParams AddBoundaryPoly
 #' @param linewidth_boundary Numeric value specifying the line width of the edge. Default is `1`.
-#' @param theme_ggplot A ggplot2 theme to apply to the plot. Default is `my_theme_ggplot()`.
 #' @param ... Additional arguments passed to `ggplot2::geom_sf()`.
 #'
 #' @return A `ggplot` object displaying the edge outlines colored by `region_id`.

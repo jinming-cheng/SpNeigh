@@ -2,7 +2,7 @@
 % Please edit documentation in R/RunDE.R
 \name{RunLimmaDE}
 \alias{RunLimmaDE}
-\title{Differential expression analysis between two group of cells using \code{limma}}
+\title{Differential expression analysis between two groups of cells using limma}
 \usage{
 RunLimmaDE(
   exp_mat = NULL,
@@ -14,65 +14,53 @@ RunLimmaDE(
 )
 }
 \arguments{
-\item{exp_mat}{A normalized gene expression matrix with genes as rows and cells as columns. For example, the log-normalized data in a Seurat object.}
+\item{exp_mat}{A normalized gene expression matrix (genes x cells), either a \code{matrix} or \code{dgCMatrix}.
+Typically log-normalized counts, e.g., from a Seurat object.}
 
-\item{cells_reference}{A vector of cell IDs for the reference (baseline) group.}
+\item{cells_reference}{A character vector of cell IDs to use as the reference (baseline) group.}
 
-\item{cells_target}{A vector of cell IDs for the target (comparison) group.}
+\item{cells_target}{A character vector of cell IDs to use as the target (comparison) group.}
 
-\item{weights}{Optional numeric vector of observation-level weights for each cell (same length as combined groups). For example, the scaled spatial distance between cells and the boundary.}
+\item{weights}{Optional numeric vector of observation-level weights. Must be named with cell IDs and
+match the length of \code{cells_reference + cells_target}.}
 
-\item{adj_p.value}{Adjusted p-value threshold for significance to obtain differentially expressed genes. Default is 0.05.}
+\item{adj_p.value}{Adjusted p-value threshold for reporting differentially expressed genes. Default is \code{0.05}.}
 
-\item{min.pct}{Minimum proportion of cells expressing the gene in at least one group. Default is 0.}
+\item{min.pct}{Minimum proportion of cells expressing the gene in either group (values between 0 and 1).
+Genes not meeting this threshold are excluded before testing. Default is \code{0}.}
 }
 \value{
-A data frame of differentially expressed genes between two cell groups
+A data frame with differentially expressed genes, sorted by absolute log fold change.
+Includes columns:
+\describe{
+\item{logFC}{Log2 fold change of expression (target vs. reference)}
+\item{AveExpr}{Average expression across both groups}
+\item{t, P.Value, adj.P.Val, B}{Statistical results from \code{limma}}
+\item{pct.reference}{Proportion of reference cells expressing the gene}
+\item{pct.target}{Proportion of target cells expressing the gene}
+\item{gene}{Gene name (rownames from \code{exp_mat})}
+}
 }
 \description{
 Performs differential expression analysis between two groups of cells using the
-\code{limma} package. Supports optional observation-level weights and filters genes
-based on minimum expression percent in either group.
+\code{limma} linear modeling framework. Supports optional observation-level weights
+(e.g., spatial weights) and filters genes by minimum expression threshold across groups.
 }
 \examples{
+# Load coordinates and log-normalized expression data
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds", package = "SpNeigh"))
+logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds", package = "SpNeigh"))
 
-# Load coordinates of cells in mouse brain
-coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-                              package = "SpNeigh"))
-head(coords)
-table(coords$cluster)
+# Subset cells from cluster 0 and 6
+cells_ref <- subset(coords, cluster == 0)$cell
+cells_tar <- subset(coords, cluster == 6)$cell
 
-# Load log normalized expression data of mouse brain,
-# only cells in cluster 0 and cluster 6 are included
-logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
-                              package = "SpNeigh"))
-class(logNorm_expr)
-
-# Obtain reference cells and target cells for DE anallysis
-cells_ref <- subset(coords, cluster==0)[,"cell"]
-cells_tar <- subset(coords, cluster==6)[,"cell"]
-
-# Perform DE analysis of target (C6) vs reference (C0) cells,
-# Keep genes expressed >= 25\% in either target or reference cells
+# Run differential expression with minimum expression threshold
 tab <- RunLimmaDE(exp_mat = logNorm_expr,
                   cells_reference = cells_ref,
                   cells_target = cells_tar,
                   min.pct = 0.25)
-head(tab)
-head(tab[,c(1,5,7:9)])
 
-# Set cell names as rownames for coords
-rownames(coords) <- coords$cell
-
-# Combine reference and target cells
-all_cells <- c(cells_ref, cells_tar)
-
-# Plot expression of top DE genes,
-# Make sure cell names in data and exp_mat match
-PlotExpression(data = coords[all_cells,],
-               exp_mat = logNorm_expr[,all_cells],
-               genes = tab$gene[1],
-               split_by = "cluster",
-               angle_x_label = 45)
+head(tab[, c("gene", "logFC", "adj.P.Val", "pct.reference", "pct.target")])
 
 }

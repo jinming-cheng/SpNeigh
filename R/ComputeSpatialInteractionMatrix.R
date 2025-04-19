@@ -1,68 +1,77 @@
 
-#' Compute a spatial neighborhood interaction matrix based on K-nearest neighbors algorithm
+#' Compute a spatial neighborhood interaction matrix using K-nearest neighbors (KNN)
 #'
-#' The spatial neighborhood interaction matrix is computed based on counting the number of clusters of k-nearest neighbor cells by the cluster a focal cell.
+#' Computes a spatial interaction matrix where each entry quantifies the number of neighboring cells
+#' from a given cluster (columns) that are among the `k`-nearest neighbors of cells in another cluster (rows).
+#' This provides a summary of spatial proximity and enrichment of neighboring clusters around each focal cluster.
+#'
+#' The matrix is built by identifying the `k` nearest neighbors for each cell based on spatial coordinates,
+#' and then tabulating the cluster identities of those neighbors with respect to the cluster identity of the focal cell.
+#'
 #' @inheritParams ExtractCoords
+#' @param k Integer. Number of nearest neighbors to use for each cell. Default is 10.
+#'
+#' @return A numeric matrix where rows represent focal clusters and columns represent neighboring clusters.
+#'         Each cell in the matrix indicates how frequently a neighbor cluster appears among the k-nearest neighbors
+#'         of cells from the focal cluster.
+#'
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
-#' @param k Number of nearest neighbors to use. Default is 10.
-#'
-#' @return A matrix where rows are focal clusters and columns are neighbor clusters.
 #' @export
+#'
 #' @examples
 #' # Load coordinates
-#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-#'                               package = "SpNeigh"))
-#' head(coords)
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds", package = "SpNeigh"))
 #'
-#' # Compute KNN spatial interaction matrix of all cells
+#' # Compute interaction matrix using all cells
 #' interaction_matrix <- ComputeSpatialInteractionMatrix(coords)
-#' interaction_matrix
+#' head(interaction_matrix)
 #'
-#' # Compute KNN spatial interaction matrix of cells insides boundaries
-#' boundary_points <- GetBoundary(data = coords, one_cluster = 2,
-#'                                eps = 120, minPts = 10)
-#' cells_inside <- GetCellsInside(data = coords, boundary =  boundary_points)
+#' # Compute interaction matrix for cells inside boundaries
+#' boundary_points <- GetBoundary(data = coords, one_cluster = 2, eps = 120, minPts = 10)
+#' cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
 #' coords_sub <- subset(coords, cell %in% cells_inside$cell)
-#' interaction_matrix <- ComputeSpatialInteractionMatrix(coords_sub)
-#' interaction_matrix
+#' ComputeSpatialInteractionMatrix(coords_sub)
 #'
-#' # Compute KNN spatial interaction matrix of cells insides rings
+#' # Compute interaction matrix for cells inside ring regions
 #' ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-#' cells_ring <- GetCellsInside(data = coords, boundary =  ring_regions)
+#' cells_ring <- GetCellsInside(data = coords, boundary = ring_regions)
 #' coords_sub <- subset(coords, cell %in% cells_ring$cell)
-#' interaction_matrix <- ComputeSpatialInteractionMatrix(coords_sub)
-#' interaction_matrix
-
-ComputeSpatialInteractionMatrix <- function(data = NULL, k = 10){
-
-  # Extract coordinates from data
+#' ComputeSpatialInteractionMatrix(coords_sub)
+ComputeSpatialInteractionMatrix <- function(data = NULL, k = 10) {
+  # --- Extract coordinates from data ---
   sp_coords <- ExtractCoords(data)
 
-  #  Build KNN graph
+  # --- Build KNN graph (cells x neighbors) ---
   knn <- FNN::get.knn(sp_coords[, c("x", "y")], k = k)
-  knn_df <- lapply(1:nrow(knn$nn.index), function(i) {
-      neighbors <- knn$nn.index[i, ]
-      data.frame( cell = sp_coords$cell[i],
-                  neighbor = sp_coords$cell[neighbors]
-                  )
-      }) %>% dplyr::bind_rows()
 
-  # Annotate neighbor clusters
+  # Build long-format neighbor dataframe
+  knn_df <- lapply(1:nrow(knn$nn.index), function(i) {
+    neighbors <- knn$nn.index[i, ]
+    data.frame(
+      cell = sp_coords$cell[i],
+      neighbor = sp_coords$cell[neighbors]
+    )
+  }) %>% dplyr::bind_rows()
+
+  # Annotate with cluster identities
   neighbor_annot <- knn_df %>%
-    dplyr::left_join(sp_coords, by = c("cell" = "cell")) %>%
+    dplyr::left_join(sp_coords, by = "cell") %>%
     dplyr::rename(cell_cluster = .data$cluster) %>%
     dplyr::left_join(sp_coords, by = c("neighbor" = "cell")) %>%
     dplyr::rename(neighbor_cluster = .data$cluster)
 
-  # Build interaction matrix
+  # --- Build interaction matrix ---
   interaction_counts <- neighbor_annot %>%
     dplyr::count(.data$cell_cluster, .data$neighbor_cluster, name = "count")
 
   interaction_matrix <- interaction_counts %>%
-    tidyr::pivot_wider(names_from = .data$neighbor_cluster,
-                         values_from = .data$count, values_fill = 0) %>%
-      tibble::column_to_rownames("cell_cluster")
+    tidyr::pivot_wider(
+      names_from = .data$neighbor_cluster,
+      values_from = .data$count,
+      values_fill = 0
+    ) %>%
+    tibble::column_to_rownames("cell_cluster")
 
-  as.matrix(interaction_matrix)
+  return(as.matrix(interaction_matrix))
 }

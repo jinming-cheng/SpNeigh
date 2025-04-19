@@ -2,31 +2,36 @@
 % Please edit documentation in R/RunDE.R
 \name{SplineDesign}
 \alias{SplineDesign}
-\title{Generate a spline-based orthonormal design matrix from a numeric covariate}
+\title{Generate an orthonormal spline-based design matrix}
 \usage{
 SplineDesign(x, df = 3)
 }
 \arguments{
-\item{x}{A numeric vector representing a continuous variable.}
+\item{x}{A numeric vector representing a continuous covariate (e.g., distance or pseudotime).}
 
-\item{df}{Degrees of freedom for the spline basis. Default is 3.}
+\item{df}{Integer. Degrees of freedom for the spline basis. Default is 3.}
 }
 \value{
-A numeric matrix with orthonormal columns derived from the spline-transformed input.
-The first column is aligned to show the main linear trend with respect to \code{x}.
+A numeric matrix with orthonormal columns (same number of rows as \code{x}).
+The columns represent smoothed trends extracted from the spline basis.
+The first column is directionally aligned with the input vector (\code{x}).
 }
 \description{
-This function transforms a numeric input vector (e.g., spatial distance)
-into a natural cubic spline basis and returns an orthonormalized design matrix
-suitable for smooth trend modeling.
-The first column of the output matrix is guaranteed to be positively correlated
-with the input vector and typically captures the primary linear trend.
+Constructs an orthonormal design matrix from a numeric covariate (e.g., spatial distance)
+using a natural cubic spline basis. The output matrix can be used in linear modeling
+to capture smooth, non-linear trends along continuous variables.
+}
+\details{
+The first column of the resulting matrix is aligned to show a positive correlation
+with the input vector and typically captures the main linear or monotonic trend.
 }
 \examples{
-x <- runif(100)
+x <- seq(0, 1, length.out = 100)
 Z <- SplineDesign(x)
+cor(Z[, 1], x)  # Should be > 0
 
-# The first column of Z is positvely correlated with x
-cor(Z[,1], x)
-
+# Use Z in modeling
+y <- sin(2 * pi * x) + rnorm(100, sd = 0.2)
+fit <- lm(y ~ Z)
+summary(fit)
 }

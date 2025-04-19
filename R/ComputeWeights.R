@@ -1,29 +1,31 @@
 
-#' Compute spatial weights based on distance to centroid
+#' Compute spatial weights based on distance to the centroid
 #'
-#' Computes spatial weights for a set of cells based on their distance to
-#' the centroid of their group. Supports multiple decay methods and optional
-#' distance scaling.
+#' Computes spatial weights for a set of cells based on their Euclidean distance
+#' to the centroid of the selected group of cells. This is useful for modeling
+#' gradient-like spatial expression centered around a cluster or region.
+#' Supports multiple decay methods and optional distance scaling.
 #'
-#' @param data A data frame or Seurat object containng at least three columns: `x`, `y` and `cell`.
-#' @param cell_ids A vector of cell IDs to subset from data.
-#' @param scale A logical value indicating whether to scale distances to \[0, 1\] before computing weights. Scaling is recommended, and default is TRUE.
-#' @param method A string specifying the decay method. One of \code{"inverse"},
-#'   \code{"gaussian"}, \code{"linear"}, or \code{"quadratic"}.
-#' @param sigma Standard deviation for the Gaussian decay function. Default is 0.5 for scaled distance. If `scale = FALSE`, choose a value that is about half the region’s width.
+#' @importFrom methods is
+#' @param data A data frame or Seurat object containing spatial coordinates. Must include columns: `cell`, `x`, and `y`.
+#' @param cell_ids A character vector of cell IDs to use for weight computation.
+#' @param scale Logical. Whether to scale distances to the range \[0, 1\] before applying decay functions. Default is `TRUE`.
+#' @param method Decay function to convert distances to weights. One of: `"inverse"`, `"gaussian"`, `"linear"`, or `"quadratic"`.
+#' @param sigma Standard deviation for the Gaussian decay (used only if `method = "gaussian"`). Default is `0.5` (recommended for scaled distances).
 #'
-#' @return A named numeric vector of weights, one per cell in `cell_ids`.
+#' @return A named numeric vector of weights (length = number of cells in `cell_ids`). Higher weights correspond to cells closer to the centroid.
+#'
 #' @export
 #' @examples
-#' # Load coordinates
-#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-#'                               package = "SpNeigh"))
-#' head(coords)
+#' # Load spatial coordinates
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds", package = "SpNeigh"))
 #'
-#' # Compute spatial weights to centroid for cells in cluster 2
-#' cells_c2 <- subset(coords, cluster==2)[,"cell"]
+#' # Select cells from cluster 2
+#' cells_c2 <- subset(coords, cluster == 2)$cell
+#'
+#' # Compute centroid-based weights using default settings
 #' weights <- ComputeCentroidWeights(data = coords, cell_ids = cells_c2)
-#' weights[1:3]
+#' head(weights)
 #'
 ComputeCentroidWeights <- function(data = NULL,
                                    cell_ids = NULL,
@@ -34,7 +36,7 @@ ComputeCentroidWeights <- function(data = NULL,
 
 
   # Extract coordinates from data
-  if( inherits(data,"Seurat") ){
+  if( is(data,"Seurat") ){
     sp_coords <- Seurat::GetTissueCoordinates(data)
   }else{
     sp_coords <- data
@@ -82,41 +84,39 @@ ComputeCentroidWeights <- function(data = NULL,
 
 #' Compute spatial weights based on distance to nearest boundary
 #'
-#' This function assigns each cell to the nearest boundary and computes
-#' a spatial weight based on its distance to that boundary. Supports inverse,
-#' Gaussian, linear, and quadratic decay methods.
-#' @inheritParams ComputeCentroidWeights
-#' @param boundary An sf object (POLYGON or LINESTRING) or a data.frame of boundary points.
+#' Computes spatial weights for a subset of cells based on their Euclidean distance
+#' to the nearest boundary segment. This method supports both closed boundary polygons
+#' and open boundary edges (e.g., LINESTRINGs), and is useful for modeling
+#' proximity-based enrichment near anatomical or user-defined regions.
 #'
-#' @return A named numeric vector of weights, one per cell in `cell_ids`.
+#' Supports multiple decay methods for converting distance into weights.
+#' Optionally scales distances to the \[0, 1\] range before computing weights.
+#'
+#' @importFrom methods is
+#' @inheritParams ComputeCentroidWeights
+#' @param boundary Either an `sf` object containing boundary geometries (POLYGON or LINESTRING),
+#'                 or a data frame of boundary points returned from `GetBoundary()`.
+#'
+#' @return A named numeric vector of weights, with names corresponding to `cell_ids`.
 #'
 #' @export
 #' @examples
-#' # Load coordinates
-#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-#'                               package = "SpNeigh"))
-#' head(coords)
+#' # Load spatial coordinates
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds", package = "SpNeigh"))
 #'
-#' # Get boundaries for cells in cluster 2
+#' # Get and build boundary polygons from cluster 2
 #' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
 #' boundary_polys <- BuildBoundaryPoly(boundary_points)
 #'
-#' # Plot boundary regions
-#' PlotRegion(boundary_polys)
-#'
-#' # Compute spatial weights to the boundary of region 1 for cells in cluster 2
-#' cells_c2 <- subset(coords, cluster==2)[,"cell"]
+#' # Compute weights to polygon boundary
+#' cells_c2 <- subset(coords, cluster == 2)$cell
 #' weights <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c2,
-#'                                   boundary = boundary_polys[1,])
-#' weights[1:3]
+#'                                   boundary = boundary_polys[1, ])
 #'
-#' # Compute spatial weights to the boundary edge2 of region 1 for cells in cluster 2
-#' boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1,])
-#' PlotEdge(boundary_edges)
-#' weights <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c2,
-#'                                   boundary = boundary_edges[2,])
-#' weights[1:3]
-#' PlotWeights(coords, weights)
+#' # Compute weights to a specific boundary edge
+#' boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1, ])
+#' weights_edge <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c2,
+#'                                        boundary = boundary_edges[2, ])
 #'
 ComputeBoundaryWeights <- function(data = NULL,
                                    cell_ids = NULL,
@@ -126,46 +126,44 @@ ComputeBoundaryWeights <- function(data = NULL,
                                    sigma = 0.5) {
   method <- match.arg(method)
 
-  # Extract coordinates from data
-  if( inherits(data,"Seurat") ){
+  # Extract coordinates
+  if (inherits(data, "Seurat")) {
     sp_coords <- Seurat::GetTissueCoordinates(data)
-  }else{
+  } else {
     sp_coords <- data
   }
 
   if (!all(c("cell", "x", "y") %in% colnames(sp_coords))) {
-    stop("data must contain columns: 'cell', 'x', and 'y'")
+    stop("`data` must contain columns: 'cell', 'x', and 'y'.")
   }
 
   if (!inherits(boundary, c("sf", "data.frame"))) {
-    stop("'boundary' must be an sf object (POLYGON or LINESTRING) or a data.frame containing boundary points.")
+    stop("`boundary` must be an sf object (POLYGON or LINESTRING) or a data frame of boundary points.")
   }
 
-  # Build safe polygons
-  if(inherits(boundary, "sf")){
-    boundary <- boundary
-  }else{
-    boundary <- BuildBoundaryPoly(boundary)
+  # Convert boundary points to polygon if needed
+  if (inherits(boundary, "sf")) {
+    boundary_sf <- boundary
+  } else {
+    boundary_sf <- BuildBoundaryPoly(boundary)
   }
 
-  # Subset and convert to sf
+  # Subset and convert coordinates to sf
   sub_coords <- sp_coords[sp_coords$cell %in% cell_ids, ]
   if (nrow(sub_coords) == 0) {
-    stop("No matching cells found in 'data' for 'cell_ids'")
+    stop("No matching cells found in 'data' for 'cell_ids'.")
   }
 
   cell_sf <- sf::st_as_sf(sub_coords, coords = c("x", "y"), crs = NA)
 
-
-  if (all(sf::st_geometry_type(boundary) == "LINESTRING")) {
-    # Already LINESTRING
-    boundary_lines <- boundary
+  # Handle boundary geometry type
+  if (all(sf::st_geometry_type(boundary_sf) == "LINESTRING")) {
+    boundary_lines <- boundary_sf
   } else {
-    # Extract polygon boundary as LINESTRING
-    boundary_lines <- sf::st_boundary(boundary)
+    boundary_lines <- sf::st_boundary(boundary_sf)
   }
 
-  # Compute distances to all region boundaries → matrix: [cells × regions]
+  # Compute distance matrix [cells × boundaries]
   dist_mat <- sf::st_distance(cell_sf, boundary_lines)
   min_dists <- apply(dist_mat, 1, min)
   dists <- as.numeric(min_dists)
@@ -175,18 +173,17 @@ ComputeBoundaryWeights <- function(data = NULL,
     dists <- (dists - min(dists)) / (max(dists) - min(dists))
   }
 
-  # Compute weights based on decay method
-  # Compute weights based on selected method
+  # Compute weights from distances
   weights <- switch(method,
-                    inverse = 1 / (1 + dists),
-                    gaussian = exp(-dists^2 / (2 * sigma^2)),
-                    linear = 1 - dists,
+                    inverse   = 1 / (1 + dists),
+                    gaussian  = exp(-dists^2 / (2 * sigma^2)),
+                    linear    = 1 - dists,
                     quadratic = (1 - dists)^2
   )
 
-  # Ensure valid weights
-  weights[dists > 1 & scale] <- 0  #clamp overshoot for linear/quadratic
-  weights[weights < 0] <- 0 # Ensure non-negativity
+  # Clamp for scaled distances (to avoid negative weights)
+  weights[dists > 1 & scale] <- 0
+  weights[weights < 0] <- 0
   names(weights) <- sub_coords$cell
 
   return(weights)

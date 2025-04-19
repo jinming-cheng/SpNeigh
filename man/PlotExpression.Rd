@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotExpression.R
 \name{PlotExpression}
 \alias{PlotExpression}
-\title{Plot expression of genes in cells on the spatial plot}
+\title{Plot gene expression across spatial coordinates}
 \usage{
 PlotExpression(
   data = NULL,
@@ -16,61 +16,70 @@ PlotExpression(
   point_size = 0.2,
   angle_x_label = 0,
   shuffle = FALSE,
+  seed = 123,
   theme_ggplot = my_theme_ggplot()
 )
 }
 \arguments{
 \item{data}{Either a Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell} and \code{cluster}.}
 
-\item{exp_mat}{A gene expression matrix or dgCMatrix. If \code{data} is a Seurat object, the \code{exp_mat} will be automatically obtained.}
+\item{exp_mat}{A gene expression matrix (genes x cells) of class \code{matrix} or \code{dgCMatrix}.
+If \code{data} is a Seurat object, the matrix will be extracted automatically using \code{Seurat::GetAssayData()}.}
 
-\item{genes}{Specify genes for plotting the expression.}
+\item{genes}{Character vector specifying gene names to be plotted. Must match row names in \code{exp_mat}.}
 
-\item{sub_plot}{A logical value indicating whether to only plot a subset of cells. Default is FALSE.}
+\item{sub_plot}{Logical. If \code{TRUE}, only a subset of cells is plotted (based on \code{one_cluster} or \code{sub_cells}).
+Default is \code{FALSE}.}
 
-\item{one_cluster}{Specify a cluster to obtain a subset of cells for \code{sub_plot}.}
+\item{one_cluster}{Optional. Cluster ID to subset cells if \code{sub_plot = TRUE}.}
 
-\item{sub_cells}{Specify a subset of cells for \code{sub_plot}. If both \code{one_cluster} and \code{sub_cells} are provided, the common cells in both the specified cluster and the specified cell subset will be used.}
+\item{sub_cells}{Optional. Vector of cell IDs to include in the plot if \code{sub_plot = TRUE}.
+If both \code{one_cluster} and \code{sub_cells} are provided, the intersection is used.}
 
-\item{split_by}{A column name in the coordinate data.frame (from \code{data} parameter) used to split the plot.}
+\item{split_by}{Optional. Column name in the metadata (from \code{data}) to facet the plots (e.g., by \code{cluster}).}
 
-\item{return_list}{Logical. Whether to return a list of ggplot objects. Default is FALSE.}
+\item{return_list}{Logical. If \code{TRUE}, returns a named list of individual ggplot objects per gene.
+If \code{FALSE} (default), plots are wrapped into a single patchwork layout.}
 
-\item{point_size}{Point size of cells. Default is 0.2.}
+\item{point_size}{Numeric. Size of plotted points. Default is \code{0.2}.}
 
-\item{angle_x_label}{Angle to rotate the x-axis labels.}
+\item{angle_x_label}{Numeric angle (in degrees) to rotate the x-axis labels.
+Useful for improving label readability in faceted or dense plots.
+Default is 0 (no rotation).}
 
-\item{shuffle}{Logical. Whether to shuffle the order of cells before plotting. If \code{FALSE} (default), cells with larger values are plotted last, so they appear on top.}
+\item{shuffle}{Logical. If \code{TRUE}, shuffles cell order before plotting. Otherwise, cells with higher expression are plotted on top. Default is \code{FALSE}.}
 
-\item{theme_ggplot}{Theme for ggplot.}
+\item{seed}{Optional seed for reproducibility when \code{shuffle = TRUE}. Default is \code{123}.}
+
+\item{theme_ggplot}{A ggplot2 theme object. Default is \code{my_theme_ggplot()}.}
+}
+\value{
+A \code{patchwork} object or a list of ggplot objects if \code{return_list = TRUE}.
 }
 \description{
-Plot expression of genes in cells on the spatial plot
+Visualizes expression of selected genes on a spatial plot using cell coordinates and expression matrix.
+Can display expression for all cells or a subset (e.g., by cluster or manually specified cells).
+Also supports splitting the plot using metadata columns (e.g., \code{cluster}) and returning either
+a combined plot or a list of individual ggplot objects.
 }
 \examples{
-# Sample data
-df <- data.frame(x = c( rnorm(100, mean=1),rnorm(100, mean=5) ),
-                 y = c( rnorm(100, mean=1),rnorm(100, mean=5) ),
+df <- data.frame(x = c(rnorm(100, 1), rnorm(100, 5)),
+                 y = c(rnorm(100, 1), rnorm(100, 5)),
                  cell = 1:200,
-                 cluster = rep(rep(1:2, each = 100)) )
-exp_mat <- data.frame(gene1 = c(runif(100, min = 4, max = 6),
-                                runif(100, min = 0, max = 2) ),
-                      gene2 = c(runif(100, min = 0, max = 1),
-                                runif(100, min = 5, max = 8) ) )
+                 cluster = rep(1:2, each = 100))
+exp_mat <- data.frame(
+  gene1 = c(runif(100, 4, 6), runif(100, 0, 2)),
+  gene2 = c(runif(100, 0, 1), runif(100, 5, 8))
+  )
+
 exp_mat <- t(exp_mat)
 colnames(exp_mat) <- df$cell
 
-# Plot expression of two genes
-p <- PlotExpression(data = df, exp_mat = exp_mat,
-                    genes = c("gene1","gene2"),point_size = 2)
-p
+PlotExpression(data = df, exp_mat = exp_mat,
+               genes = c("gene1", "gene2"), point_size = 2)
 
-# Plot expression of gene1 in cluster 1
-p <- PlotExpression(data = df, exp_mat = exp_mat,
-                    sub_plot = TRUE, one_cluster = 1,
-                    genes = c("gene1"),point_size = 2)
-p + ggplot2::facet_wrap(~cluster) +
-  ggplot2::scale_fill_viridis_c(option = "plasma",limits = c(0, 6)) +
-  ggplot2::scale_color_viridis_c(option = "plasma",limits = c(0, 6))
+PlotExpression(data = df, exp_mat = exp_mat,
+               genes = "gene1", sub_plot = TRUE,
+               one_cluster = 1, point_size = 2)
 
 }

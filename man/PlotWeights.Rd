@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotWeights.R
 \name{PlotWeights}
 \alias{PlotWeights}
-\title{Plot spatial weights for cells}
+\title{Plot spatial weights for cells on a spatial plot}
 \usage{
 PlotWeights(
   data = NULL,
@@ -12,31 +12,35 @@ PlotWeights(
 )
 }
 \arguments{
-\item{data}{A data frame or Seurat object containng at least three columns: \code{x}, \code{y} and \code{cell}.}
+\item{data}{A data frame or Seurat object containing spatial coordinates. Must include columns: \code{cell}, \code{x}, and \code{y}.}
 
-\item{weights}{A named numeric vector where names are cell IDs.}
+\item{weights}{A named numeric vector of spatial weights, with cell IDs as names.}
 
-\item{point_size}{Point size in the plot. Default is 0.2.}
+\item{point_size}{Numeric. Point size of the cells in the plot. Default is \code{0.2}.}
 
-\item{theme_ggplot}{Theme for ggplot.}
+\item{theme_ggplot}{A ggplot2 theme object. Default is \code{my_theme_ggplot()}.}
+}
+\value{
+A \code{ggplot2} object displaying a scatter plot of cells colored by weights.
 }
 \description{
-Plots spatial coordinates of cells colored by weight values. Only cells in the \code{data} with weights will be plotted.
+Visualizes spatial weights by plotting cell coordinates colored by a numeric weight value.
+Only cells in \code{data} that match the names in \code{weights} will be included.
+This is useful for visualizing spatial trends such as proximity to boundaries or centroids.
 }
 \examples{
-# Load coordinates
+# Load coordinate data
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
                               package = "SpNeigh"))
-head(coords)
 
-# Obtain cells in cluster 2 and focus on these cells
-cells_c2 <- subset(coords, cluster==2)[,"cell"]
+# Cells in cluster 2
+cells_c2 <- subset(coords, cluster == 2)[, "cell"]
 
-# Obtain and plot centroid weights
+# Compute centroid weights and plot
 weights_cen <- ComputeCentroidWeights(data = coords, cell_ids = cells_c2)
 PlotWeights(data = coords, weights = weights_cen)
 
-# Obtain and plot boundary weights
+# Compute boundary weights and plot
 boundary_points <- GetBoundary(data = coords, one_cluster = 2)
 weights_bon <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c2,
                                       boundary = boundary_points)

@@ -12,12 +12,11 @@ PlotEdge(
 )
 }
 \arguments{
-\item{boundary_poly}{An \code{sf} object containing boundary edges or polygons.
-Must include a \code{region_id} column for color grouping.}
+\item{boundary_poly}{An \code{sf} object containing \code{POLYGON} or \code{LINESTRING} geometries and a \code{region_id} column.}
 
 \item{linewidth_boundary}{Numeric value specifying the line width of the edge. Default is \code{1}.}
 
-\item{theme_ggplot}{A ggplot2 theme to apply to the plot. Default is \code{my_theme_ggplot()}.}
+\item{theme_ggplot}{A ggplot2 theme object. Default is \code{my_theme_ggplot()}.}
 
 \item{...}{Additional arguments passed to \code{ggplot2::geom_sf()}.}
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotStats.R
 \name{PlotStatsBar}
 \alias{PlotStatsBar}
-\title{Bar plot of statistics of cells inside boundaries or rings}
+\title{Bar plot of cluster statistics for cells inside boundaries or ring regions}
 \usage{
 PlotStatsBar(
   cell_stats = NULL,
@@ -13,35 +13,38 @@ PlotStatsBar(
 )
 }
 \arguments{
-\item{cell_stats}{Statistics of cells returned by \code{StatsCellsInside()}.}
+\item{cell_stats}{A data frame containing summarized cell statistics, typically the output from \code{StatsCellsInside()}.
+Must include columns \code{region_id}, \code{cluster}, and the specified \code{stat_column}.}
 
-\item{stat_column}{A column name in \code{cell_stats} and used for y axis.}
+\item{stat_column}{Character. Column name in \code{cell_stats} to use for the y-axis.
+Options are \code{"count"} (number of cells) or \code{"proportion"} (relative fraction per region).}
 
 \item{colors}{A vector of cluster colors. Default uses \code{my_colors_15}.}
 
-\item{angle_x_label}{Angle to rotate the x-axis labels.}
+\item{angle_x_label}{Numeric angle (in degrees) to rotate the x-axis labels.
+Useful for improving label readability in faceted or dense plots.
+Default is 0 (no rotation).}
 
 \item{theme_ggplot}{A ggplot2 theme object. Default is \code{my_theme_ggplot()}.}
 }
+\value{
+A \code{ggplot2} object showing a faceted bar plot of cell statistics per region.
+}
 \description{
-Bar plot of statistics of cells inside boundaries or rings
+Creates a bar plot to visualize the distribution of cells inside spatial regions (e.g., boundaries or rings),
+either as raw counts or proportions per cluster. The plot is faceted by \code{region_id} to show statistics across
+multiple spatial subregions.
 }
 \examples{
-# Load coordinates
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
                               package = "SpNeigh"))
-head(coords)
 
-# Obtain statistics of cells inside boundaries
 boundary_points <- GetBoundary(data = coords, one_cluster = 2,
                                eps = 120, minPts = 10)
-cells_inside <- GetCellsInside(data = coords, boundary =  boundary_points)
-stats_cells = StatsCellsInside(cells_inside)
+cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
+stats_cells <- StatsCellsInside(cells_inside)
 
-# Plot proportion of cells in different clusters using bar plot
 PlotStatsBar(stats_cells, stat_column = "proportion")
-
-# Plot count of cells in different clusters using bar plot
 PlotStatsBar(stats_cells, stat_column = "count")
 
 }

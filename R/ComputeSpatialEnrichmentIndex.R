@@ -1,62 +1,57 @@
-#' Compute spatial enrichment index (SEI) for each gene
+
+#' Compute Spatial Enrichment Index (SEI) for Each Gene
 #'
-#' Computes a spatial enrichment index (SEI) for each gene using precomputed spatial weights.
-#' This generalizes to any distance-based weighting scheme (e.g. boundary, centroid, or other).
+#' Calculates the spatial enrichment index (SEI) for each gene based on a user-supplied set
+#' of spatial weights. The SEI reflects the extent to which gene expression is enriched
+#' in spatially weighted regions of the tissue (e.g., near boundaries or centroids).
 #'
-#' @param exp_mat A gene expression matrix (genes × cells), either of class `matrix` or `dgCMatrix`.
-#' @param weights A numeric vector of spatial weights, same length as the number of cells.
+#' This method supports both dense (`matrix`) and sparse (`dgCMatrix`) gene expression formats,
+#' and can be applied using any distance-based weighting scheme.
 #'
-#' @return A data frame with columns:
-#' \itemize{
-#'   \item `gene`: gene name
-#'   \item `SEI`: spatial enrichment index (weighted mean expression)
-#'   \item `mean_expr`: mean expression across all cells
-#'   \item `normalized_SEI`: ratio of SEI to mean expression
+#' @importClassesFrom Matrix dgCMatrix
+#' @importMethodsFrom Matrix [
+#' @param exp_mat A normalized gene expression matrix with genes as rows and cells as columns.
+#'                Should be of class `matrix` or `dgCMatrix`.
+#' @param weights A numeric vector of spatial weights (e.g., from `ComputeBoundaryWeights` or `ComputeCentroidWeights`).
+#'                Must be the same length as the number of columns (cells) in `exp_mat`.
+#'
+#' @return A data frame with the following columns:
+#' \describe{
+#'   \item{`gene`}{Gene name}
+#'   \item{`SEI`}{Spatial enrichment index: weighted mean expression across cells}
+#'   \item{`mean_expr`}{Mean expression across all cells (unweighted)}
+#'   \item{`normalized_SEI`}{Ratio of SEI to mean expression; used to compare genes independent of baseline expression}
 #' }
-#' Sorted by `normalized_SEI` from high to low.
+#' The result is sorted in descending order by `normalized_SEI`.
 #'
 #' @export
 #'
 #' @examples
+#' # Load spatial coordinates and log-normalized expression
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds", package = "SpNeigh"))
+#' logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds", package = "SpNeigh"))
 #'
-#' # Load coordinates of cells in mouse brain
-#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-#'                               package = "SpNeigh"))
-#' head(coords)
-#'
-#' # Load log normalized expression data of mouse brain,
-#' # only cells in cluster 0 and cluster 6 are included
-#' logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
-#'                               package = "SpNeigh"))
-#' class(logNorm_expr)
-#'
-#' # Compute boundary weights for cluster 0 cells
+#' # Compute spatial weights and SEI
 #' bon_c0 <- GetBoundary(data = coords, one_cluster = 0)
-#' cells_c0 <- subset(coords, cluster==0)[,"cell"]
-#' weights_bon <- ComputeBoundaryWeights(data = coords,
-#'                                       cell_ids = cells_c0,
-#'                                       boundary = bon_c0)
-#'
-#' # Compute spatial enrichment index for boundaries
-#' library(Matrix)
-#' df_sei <- ComputeSpatialEnrichmentIndex(exp_mat = logNorm_expr[,cells_c0],
-#'                                         weights = weights_bon)
-#' head(df_sei)
+#' cells_c0 <- subset(coords, cluster == 0)$cell
+#' weights <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c0, boundary = bon_c0)
+#' sei_df <- ComputeSpatialEnrichmentIndex(logNorm_expr[, cells_c0], weights)
+#' head(sei_df)
 #'
 
 ComputeSpatialEnrichmentIndex <- function(exp_mat, weights) {
   # --- Input checks ---
   if (!inherits(exp_mat, c("matrix", "dgCMatrix"))) {
-    stop("'exp_mat' must be of class 'matrix' or 'dgCMatrix'")
+    stop("'exp_mat' must be of class 'matrix' or 'dgCMatrix'.")
   }
   if (!is.numeric(weights)) {
     stop("'weights' must be a numeric vector.")
   }
   if (length(weights) != ncol(exp_mat)) {
-    stop("Length of 'weights' must match number of columns in 'exp_mat'")
+    stop("Length of 'weights' must match the number of columns (cells) in 'exp_mat'.")
   }
 
-  # --- Compute weighted mean expression (SEI) ---
+  # --- Compute SEI ---
   if (inherits(exp_mat, "dgCMatrix")) {
     weighted_expr <- exp_mat %*% Matrix::Diagonal(x = weights)
     SEI_scores <- Matrix::rowSums(weighted_expr) / sum(weights)
@@ -67,10 +62,10 @@ ComputeSpatialEnrichmentIndex <- function(exp_mat, weights) {
     mean_expr <- rowMeans(exp_mat)
   }
 
-  # --- Compute normalized SEI ---
+  # --- Normalize SEI ---
   normalized_SEI <- SEI_scores / (mean_expr + 1e-6)
 
-  # --- Assemble and sort result ---
+  # --- Assemble result ---
   df <- data.frame(
     gene = rownames(exp_mat),
     SEI = SEI_scores,
@@ -84,4 +79,5 @@ ComputeSpatialEnrichmentIndex <- function(exp_mat, weights) {
 
   return(df)
 }
+
 

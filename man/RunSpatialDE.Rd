@@ -2,7 +2,7 @@
 % Please edit documentation in R/RunDE.R
 \name{RunSpatialDE}
 \alias{RunSpatialDE}
-\title{Differential expression analysis along spatial distance gradients}
+\title{Differential expression along spatial distance gradients using splines}
 \usage{
 RunSpatialDE(
   exp_mat = NULL,
@@ -13,64 +13,46 @@ RunSpatialDE(
 )
 }
 \arguments{
-\item{exp_mat}{A normalized gene expression matrix with genes as rows and cells as columns. For example, the log-normalized data in a Seurat object.}
+\item{exp_mat}{A normalized gene expression matrix (genes x cells), either a \code{matrix} or \code{dgCMatrix}.
+Typically log-normalized counts, e.g., from a Seurat object.}
 
-\item{cell_ids}{A vector of cell IDs in \code{exp_mat} for spatial differential expression analysis.}
+\item{cell_ids}{A character vector of cell IDs (column names of \code{exp_mat}) used for DE analysis.}
 
-\item{spatial_distance}{A numeric vector of the spatial distance for each cell. Scaled distance rather than real distance is is recommended.}
+\item{spatial_distance}{A named numeric vector containing the spatial distance (or weights) for each cell.
+Must be the same length as \code{cell_ids}. Scaled distances are recommended.}
 
-\item{adj_p.value}{Adjusted p-value threshold for significance to obtain differentially expressed genes. Default is 0.05.}
+\item{adj_p.value}{Adjusted p-value threshold for reporting differentially expressed genes. Default is \code{0.05}.}
 
-\item{df}{Degrees of freedom for the spline basis. Default is 3.}
+\item{df}{Integer. Degrees of freedom for the spline basis. Default is 3.}
 }
 \value{
-A data frame of differentially expressed genes, including p-values, adjusted p-values,
-and a directional trend column. The sign of Z1 gives the direction of the trend.
-A positive trend indicates increasing expression with distance;
-a negative trend indicates decreasing expression with distance.
-The values of Z1, Z2 and Z3 are not meaningful.
+A data frame of differentially expressed genes, including:
+\describe{
+\item{AveExpr, F, P.Value, adj.P.Val}{limma differential expression outputs}
+\item{Z1, Z2, Z3}{Spline coefficients (Z1 typically corresponds to linear trend)}
+\item{gene}{Gene name (from \code{exp_mat})}
+\item{trend}{"Positive" or "Negative" trend based on the sign of Z1}
+}
+The first spline coefficient (\code{Z1}) captures the main expression trend along the spatial distance.
 }
 \description{
-Performs differential expression (DE) testing along a continuous spatial distance gradient.
-Gene expression is modeled as a smooth function of spatial proximity using a natural spline basis.
-This approach is useful for detecting genes with spatially varying expression relative to a boundary or centroid.
+Performs spatially-aware differential expression (DE) analysis by modeling gene expression
+as a smooth function of a continuous spatial covariate (e.g., distance to a boundary or centroid).
+Natural spline basis functions are used to capture non-linear trends in expression relative to spatial distance.
+This method is suitable for identifying genes whose expression varies continuously across spatial structures.
 }
 \examples{
+# Load example data
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds", package = "SpNeigh"))
+logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds", package = "SpNeigh"))
 
-# Load coordinates of cells in mouse brain
-coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-                              package = "SpNeigh"))
-head(coords)
-
-# Load log normalized expression data of mouse brain,
-# only cells in cluster 0 and cluster 6 are included
-logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
-                              package = "SpNeigh"))
-class(logNorm_expr)
-
-# Get and plot boundary of cluster 0
+# Identify cluster-specific cells and compute spatial weights
+cells_c0 <- subset(coords, cluster == 0)$cell
 bon_c0 <- GetBoundary(data = coords, one_cluster = 0)
-PlotBoundary(data = coords) + AddBoundary(bon_c0)
+weights <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c0, boundary = bon_c0)
 
-# Compute boundary weights and plot weights
-cells_c0 <- subset(coords, cluster==0)[,"cell"]
-weights_bon <- ComputeBoundaryWeights(data = coords,
-                                      cell_ids = cells_c0,
-                                      boundary = bon_c0)
-PlotWeights(data = coords, weights = weights_bon)
-
-# Perform DE analysis for cells in cluster 0
-# along the distance (weights) to the boundaries
-tab <- RunSpatialDE(exp_mat = logNorm_expr,
-                    cell_ids = cells_c0,
-                    spatial_distance = weights_bon)
-head(tab)
-
-# Plot expression of top DE genes,
-# Make sure cell names in data and exp_mat match
-PlotExpression(data = coords[cells_c0,],
-               exp_mat = logNorm_expr[,cells_c0],
-               genes = tab$gene[1],
-               angle_x_label = 45)
+# Run spatial DE
+result <- RunSpatialDE(exp_mat = logNorm_expr, cell_ids = cells_c0, spatial_distance = weights)
+head(result)
 
 }

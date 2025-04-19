@@ -1,29 +1,32 @@
 
-#' Plot spatial weights for cells
+#' Plot spatial weights for cells on a spatial plot
 #'
-#' Plots spatial coordinates of cells colored by weight values. Only cells in the `data` with weights will be plotted.
+#' Visualizes spatial weights by plotting cell coordinates colored by a numeric weight value.
+#' Only cells in `data` that match the names in `weights` will be included.
+#' This is useful for visualizing spatial trends such as proximity to boundaries or centroids.
 #'
 #' @inheritParams ComputeCentroidWeights
 #' @importFrom rlang .data
-#' @param weights A named numeric vector where names are cell IDs.
-#' @param point_size Point size in the plot. Default is 0.2.
-#' @param theme_ggplot Theme for ggplot.
+#' @importFrom methods is
+#' @param weights A named numeric vector of spatial weights, with cell IDs as names.
+#' @param point_size Numeric. Point size of the cells in the plot. Default is `0.2`.
+#' @param theme_ggplot A ggplot2 theme object. Default is `my_theme_ggplot()`.
 #'
+#' @return A `ggplot2` object displaying a scatter plot of cells colored by weights.
 #' @export
 #' @examples
-#' # Load coordinates
+#' # Load coordinate data
 #' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 #'                               package = "SpNeigh"))
-#' head(coords)
 #'
-#' # Obtain cells in cluster 2 and focus on these cells
-#' cells_c2 <- subset(coords, cluster==2)[,"cell"]
+#' # Cells in cluster 2
+#' cells_c2 <- subset(coords, cluster == 2)[, "cell"]
 #'
-#' # Obtain and plot centroid weights
+#' # Compute centroid weights and plot
 #' weights_cen <- ComputeCentroidWeights(data = coords, cell_ids = cells_c2)
 #' PlotWeights(data = coords, weights = weights_cen)
 #'
-#' # Obtain and plot boundary weights
+#' # Compute boundary weights and plot
 #' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
 #' weights_bon <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c2,
 #'                                       boundary = boundary_points)
@@ -33,38 +36,39 @@ PlotWeights <- function(data = NULL,
                         weights = NULL,
                         point_size = 0.2,
                         theme_ggplot = my_theme_ggplot()) {
-  # Extract coordinates from data
-  if( inherits(data,"Seurat") ){
+  # Extract spatial coordinates
+  if (is(data, "Seurat")) {
     sp_coords <- Seurat::GetTissueCoordinates(data)
-  }else{
+  } else {
     sp_coords <- data
   }
 
   if (!all(c("cell", "x", "y") %in% colnames(sp_coords))) {
-    stop("data must contain columns: 'cell', 'x', and 'y'")
+    stop("`data` must contain columns: 'cell', 'x', and 'y'")
   }
 
   if (is.null(names(weights))) {
-    stop("weights must be a named numeric vector with cell IDs as names")
+    stop("`weights` must be a named numeric vector with cell IDs as names")
   }
 
-  # Match weights to sp_coords using cell IDs
+  # Match weights to spatial coordinates
   matched_idx <- match(sp_coords$cell, names(weights))
   matched_weights <- weights[matched_idx]
 
-  # Remove unmatched cells (NA weights)
+  # Filter out unmatched cells
   keep <- !is.na(matched_weights)
   plot_df <- sp_coords[keep, ]
   plot_df$weights <- matched_weights[keep]
 
   if (nrow(plot_df) == 0) {
-    stop("No matching cell IDs between 'data' and 'weights'")
+    stop("No matching cell IDs between `data` and `weights`")
   }
 
-  # Plot
+  # Generate plot
   ggplot2::ggplot(plot_df, ggplot2::aes(x = .data$x, y = .data$y, color = weights)) +
     ggplot2::geom_point(size = point_size) +
     ggplot2::scale_color_viridis_c(option = "plasma", name = "Weight") +
     theme_ggplot
 }
+
 

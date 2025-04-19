@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotStats.R
 \name{PlotStatsPie}
 \alias{PlotStatsPie}
-\title{Pie chart or donut chart of statistics of cells inside boundaries or rings}
+\title{Pie chart or donut chart of cluster proportions inside spatial regions}
 \usage{
 PlotStatsPie(
   cell_stats = NULL,
@@ -16,47 +16,44 @@ PlotStatsPie(
 )
 }
 \arguments{
-\item{cell_stats}{Statistics of cells returned by \code{StatsCellsInside()}.}
+\item{cell_stats}{A data frame containing cluster statistics per region, typically
+the output from \code{StatsCellsInside()}. Must include columns \code{region_id}, \code{cluster}, and \code{proportion}.}
 
-\item{plot_donut}{A logical value indicates whether to make a donut chart. Default is FALSE.}
+\item{plot_donut}{Logical. If \code{TRUE}, a donut chart is generated; otherwise, a pie chart. Default is \code{FALSE}.}
 
-\item{add_labels}{A logical value indicates whether to add percentage labels inside the plot. Default is TRUE.}
+\item{add_labels}{Logical. If \code{TRUE}, percentage labels are displayed inside each slice. Default is \code{TRUE}.}
 
-\item{label_cutoff}{Labels of proportion smaller than this cutoff will not be plotted. Default is 0.01 (or 1\%). Set it to 0 to plot labels of all percentages.}
+\item{label_cutoff}{Numeric. Proportional threshold below which labels are hidden (e.g., \code{0.01} = 1\%). Default is \code{0.01}.}
 
-\item{label_color}{Color of the percentage labels.}
+\item{label_color}{Character. Color of the percentage labels. Default is \code{"white"}.}
 
-\item{label_size}{Text size of the percentage labels.}
+\item{label_size}{Numeric. Text size for percentage labels. Default is \code{4}.}
 
-\item{label_nudge_x}{Nudge x coordinate to adjust positions for the percentage labels.}
+\item{label_nudge_x}{Numeric. Horizontal adjustment for label positioning. Default is \code{0.1}.}
 
 \item{colors}{A vector of cluster colors. Default uses \code{my_colors_15}.}
 }
+\value{
+A \code{ggplot2} object representing a faceted pie or donut chart per spatial region.
+}
 \description{
-Pie chart or donut chart of statistics of cells inside boundaries or rings
+Generates pie or donut charts to visualize the proportion of cells from different clusters
+within each spatial region (e.g., boundary or ring). The plot is faceted by \code{region_id}
+to show the composition of each spatial subregion. Optionally, percentage labels can be added
+with filtering based on a minimum proportion threshold.
 }
 \examples{
-# Load coordinates
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
                               package = "SpNeigh"))
-head(coords)
 
-# Obtain statistics of cells inside boundaries
 boundary_points <- GetBoundary(data = coords, one_cluster = 2,
                                eps = 120, minPts = 10)
-cells_inside <- GetCellsInside(data = coords, boundary =  boundary_points)
-stats_cells = StatsCellsInside(cells_inside)
+cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
+stats_cells <- StatsCellsInside(cells_inside)
 
-# Plot proportion using pie chart without adding percentage labels
 PlotStatsPie(stats_cells, add_labels = FALSE)
-
-# Plot proportion using pie chart showing labels of all percentages
 PlotStatsPie(stats_cells, label_cutoff = 0)
-
-# Plot proportion using pie chart showing labels of percentages greater than 1\%
 PlotStatsPie(stats_cells, label_cutoff = 0.01)
-
-# Plot proportion using donut chart
 PlotStatsPie(stats_cells, plot_donut = TRUE)
 
 }

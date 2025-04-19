@@ -2,29 +2,30 @@
 % Please edit documentation in R/StatsCellsInside.R
 \name{StatsCellsInside}
 \alias{StatsCellsInside}
-\title{Statistics of cells inside boundaries or rings}
+\title{Summarize cell counts and proportions inside spatial regions}
 \usage{
 StatsCellsInside(cells_inside = NULL)
 }
 \arguments{
-\item{cells_inside}{A sf object. \code{cells_inside} is returned by \code{GetCellsInside}.}
+\item{cells_inside}{An \code{sf} object of cells returned by \code{GetCellsInside()}. Must contain \code{cluster} and \code{region_id} columns.}
 }
 \description{
-Statistics of cells inside boundaries or rings
+Computes the number and proportion of cells from each cluster inside boundaries or ring regions.
+This function is useful for downstream visualizations such as bar plots or pie charts
+showing the spatial composition of cell types per region.
 }
 \examples{
-# Load coordinates
+# Load coordinates data
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
                               package = "SpNeigh"))
-head(coords)
 
-# Get cells inside boundaries
+# Get boundary and cells inside
 boundary_points <- GetBoundary(data = coords, one_cluster = 2,
                                eps = 120, minPts = 10)
-cells_inside <- GetCellsInside(data = coords, boundary =  boundary_points)
+cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
 
-# Statistics of cells inside boundaries
-stats_cells = StatsCellsInside(cells_inside)
+# Summarize cluster statistics per region
+stats_cells <- StatsCellsInside(cells_inside)
 head(stats_cells)
 
 }
