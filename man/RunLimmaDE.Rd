@@ -51,9 +51,9 @@ Performs differential expression analysis between two groups of cells using the
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds", package = "SpNeigh"))
 logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds", package = "SpNeigh"))
 
-# Subset cells from cluster 0 and 6
+# Subset cells from cluster 0 and 2
 cells_ref <- subset(coords, cluster == 0)$cell
-cells_tar <- subset(coords, cluster == 6)$cell
+cells_tar <- subset(coords, cluster == 2)$cell
 
 # Run differential expression with minimum expression threshold
 tab <- RunLimmaDE(exp_mat = logNorm_expr,
