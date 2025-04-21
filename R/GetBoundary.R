@@ -129,39 +129,27 @@ ExtractCoords <- function(data = NULL){
 #'                               package = "SpNeigh"))
 #' head(coords)
 #'
-#' # Get boundary points of cluster 1 using dbscan method by default
+#' # Get boundary points of cluster 1
 #' boundary_points <- GetBoundary(data = coords, one_cluster = 1)
-#'
-#' # An example of data in the boundary_points data.frame
 #' head(boundary_points)
 #'
 #' # Number of subregions
 #' table(boundary_points$region_id)
 #'
-#' # Plot coordinates without boundaries
-#' PlotBoundary(coords)
-#'
-#' # Plot boundary points of cluster 1
-#' plot(boundary_points[,c("x","y")], pch=16, cex=0.3)
-#'
-#' # Plot boundary polygon of cluster 1
-#' PlotBoundary(coords, one_cluster = 1)
-#'
 #' # Get boundary points of cluster 1 using kmeans method
 #' # and manually specify subregion number
-#' boundary_points <- GetBoundary(data = coords, one_cluster = 1,
+#' boundary_points <- GetBoundary(data = coords,
+#'                                one_cluster = 1,
 #'                                subregion_method = "kmeans",
 #'                                n_subregions = 2)
 #' table(boundary_points$region_id)
-#' plot(boundary_points[,c("x","y")], pch=16, cex=0.3)
 #'
-#' # Get boundary points of cluster 1 using concaveman hull method.
-#' # region_id is set to 1 but it is not meaningful for this method.
-#' boundary_points <- GetBoundary(data = coords, one_cluster = 1,
+#' # Get boundary points of cluster 1 without multiple regions
+#' boundary_points <- GetBoundary(data = coords,
+#'                                one_cluster = 1,
 #'                                multi_region = FALSE)
 #' table(boundary_points$region_id)
-#' plot(boundary_points[,c("x","y")], pch=16, cex=0.3)
-
+#'
 GetBoundary <- function(data = NULL,
                         one_cluster = NULL,
                         k = 5,
