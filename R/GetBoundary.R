@@ -86,8 +86,10 @@ RemoveOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 ExtractCoords <- function(data = NULL){
   # If data is a Seurat object, extract the coordinates and cluster information
   if( is(data,"Seurat") ){
-    sp_coords <- Seurat::GetTissueCoordinates(data)
-    sp_coords <- cbind.data.frame(sp_coords, cluster=data$seurat_clusters)
+    sp_coords <- Seurat::GetTissueCoordinates(data)[,c("x","y")]
+    sp_coords <- cbind.data.frame(sp_coords,
+                                  cell = colnames(data),
+                                  cluster=data$seurat_clusters)
   }else{
     required_cols <- c("x", "y", "cell",  "cluster")
     if (!all(required_cols %in% colnames(data))) {
