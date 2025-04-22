@@ -62,13 +62,18 @@ RemoveOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 
 #' Extract spatial coordinates and cluster information
 #'
-#' Extracts a spatial coordinate data frame from either a Seurat object or a user-supplied data frame.
-#' If a Seurat object is provided, the function retrieves the tissue coordinates along with cell cluster identities.
-#' If a data frame is provided, it is returned as-is, after verifying that it contains the required columns.
+#' This function extracts a spatial coordinate data frame from either a Seurat object
+#' or a user-supplied data frame. When a Seurat object is provided, it retrieves
+#' tissue coordinates (`x`, `y`) and optionally the cluster identities (e.g., `seurat_clusters`).
+#' When a data frame is provided, it is returned as-is after checking that it contains
+#' the required columns.
 #'
-#' @importFrom methods is
-#' @param data Either a Seurat object or a data frame with columns: `x`, `y`, `cell` and `cluster`.
-#' @return A data frame with columns `x`, `y`, `cell`, and `cluster` representing spatial cell coordinates and cluster assignments.
+#' @param data A Seurat object or a data frame with columns: `x`, `y`, `cell`, and `cluster`.
+#' @param extract_cluster Logical. Whether to extract the `seurat_clusters` column from the
+#'        Seurat object when available. Ignored if `data` is a data frame. Default is `TRUE`.
+#'
+#' @return A data frame with columns `x`, `y`, `cell`, and optionally `cluster`,
+#'         representing spatial coordinates and cluster assignments.
 #'
 #' @export
 #' @examples
@@ -83,13 +88,15 @@ RemoveOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 #' head(ExtractCoords(coords))
 #'
 
-ExtractCoords <- function(data = NULL){
+ExtractCoords <- function(data = NULL, extract_cluster = TRUE){
   # If data is a Seurat object, extract the coordinates and cluster information
   if( is(data,"Seurat") ){
     sp_coords <- Seurat::GetTissueCoordinates(data)[,c("x","y")]
-    sp_coords <- cbind.data.frame(sp_coords,
-                                  cell = colnames(data),
-                                  cluster=data$seurat_clusters)
+    sp_coords <- cbind.data.frame(sp_coords, cell = colnames(data))
+
+    if(extract_cluster){
+      sp_coords$cluster <- data$seurat_clusters}
+
   }else{
     required_cols <- c("x", "y", "cell",  "cluster")
     if (!all(required_cols %in% colnames(data))) {

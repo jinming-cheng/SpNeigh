@@ -21,7 +21,7 @@ PlotBoundary(
 )
 }
 \arguments{
-\item{data}{Either a Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell} and \code{cluster}.}
+\item{data}{A Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
 
 \item{one_cluster}{The cluster ID to plot and optionally compute its boundary.
 Required if \code{sub_plot = TRUE} and \code{boundary} is not provided.}

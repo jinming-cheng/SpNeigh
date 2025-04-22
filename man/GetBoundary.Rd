@@ -17,7 +17,7 @@ GetBoundary(
 )
 }
 \arguments{
-\item{data}{Either a Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell} and \code{cluster}.}
+\item{data}{A Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
 
 \item{one_cluster}{The cluster ID (numeric or character) to extract the boundary for.}
 

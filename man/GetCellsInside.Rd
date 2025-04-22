@@ -7,7 +7,7 @@
 GetCellsInside(data = NULL, boundary = NULL)
 }
 \arguments{
-\item{data}{Either a Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell} and \code{cluster}.}
+\item{data}{A Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
 
 \item{boundary}{An \code{sf} object (polygon or ring) or a data frame of boundary points
 returned by \code{GetBoundary()}, \code{BuildBoundaryPoly()}, or \code{GetRingRegion()}.}

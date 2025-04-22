@@ -4,18 +4,24 @@
 \alias{ExtractCoords}
 \title{Extract spatial coordinates and cluster information}
 \usage{
-ExtractCoords(data = NULL)
+ExtractCoords(data = NULL, extract_cluster = TRUE)
 }
 \arguments{
-\item{data}{Either a Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell} and \code{cluster}.}
+\item{data}{A Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
+
+\item{extract_cluster}{Logical. Whether to extract the \code{seurat_clusters} column from the
+Seurat object when available. Ignored if \code{data} is a data frame. Default is \code{TRUE}.}
 }
 \value{
-A data frame with columns \code{x}, \code{y}, \code{cell}, and \code{cluster} representing spatial cell coordinates and cluster assignments.
+A data frame with columns \code{x}, \code{y}, \code{cell}, and optionally \code{cluster},
+representing spatial coordinates and cluster assignments.
 }
 \description{
-Extracts a spatial coordinate data frame from either a Seurat object or a user-supplied data frame.
-If a Seurat object is provided, the function retrieves the tissue coordinates along with cell cluster identities.
-If a data frame is provided, it is returned as-is, after verifying that it contains the required columns.
+This function extracts a spatial coordinate data frame from either a Seurat object
+or a user-supplied data frame. When a Seurat object is provided, it retrieves
+tissue coordinates (\code{x}, \code{y}) and optionally the cluster identities (e.g., \code{seurat_clusters}).
+When a data frame is provided, it is returned as-is after checking that it contains
+the required columns.
 }
 \examples{
 # Load coordinates

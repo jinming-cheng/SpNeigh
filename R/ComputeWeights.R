@@ -37,7 +37,7 @@ ComputeCentroidWeights <- function(data = NULL,
 
   # Extract coordinates from data
   if( is(data,"Seurat") ){
-    sp_coords <- Seurat::GetTissueCoordinates(data)
+    sp_coords <- ExtractCoords(data, extract_cluster = FALSE)
   }else{
     sp_coords <- data
   }
@@ -127,8 +127,8 @@ ComputeBoundaryWeights <- function(data = NULL,
   method <- match.arg(method)
 
   # Extract coordinates
-  if (inherits(data, "Seurat")) {
-    sp_coords <- Seurat::GetTissueCoordinates(data)
+  if (is(data, "Seurat")) {
+    sp_coords <- ExtractCoords(data, extract_cluster = FALSE)
   } else {
     sp_coords <- data
   }

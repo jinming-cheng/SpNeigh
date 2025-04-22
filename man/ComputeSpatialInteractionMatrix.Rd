@@ -7,7 +7,7 @@
 ComputeSpatialInteractionMatrix(data = NULL, k = 10)
 }
 \arguments{
-\item{data}{Either a Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell} and \code{cluster}.}
+\item{data}{A Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
 
 \item{k}{Integer. Number of nearest neighbors to use for each cell. Default is 10.}
 }

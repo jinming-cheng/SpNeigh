@@ -21,7 +21,7 @@ PlotExpression(
 )
 }
 \arguments{
-\item{data}{Either a Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell} and \code{cluster}.}
+\item{data}{A Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
 
 \item{exp_mat}{A gene expression matrix (genes x cells) of class \code{matrix} or \code{dgCMatrix}.
 If \code{data} is a Seurat object, the matrix will be extracted automatically using \code{Seurat::GetAssayData()}.}

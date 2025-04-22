@@ -38,7 +38,7 @@ PlotWeights <- function(data = NULL,
                         theme_ggplot = my_theme_ggplot()) {
   # Extract spatial coordinates
   if (is(data, "Seurat")) {
-    sp_coords <- Seurat::GetTissueCoordinates(data)
+    sp_coords <- ExtractCoords(data, extract_cluster = FALSE)
   } else {
     sp_coords <- data
   }
