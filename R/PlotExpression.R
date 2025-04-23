@@ -109,13 +109,10 @@ PlotExpression <- function(data = NULL,
 
     p[[i]] <- ggplot2::ggplot(plot_data,
                               ggplot2::aes(x = .data$x, y = .data$y,
-                                           fill = !!rlang::sym(i),
                                            color = !!rlang::sym(i))) +
-      ggplot2::geom_point(shape = 21, size = point_size) +
+      ggplot2::geom_point(size = point_size) +
       theme_ggplot +
-      ggplot2::scale_fill_viridis_c(option = "plasma") +
       ggplot2::scale_color_viridis_c(option = "plasma") +
-      ggplot2::guides(color = "none") +
       ggplot2::theme(axis.text.x =
                        ggplot2::element_text(angle = angle_x_label, hjust = 1))
 
