@@ -53,9 +53,9 @@ PlotInteractionMatrix <- function(interaction_matrix,
     tibble::rownames_to_column("Focal") %>%
     tidyr::pivot_longer(-.data$Focal, names_to = "Neighbor", values_to = "Zscore")
 
-  # Factorize Focal and Neighbor with natural ordering
-  df_long$Focal <- FactorNaturalOrder(df_long$Focal)
-  df_long$Neighbor <- FactorNaturalOrder(df_long$Neighbor)
+  # Keep raw orders
+  df_long$Focal <- factor(df_long$Focal, levels = rownames(interaction_matrix))
+  df_long$Neighbor <- factor(df_long$Neighbor, levels = colnames(interaction_matrix))
 
   # Plot
   ggplot2::ggplot(df_long, ggplot2::aes(x = .data$Neighbor, y = .data$Focal,
