@@ -130,3 +130,97 @@ PlotExpression <- function(data = NULL,
     return(patchwork::wrap_plots(p))
   }
 }
+
+
+#' Plot average gene expression along spatial distance
+#'
+#' Visualizes how the average expression of specified genes varies along a spatial distance gradient.
+#' The spatial distance is binned, and the average expression within each bin is plotted as a heatmap.
+#'
+#' @inheritParams PlotExpression
+#' @inheritParams PlotBoundary
+#' @inheritParams RunSpatialDE
+#' @importFrom rlang .data
+#'
+#' @param n_bins Integer. Number of bins to divide the spatial distance into. Default is 50.
+#' @param n_labels Integer. Number of axis labels to show along the distance axis. Default is 6.
+#' @param row_gap Numeric between 0 (inclusive) and 1 (exclusive). Gap between rows (genes) in the plot. Default is 0.
+#' @param column_gap Numeric between 0 (inclusive) and 1 (exclusive). Gap between columns (distance bins) in the plot. Default is 0.
+#' @param label_x Character. Label for the x-axis. Default is "Spatial distance".
+#' @param label_y Character. Label for the y-axis. Default is "Gene".
+#'
+#' @return A ggplot2 object displaying a heatmap of binned average gene expression across spatial distances.
+#'
+#' @export
+#'
+#' @examples
+#' # Example spatial expression heatmap
+#' set.seed(1)
+#' exp_mat <- matrix(runif(1000), nrow = 10)
+#' rownames(exp_mat) <- paste0("Gene", 1:10)
+#' spatial_distance <- runif(100)
+#' PlotSpatialExpression(exp_mat = exp_mat,
+#'                       spatial_distance = spatial_distance,
+#'                       genes = rownames(exp_mat)[1:5])
+#'
+
+PlotSpatialExpression <- function(exp_mat = NULL,
+                                  spatial_distance = NULL,
+                                  genes = NULL,
+                                  n_bins = 50,
+                                  n_labels = 6,
+                                  row_gap = 0,
+                                  column_gap = 0,
+                                  label_x = "Spatial distance",
+                                  label_y = "Gene",
+                                  theme_ggplot = my_theme_ggplot()) {
+
+  # --- Checks ---
+  if (!(row_gap >= 0 & row_gap < 1)) {
+    stop("`row_gap` must be a numeric value in the interval [0,1).")
+  }
+  if (!(column_gap >= 0 & column_gap < 1)) {
+    stop("`column_gap` must be a numeric value in the interval [0,1).")
+  }
+  if (ncol(exp_mat) != length(spatial_distance)) {
+    stop("Number of columns in `exp_mat` must match length of `spatial_distance`.")
+  }
+  if (is.null(genes)) {
+    stop("`genes` must be specified.")
+  }
+
+  # --- Prepare Data ---
+  df <- data.frame(t(as.matrix(exp_mat[genes, , drop = FALSE])),
+                   distance = spatial_distance)
+
+  df_long <- df %>%
+    tidyr::pivot_longer(cols = -distance, names_to = "gene", values_to = "expression") %>%
+    dplyr::mutate(bin = cut(distance, breaks = n_bins, include.lowest = TRUE)) %>%
+    dplyr::group_by(gene, bin) %>%
+    dplyr::summarise(avg_expression = mean(expression),
+                     avg_distance = mean(distance),
+                     .groups = "drop")
+
+  # --- Label setup for x-axis ---
+  df_labels <- df_long %>%
+    dplyr::select(bin, avg_distance) %>%
+    dplyr::distinct() %>%
+    dplyr::arrange(avg_distance)
+
+  bin_indices <- round(seq(1, nrow(df_labels), length.out = n_labels))
+  df_labels$label <- ""
+  df_labels$label[bin_indices] <- round(df_labels$avg_distance[bin_indices], 2)
+
+  # --- Plot ---
+  p <- ggplot2::ggplot(df_long,
+                       ggplot2::aes(x = .data$bin, y = .data$gene, fill = .data$avg_expression)) +
+    ggplot2::geom_tile(width = 1 - column_gap, height = 1 - row_gap) +
+    ggplot2::scale_x_discrete(breaks = df_labels$bin, labels = df_labels$label) +
+    ggplot2::scale_fill_viridis_c(option = "plasma", name = "AvgExp") +
+    ggplot2::labs(x = label_x, y = label_y) +
+    theme_ggplot
+
+  return(p)
+}
+
+
