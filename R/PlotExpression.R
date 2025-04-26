@@ -137,15 +137,15 @@ PlotExpression <- function(data = NULL,
 #' Visualizes how the average expression of specified genes varies along a spatial distance gradient.
 #' The spatial distance is binned, and the average expression within each bin is plotted as a heatmap.
 #'
-#' @inheritParams PlotExpression
-#' @inheritParams PlotBoundary
 #' @inheritParams RunSpatialDE
+#' @inheritParams PlotBoundary
 #' @importFrom rlang .data
-#'
-#' @param n_bins Integer. Number of bins to divide the spatial distance into. Default is 50.
-#' @param n_labels Integer. Number of axis labels to show along the distance axis. Default is 6.
-#' @param row_gap Numeric between 0 (inclusive) and 1 (exclusive). Gap between rows (genes) in the plot. Default is 0.
-#' @param column_gap Numeric between 0 (inclusive) and 1 (exclusive). Gap between columns (distance bins) in the plot. Default is 0.
+#' @param spatial_distance	 A named numeric vector containing the spatial distance (or weights) for each cell.
+#' @param genes Character vector specifying gene names to be plotted. Must match row names in `exp_mat`.
+#' @param n_bins Integer. Number of bins to divide the spatial distance into. Default is `50`.
+#' @param n_labels Integer. Number of axis labels to show along the distance axis. Default is `6`.
+#' @param row_gap Numeric between 0 (inclusive) and 1 (exclusive). Gap between rows (genes) in the plot. Default is `0.1`.
+#' @param column_gap Numeric between 0 (inclusive) and 1 (exclusive). Gap between columns (distance bins) in the plot. Default is `0`.
 #' @param label_x Character. Label for the x-axis. Default is "Spatial distance".
 #' @param label_y Character. Label for the y-axis. Default is "Gene".
 #'
@@ -169,13 +169,16 @@ PlotSpatialExpression <- function(exp_mat = NULL,
                                   genes = NULL,
                                   n_bins = 50,
                                   n_labels = 6,
-                                  row_gap = 0,
+                                  row_gap = 0.1,
                                   column_gap = 0,
                                   label_x = "Spatial distance",
                                   label_y = "Gene",
                                   theme_ggplot = my_theme_ggplot()) {
 
   # --- Checks ---
+  if (is.null(exp_mat) || !inherits(exp_mat, c("matrix", "dgCMatrix"))) {
+    stop("`exp_mat` must be a numeric matrix or dgCMatrix (genes x cells).")
+  }
   if (!(row_gap >= 0 & row_gap < 1)) {
     stop("`row_gap` must be a numeric value in the interval [0,1).")
   }
@@ -185,8 +188,8 @@ PlotSpatialExpression <- function(exp_mat = NULL,
   if (ncol(exp_mat) != length(spatial_distance)) {
     stop("Number of columns in `exp_mat` must match length of `spatial_distance`.")
   }
-  if (is.null(genes)) {
-    stop("`genes` must be specified.")
+  if (!all(genes %in% rownames(exp_mat))) {
+    stop("One or more specified genes are not found in `exp_mat`.")
   }
 
   # --- Prepare Data ---
@@ -194,28 +197,31 @@ PlotSpatialExpression <- function(exp_mat = NULL,
                    distance = spatial_distance)
 
   df_long <- df %>%
-    tidyr::pivot_longer(cols = -distance, names_to = "gene", values_to = "expression") %>%
-    dplyr::mutate(bin = cut(distance, breaks = n_bins, include.lowest = TRUE)) %>%
-    dplyr::group_by(gene, bin) %>%
-    dplyr::summarise(avg_expression = mean(expression),
-                     avg_distance = mean(distance),
+    tidyr::pivot_longer(cols = -.data$distance, names_to = "gene", values_to = "expression") %>%
+    dplyr::mutate(bin = cut(.data$distance, breaks = n_bins, include.lowest = TRUE)) %>%
+    dplyr::group_by(.data$gene, .data$bin) %>%
+    dplyr::summarise(avg_expression = mean(.data$expression),
+                     avg_distance = mean(.data$distance),
                      .groups = "drop")
 
   # --- Label setup for x-axis ---
   df_labels <- df_long %>%
-    dplyr::select(bin, avg_distance) %>%
+    dplyr::select(.data$bin, .data$avg_distance) %>%
     dplyr::distinct() %>%
-    dplyr::arrange(avg_distance)
+    dplyr::arrange(.data$avg_distance)
 
   bin_indices <- round(seq(1, nrow(df_labels), length.out = n_labels))
   df_labels$label <- ""
   df_labels$label[bin_indices] <- round(df_labels$avg_distance[bin_indices], 2)
+  df_labels <- dplyr::filter(df_labels, .data$label != "")
 
   # --- Plot ---
   p <- ggplot2::ggplot(df_long,
-                       ggplot2::aes(x = .data$bin, y = .data$gene, fill = .data$avg_expression)) +
+                       ggplot2::aes(x = .data$bin, y = .data$gene,
+                                    fill = .data$avg_expression)) +
     ggplot2::geom_tile(width = 1 - column_gap, height = 1 - row_gap) +
-    ggplot2::scale_x_discrete(breaks = df_labels$bin, labels = df_labels$label) +
+    ggplot2::scale_x_discrete(breaks = df_labels$bin,
+                              labels = df_labels$label) +
     ggplot2::scale_fill_viridis_c(option = "plasma", name = "AvgExp") +
     ggplot2::labs(x = label_x, y = label_y) +
     theme_ggplot

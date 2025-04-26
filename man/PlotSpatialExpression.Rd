@@ -10,7 +10,7 @@ PlotSpatialExpression(
   genes = NULL,
   n_bins = 50,
   n_labels = 6,
-  row_gap = 0,
+  row_gap = 0.1,
   column_gap = 0,
   label_x = "Spatial distance",
   label_y = "Gene",
@@ -18,21 +18,20 @@ PlotSpatialExpression(
 )
 }
 \arguments{
-\item{exp_mat}{A gene expression matrix (genes x cells) of class \code{matrix} or \code{dgCMatrix}.
-If \code{data} is a Seurat object, the matrix will be extracted automatically using \code{Seurat::GetAssayData()}.}
+\item{exp_mat}{A normalized gene expression matrix (genes x cells), either a \code{matrix} or \code{dgCMatrix}.
+Typically log-normalized counts, e.g., from a Seurat object.}
 
-\item{spatial_distance}{A named numeric vector containing the spatial distance (or weights) for each cell.
-Must be the same length as \code{cell_ids}. Scaled distances are recommended.}
+\item{spatial_distance}{A named numeric vector containing the spatial distance (or weights) for each cell.}
 
 \item{genes}{Character vector specifying gene names to be plotted. Must match row names in \code{exp_mat}.}
 
-\item{n_bins}{Integer. Number of bins to divide the spatial distance into. Default is 50.}
+\item{n_bins}{Integer. Number of bins to divide the spatial distance into. Default is \code{50}.}
 
-\item{n_labels}{Integer. Number of axis labels to show along the distance axis. Default is 6.}
+\item{n_labels}{Integer. Number of axis labels to show along the distance axis. Default is \code{6}.}
 
-\item{row_gap}{Numeric between 0 (inclusive) and 1 (exclusive). Gap between rows (genes) in the plot. Default is 0.}
+\item{row_gap}{Numeric between 0 (inclusive) and 1 (exclusive). Gap between rows (genes) in the plot. Default is \code{0.1}.}
 
-\item{column_gap}{Numeric between 0 (inclusive) and 1 (exclusive). Gap between columns (distance bins) in the plot. Default is 0.}
+\item{column_gap}{Numeric between 0 (inclusive) and 1 (exclusive). Gap between columns (distance bins) in the plot. Default is \code{0}.}
 
 \item{label_x}{Character. Label for the x-axis. Default is "Spatial distance".}
 
