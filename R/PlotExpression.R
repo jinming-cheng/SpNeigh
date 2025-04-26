@@ -139,6 +139,7 @@ PlotExpression <- function(data = NULL,
 #'
 #' @inheritParams RunSpatialDE
 #' @inheritParams PlotBoundary
+#' @importFrom magrittr %>%
 #' @importFrom rlang .data
 #' @param spatial_distance	 A named numeric vector containing the spatial distance (or weights) for each cell.
 #' @param genes Character vector specifying gene names to be plotted. Must match row names in `exp_mat`.
@@ -203,6 +204,7 @@ PlotSpatialExpression <- function(exp_mat = NULL,
     dplyr::summarise(avg_expression = mean(.data$expression),
                      avg_distance = mean(.data$distance),
                      .groups = "drop")
+  df_long$gene <- factor(df_long$gene, levels = genes)
 
   # --- Label setup for x-axis ---
   df_labels <- df_long %>%
