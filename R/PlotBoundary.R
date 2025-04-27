@@ -64,6 +64,11 @@ PlotBoundary <- function(data = NULL,
   # Extract coordinates from data
   sp_coords <- ExtractCoords(data = data)
 
+  # Ensure cluster is a factor with ordered levels if not provided
+  if(is.null(levels(sp_coords$cluster))){
+    sp_coords$cluster <- FactorNaturalOrder(sp_coords$cluster)
+  }
+
   # Auto-generate boundary if needed
   if (is.null(boundary) && !is.null(one_cluster)) {
     boundary <- GetBoundary(data = sp_coords, one_cluster = one_cluster, ...)
