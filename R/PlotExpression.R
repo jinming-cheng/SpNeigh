@@ -54,6 +54,7 @@ PlotExpression <- function(data = NULL,
                            one_cluster = NULL,
                            sub_cells = NULL,
                            split_by = NULL,
+                           ncol = NULL,
                            return_list = FALSE,
                            point_size = 0.2,
                            angle_x_label = 0,
@@ -120,7 +121,7 @@ PlotExpression <- function(data = NULL,
       if (!(split_by %in% colnames(plot_data))) {
         stop("`split_by` must be a column in the input data.")
       }
-      p[[i]] <- p[[i]] + ggplot2::facet_wrap(stats::as.formula(paste("~", split_by)))
+      p[[i]] <- p[[i]] + ggplot2::facet_wrap(stats::as.formula(paste("~", split_by)), ncol = ncol)
     }
   }
 

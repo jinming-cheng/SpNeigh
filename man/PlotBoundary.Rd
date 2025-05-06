@@ -14,6 +14,7 @@ PlotBoundary(
   linewidth_boundary = 1.5,
   sub_plot = FALSE,
   split_by = NULL,
+  ncol = NULL,
   angle_x_label = 0,
   theme_ggplot = my_theme_ggplot(),
   legend_size = 2,
@@ -41,6 +42,8 @@ or an \code{sf} object of \code{POLYGON} or \code{LINESTRING} geometries.}
 If \code{FALSE} (default), all clusters are plotted.}
 
 \item{split_by}{Optional column name in \code{data} to facet the plot by (e.g., sample, condition).}
+
+\item{ncol}{Number of columns in the faceted plot when \code{split_by} is used. Passed to \code{ggplot2::facet_wrap()}. Default is \code{NULL}, which lets ggplot2 determine layout automatically.}
 
 \item{angle_x_label}{Numeric angle (in degrees) to rotate the x-axis labels.
 Useful for improving label readability in faceted or dense plots.

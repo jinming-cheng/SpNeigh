@@ -12,6 +12,7 @@ PlotExpression(
   one_cluster = NULL,
   sub_cells = NULL,
   split_by = NULL,
+  ncol = NULL,
   return_list = FALSE,
   point_size = 0.2,
   angle_x_label = 0,
@@ -37,6 +38,8 @@ Default is \code{FALSE}.}
 If both \code{one_cluster} and \code{sub_cells} are provided, the intersection is used.}
 
 \item{split_by}{Optional. Column name in the metadata (from \code{data}) to facet the plots (e.g., by \code{cluster}).}
+
+\item{ncol}{Number of columns in the faceted plot when \code{split_by} is used. Passed to \code{ggplot2::facet_wrap()}. Default is \code{NULL}, which lets ggplot2 determine layout automatically.}
 
 \item{return_list}{Logical. If \code{TRUE}, returns a named list of individual ggplot objects per gene.
 If \code{FALSE} (default), plots are wrapped into a single patchwork layout.}

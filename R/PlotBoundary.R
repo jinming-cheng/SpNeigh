@@ -21,6 +21,7 @@
 #' @param sub_plot Logical. If `TRUE`, only cells from the specified `one_cluster` are plotted.
 #'        If `FALSE` (default), all clusters are plotted.
 #' @param split_by Optional column name in `data` to facet the plot by (e.g., sample, condition).
+#' @param ncol Number of columns in the faceted plot when `split_by` is used. Passed to `ggplot2::facet_wrap()`. Default is `NULL`, which lets ggplot2 determine layout automatically.
 #' @param angle_x_label Numeric angle (in degrees) to rotate the x-axis labels.
 #'        Useful for improving label readability in faceted or dense plots.
 #'        Default is 0 (no rotation).
@@ -56,6 +57,7 @@ PlotBoundary <- function(data = NULL,
                          linewidth_boundary = 1.5,
                          sub_plot = FALSE,
                          split_by = NULL,
+                         ncol = NULL,
                          angle_x_label = 0,
                          theme_ggplot = my_theme_ggplot(),
                          legend_size = 2,
@@ -106,7 +108,7 @@ PlotBoundary <- function(data = NULL,
 
   # Make faceted plots if split_by is provided
   if (!is.null(split_by) && split_by %in% colnames(data_for_plot)) {
-    p <- p + ggplot2::facet_wrap(stats::as.formula(paste("~", split_by)))
+    p <- p + ggplot2::facet_wrap(stats::as.formula(paste("~", split_by)), ncol = ncol)
   }
 
   return(p)
