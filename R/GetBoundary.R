@@ -174,12 +174,26 @@ GetBoundary <- function(data = NULL,
   # Extract coordinates from data
   sp_coords <- ExtractCoords(data = data)
 
+  # Check existence of one_cluster parameter
+  if (is.null(one_cluster)) {
+    stop("`one_cluster` must be specified.")
+  }
+
+  if (!(one_cluster %in% sp_coords$cluster)) {
+    stop("`one_cluster` must exist in the `cluster` column of the input data.")
+  }
+
   # Obtain coordinates of the target cluster
   coords_sub <- dplyr::filter(sp_coords,.data$cluster == one_cluster)
 
   # Remove outlier points
   clean_df <- RemoveOutliers(coords_sub[, c("x", "y")], k = k,
                               distance_cutoff = distance_cutoff)
+
+  # Check existence of filtered cells
+  if (nrow(clean_df) == 0) {
+    stop("All cells were removed as outliers. Consider increasing `distance_cutoff` in the `RemoveOutliers` function to retain more cells.")
+  }
 
   # Get smooth boundary using concave hull
   hull <- concaveman::concaveman(as.matrix(clean_df[, c("x", "y")]))
@@ -212,6 +226,11 @@ GetBoundary <- function(data = NULL,
     })
 
     all_boundaries <- dplyr::bind_rows(boundary_list)
+
+    # Check existence of sub-boundary regions
+    if (nrow(all_boundaries) == 0) {
+      stop("No subregions were detected. Please adjust the parameters `eps` and `minPts` for the DBSCAN method, or `n_subregions` for the k-means method when `multi_region = TRUE`. Alternatively, set `multi_region = FALSE` to disable subregion detection.")
+    }
 
     # Rename V1 and V2 as x and y, respectively
     all_boundaries <- dplyr::rename(all_boundaries, x = "V1", y="V2")
