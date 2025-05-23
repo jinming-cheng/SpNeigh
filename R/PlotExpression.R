@@ -145,6 +145,13 @@ PlotExpression <- function(data = NULL,
 #' @param spatial_distance	 A named numeric vector containing the spatial distance (or weights) for each cell.
 #' @param genes Character vector specifying gene names to be plotted. Must match row names in `exp_mat`.
 #' @param n_bins Integer. Number of bins to divide the spatial distance into. Default is `50`.
+#' @param scale_method A string indicating how to scale the average expression values across bins for each gene.
+#' Options are:
+#' \describe{
+#'   \item{\code{"none"}}{No scaling (default). The average expression is plotted as-is.}
+#'   \item{\code{"zscore"}}{Standardize expression (mean 0, SD 1) per gene using \code{scale()}.}
+#'   \item{\code{"minmax"}}{Normalize expression to \[0, 1\] range per gene using \code{scales::rescale()}.}
+#' }
 #' @param n_labels Integer. Number of axis labels to show along the distance axis. Default is `6`.
 #' @param row_gap Numeric between 0 (inclusive) and 1 (exclusive). Gap between rows (genes) in the plot. Default is `0.1`.
 #' @param column_gap Numeric between 0 (inclusive) and 1 (exclusive). Gap between columns (distance bins) in the plot. Default is `0`.
@@ -170,6 +177,7 @@ PlotSpatialExpression <- function(exp_mat = NULL,
                                   spatial_distance = NULL,
                                   genes = NULL,
                                   n_bins = 50,
+                                  scale_method = c("none", "zscore", "minmax"),
                                   n_labels = 6,
                                   row_gap = 0.1,
                                   column_gap = 0,
@@ -194,6 +202,8 @@ PlotSpatialExpression <- function(exp_mat = NULL,
     stop("One or more specified genes are not found in `exp_mat`.")
   }
 
+  scale_method <- match.arg(scale_method)
+
   # --- Prepare Data ---
   df <- data.frame(t(as.matrix(exp_mat[genes, , drop = FALSE])),
                    distance = spatial_distance)
@@ -206,6 +216,18 @@ PlotSpatialExpression <- function(exp_mat = NULL,
                      avg_distance = mean(.data$distance),
                      .groups = "drop")
   df_long$gene <- factor(df_long$gene, levels = genes)
+
+  # Optionally scale average expression
+  if (scale_method != "none") {
+    df_long <- df_long %>%
+      dplyr::group_by(.data$gene) %>%
+      dplyr::mutate(avg_expression = dplyr::case_when(
+        scale_method == "zscore" ~ as.numeric(scale(.data$avg_expression)),
+        scale_method == "minmax" ~ scales::rescale(.data$avg_expression, to = c(0, 1)),
+        TRUE ~ .data$avg_expression
+      )) %>%
+      dplyr::ungroup()
+  }
 
   # --- Label setup for x-axis ---
   df_labels <- df_long %>%
@@ -225,9 +247,18 @@ PlotSpatialExpression <- function(exp_mat = NULL,
     ggplot2::geom_tile(width = 1 - column_gap, height = 1 - row_gap) +
     ggplot2::scale_x_discrete(breaks = df_labels$bin,
                               labels = df_labels$label) +
-    ggplot2::scale_fill_viridis_c(option = "plasma", name = "AvgExp") +
+    ggplot2::scale_fill_viridis_c(option = "plasma") +
     ggplot2::labs(x = label_x, y = label_y) +
     theme_ggplot
+
+  # Set fill label based on scale method
+  fill_label <- switch(scale_method,
+                       "none" = "AvgExp",
+                       "zscore" = "Z-scored",
+                       "minmax" = "Scaled [0,1]"
+  )
+
+  p <- p + ggplot2::labs(fill = fill_label)
 
   return(p)
 }

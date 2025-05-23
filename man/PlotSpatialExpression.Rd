@@ -9,6 +9,7 @@ PlotSpatialExpression(
   spatial_distance = NULL,
   genes = NULL,
   n_bins = 50,
+  scale_method = c("none", "zscore", "minmax"),
   n_labels = 6,
   row_gap = 0.1,
   column_gap = 0,
@@ -26,6 +27,14 @@ Typically log-normalized counts, e.g., from a Seurat object.}
 \item{genes}{Character vector specifying gene names to be plotted. Must match row names in \code{exp_mat}.}
 
 \item{n_bins}{Integer. Number of bins to divide the spatial distance into. Default is \code{50}.}
+
+\item{scale_method}{A string indicating how to scale the average expression values across bins for each gene.
+Options are:
+\describe{
+\item{\code{"none"}}{No scaling (default). The average expression is plotted as-is.}
+\item{\code{"zscore"}}{Standardize expression (mean 0, SD 1) per gene using \code{scale()}.}
+\item{\code{"minmax"}}{Normalize expression to [0, 1] range per gene using \code{scales::rescale()}.}
+}}
 
 \item{n_labels}{Integer. Number of axis labels to show along the distance axis. Default is \code{6}.}
 
