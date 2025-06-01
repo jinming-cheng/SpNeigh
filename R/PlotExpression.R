@@ -23,7 +23,6 @@
 #'        If `FALSE` (default), plots are wrapped into a single patchwork layout.
 #' @param point_size Numeric. Size of plotted points. Default is `0.2`.
 #' @param shuffle Logical. If `TRUE`, shuffles cell order before plotting. Otherwise, cells with higher expression are plotted on top. Default is `FALSE`.
-#' @param seed Optional seed for reproducibility when `shuffle = TRUE`. Default is `123`.
 #'
 #' @return A `patchwork` object or a list of ggplot objects if `return_list = TRUE`.
 #' @export
@@ -40,6 +39,7 @@
 #' exp_mat <- t(exp_mat)
 #' colnames(exp_mat) <- df$cell
 #'
+#' set.seed(123)
 #' PlotExpression(data = df, exp_mat = exp_mat,
 #'                genes = c("gene1", "gene2"), point_size = 2)
 #'
@@ -59,7 +59,6 @@ PlotExpression <- function(data = NULL,
                            point_size = 0.2,
                            angle_x_label = 0,
                            shuffle = FALSE,
-                           seed = 123,
                            theme_ggplot = my_theme_ggplot()) {
 
   # Automatically extract expression matrix from Seurat object
@@ -102,7 +101,6 @@ PlotExpression <- function(data = NULL,
   p <- list()
   for (i in genes) {
     plot_data <- if (shuffle) {
-      set.seed(seed)
       data_for_plot[sample(nrow(data_for_plot)), ]
     } else {
       dplyr::arrange(data_for_plot, .data[[i]])
@@ -142,7 +140,7 @@ PlotExpression <- function(data = NULL,
 #' @inheritParams PlotBoundary
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
-#' @param spatial_distance	 A named numeric vector containing the spatial distance (or weights) for each cell.
+#' @param spatial_distance A named numeric vector containing the spatial distance (or weights) for each cell.
 #' @param genes Character vector specifying gene names to be plotted. Must match row names in `exp_mat`.
 #' @param n_bins Integer. Number of bins to divide the spatial distance into. Default is `50`.
 #' @param scale_method A string indicating how to scale the average expression values across bins for each gene.
@@ -209,31 +207,28 @@ PlotSpatialExpression <- function(exp_mat = NULL,
                    distance = spatial_distance)
 
   df_long <- df %>%
-    tidyr::pivot_longer(cols = -.data$distance, names_to = "gene", values_to = "expression") %>%
-    dplyr::mutate(bin = cut(.data$distance, breaks = n_bins, include.lowest = TRUE)) %>%
+    tidyr::pivot_longer(cols = -.data$distance,
+                        names_to = "gene", values_to = "expression") %>%
+    dplyr::mutate(bin = cut(.data$distance,
+                            breaks = n_bins, include.lowest = TRUE)) %>%
     dplyr::group_by(.data$gene, .data$bin) %>%
     dplyr::summarise(avg_expression = mean(.data$expression),
-                     avg_distance = mean(.data$distance),
-                     .groups = "drop")
+                     avg_distance = mean(.data$distance), .groups = "drop")
   df_long$gene <- factor(df_long$gene, levels = genes)
 
   # Optionally scale average expression
   if (scale_method != "none") {
-    df_long <- df_long %>%
-      dplyr::group_by(.data$gene) %>%
+    df_long <- df_long %>% dplyr::group_by(.data$gene) %>%
       dplyr::mutate(avg_expression = dplyr::case_when(
         scale_method == "zscore" ~ as.numeric(scale(.data$avg_expression)),
         scale_method == "minmax" ~ scales::rescale(.data$avg_expression, to = c(0, 1)),
         TRUE ~ .data$avg_expression
-      )) %>%
-      dplyr::ungroup()
+      )) %>% dplyr::ungroup()
   }
 
   # --- Label setup for x-axis ---
-  df_labels <- df_long %>%
-    dplyr::select(.data$bin, .data$avg_distance) %>%
-    dplyr::distinct() %>%
-    dplyr::arrange(.data$avg_distance)
+  df_labels <- df_long %>% dplyr::select(.data$bin, .data$avg_distance) %>%
+    dplyr::distinct() %>% dplyr::arrange(.data$avg_distance)
 
   bin_indices <- round(seq(1, nrow(df_labels), length.out = n_labels))
   df_labels$label <- ""
@@ -241,22 +236,18 @@ PlotSpatialExpression <- function(exp_mat = NULL,
   df_labels <- dplyr::filter(df_labels, .data$label != "")
 
   # --- Plot ---
-  p <- ggplot2::ggplot(df_long,
-                       ggplot2::aes(x = .data$bin, y = .data$gene,
-                                    fill = .data$avg_expression)) +
+  p <- ggplot2::ggplot(df_long, ggplot2::aes(x = .data$bin, y = .data$gene,
+                                             fill = .data$avg_expression)) +
     ggplot2::geom_tile(width = 1 - column_gap, height = 1 - row_gap) +
-    ggplot2::scale_x_discrete(breaks = df_labels$bin,
-                              labels = df_labels$label) +
+    ggplot2::scale_x_discrete(breaks = df_labels$bin, labels = df_labels$label) +
     ggplot2::scale_fill_viridis_c(option = "plasma") +
-    ggplot2::labs(x = label_x, y = label_y) +
-    theme_ggplot
+    ggplot2::labs(x = label_x, y = label_y) + theme_ggplot
 
   # Set fill label based on scale method
   fill_label <- switch(scale_method,
                        "none" = "AvgExp",
                        "zscore" = "Z-scored",
-                       "minmax" = "Scaled [0,1]"
-  )
+                       "minmax" = "Scaled [0,1]")
 
   p <- p + ggplot2::labs(fill = fill_label)
 
