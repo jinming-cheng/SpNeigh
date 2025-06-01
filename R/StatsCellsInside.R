@@ -8,6 +8,15 @@
 #' @inheritParams PlotCellsInside
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
+#'
+#' @return A data frame with one row per cluster per region, containing the following columns:
+#' \itemize{
+#'   \item \code{region_id}: Identifier for each spatial region.
+#'   \item \code{cluster}: Cluster label of the cells.
+#'   \item \code{count}: Number of cells from the given cluster in the region.
+#'   \item \code{proportion}: Proportion of cells from the given cluster relative to the total number of cells in the region.
+#' }
+#'
 #' @export
 #' @examples
 #' # Load coordinates data

@@ -2,7 +2,10 @@ Package: SpNeigh
 Title: Weighted Spatial Neighborhood Analysis for Transcriptomics
 Version: 0.8.0
 Authors@R: 
-    person("Jinming", "Cheng", email="cheng.j@wehi.edu.au", role = c("aut", "cre"),
+    person(given = "Jinming", 
+           family = "Cheng", 
+           email="jinming.cheng@outlook.com", 
+           role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-3806-4694"))
 Description: SpNeigh provides methods for neighborhood-aware spatial transcriptomics analysis. 
     It supports boundary detection, spatial weighting (centroid- and boundary-based), 
@@ -34,3 +37,13 @@ Imports:
     stringr,
     tibble,
     tidyr
+Suggests: 
+    BiocStyle,
+    knitr,
+    rmarkdown
+biocViews: Spatial, SingleCell, GeneExpression, DifferentialExpression, Transcriptomics, Software
+URL: https://github.com/jinming-cheng/SpNeigh
+BugReports: https://github.com/jinming-cheng/SpNeigh/issues
+Depends: 
+    R (>= 4.4.0)
+VignetteBuilder: knitr

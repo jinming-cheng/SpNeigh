@@ -259,7 +259,7 @@ SplineDesign <- function(x, df = 3) {
   # Orthonormalize via QR decomposition
   QR <- qr(A)
   r <- QR$rank
-  R_rank <- QR$qr[1:r, 1:r]
+  R_rank <- QR$qr[seq(from = 1, to = r), seq(from = 1, to = r)]
   Z <- t(backsolve(R_rank, t(A), transpose = TRUE))
 
   # Remove intercept column

@@ -46,7 +46,7 @@ ComputeSpatialInteractionMatrix <- function(data = NULL, k = 10) {
   knn <- FNN::get.knn(sp_coords[, c("x", "y")], k = k)
 
   # Build long-format neighbor dataframe
-  knn_df <- lapply(1:nrow(knn$nn.index), function(i) {
+  knn_df <- lapply(seq_len(nrow(knn$nn.index)), function(i) {
     neighbors <- knn$nn.index[i, ]
     data.frame(
       cell = sp_coords$cell[i],

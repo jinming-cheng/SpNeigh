@@ -76,7 +76,7 @@ SafeColorPalette <- function(n_clusters,
   n_base <- length(base_colors)
 
   if (n_clusters <= n_base) {
-    return(base_colors[1:n_clusters])
+    return(base_colors[seq_len(n_clusters)])
   }
 
   # Generate extended palette using scales::hue_pal()
@@ -86,7 +86,7 @@ SafeColorPalette <- function(n_clusters,
     scales::hue_pal()(extra_needed)
   )
 
-  if (verbose) {
+  if (verbose){
     message(sprintf("Note: %d base colors provided. Generated %d additional colors using `scales::hue_pal()` (total = %d) to match %d clusters.",
                     n_base, extra_needed, n_clusters, n_clusters))
   }

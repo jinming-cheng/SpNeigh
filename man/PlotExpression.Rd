@@ -17,7 +17,6 @@ PlotExpression(
   point_size = 0.2,
   angle_x_label = 0,
   shuffle = FALSE,
-  seed = 123,
   theme_ggplot = my_theme_ggplot()
 )
 }
@@ -52,8 +51,6 @@ Default is 0 (no rotation).}
 
 \item{shuffle}{Logical. If \code{TRUE}, shuffles cell order before plotting. Otherwise, cells with higher expression are plotted on top. Default is \code{FALSE}.}
 
-\item{seed}{Optional seed for reproducibility when \code{shuffle = TRUE}. Default is \code{123}.}
-
 \item{theme_ggplot}{A ggplot2 theme object. Default is \code{my_theme_ggplot()}.}
 }
 \value{
@@ -78,6 +75,7 @@ exp_mat <- data.frame(
 exp_mat <- t(exp_mat)
 colnames(exp_mat) <- df$cell
 
+set.seed(123)
 PlotExpression(data = df, exp_mat = exp_mat,
                genes = c("gene1", "gene2"), point_size = 2)
 

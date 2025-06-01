@@ -14,6 +14,13 @@ RemoveOutliers(coords, k = 5, distance_cutoff = 30)
 \item{distance_cutoff}{A numeric threshold on the average distance to neighbors.
 Cells with a higher mean distance will be removed. Default is 30.}
 }
+\value{
+A data frame containing the filtered coordinates with an additional column:
+\itemize{
+\item \code{mean_knn_dist}: The average distance to the \code{k} nearest neighbors for each point.
+}
+Only points with a \code{mean_knn_dist} less than the specified \code{distance_cutoff} are retained.
+}
 \description{
 Identifies and removes spatial outliers based on local density. For each cell,
 the average distance to its k nearest neighbors is computed. Cells with a mean
