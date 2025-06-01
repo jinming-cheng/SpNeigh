@@ -11,7 +11,7 @@ author:
                The University of Melbourne, 
                Parkville, VIC 3010, 
                Australia
-    # email: cheng.j@wehi.edu.au
+    # email: jinming.cheng@outlook.com
     
 
 date: "`r format(Sys.time(), '%d %B, %Y')`"
@@ -34,7 +34,7 @@ knitr::opts_chunk$set(
     comment = "#>",
     out.width = "100%",
     dev = "png",
-    dpi = 300,
+    dpi = 72,
     fig.height = 6 * 0.7,
     fig.width = 8 * 0.7
 )
@@ -46,7 +46,7 @@ knitr::opts_chunk$set(
 The **SpNeigh** package provides a flexible and interpretable framework for 
 analyzing spatial neighborhoods in high-resolution spatial 
 transcriptomics data. 
-Designed with support for technologies such as 10x Xenium, Vizgen MERFISH,  
+Designed with support for technologies such as 10x Xenium, Vizgen MERFISH,
 and 10x Visium HD, The **SpNeigh** facilitates a range of region-aware and 
 distance-aware analyses. Key features include boundary detection, 
 spatial weight calculation based on proximity to structural landmarks 
