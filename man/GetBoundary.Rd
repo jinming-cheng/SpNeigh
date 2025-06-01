@@ -17,40 +17,57 @@ GetBoundary(
 )
 }
 \arguments{
-\item{data}{A Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
+\item{data}{A Seurat object or a data frame with
+columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
 
-\item{one_cluster}{The cluster ID (numeric or character) to extract the boundary for.}
+\item{one_cluster}{The cluster ID (numeric or character) to extract
+the boundary for.}
 
-\item{k}{The number of nearest neighbors to use for computing local distances. Default is 5.}
+\item{k}{The number of nearest neighbors to use for computing
+local distances. Default is 5.}
 
-\item{distance_cutoff}{A numeric threshold on the average distance to neighbors.
-Cells with a higher mean distance will be removed. Default is 30.}
+\item{distance_cutoff}{A numeric threshold on the average distance
+to neighbors. Cells with a higher mean distance
+will be removed. Default is 30.}
 
-\item{multi_region}{Logical. If \code{TRUE}, identifies multiple spatial subregions within the cluster. Default is \code{TRUE}.}
+\item{multi_region}{Logical. If \code{TRUE}, identifies multiple spatial
+subregions within the cluster. Default is \code{TRUE}.}
 
-\item{subregion_method}{Subregion detection method when \code{multi_region = TRUE}. Choose from \code{"dbscan"} (automatic) or \code{"kmeans"} (manual). Default is \code{"dbscan"}.}
+\item{subregion_method}{Subregion detection method when
+\code{multi_region = TRUE}. Choose from \code{"dbscan"} (automatic)
+or \code{"kmeans"} (manual). Default is \code{"dbscan"}.}
 
-\item{eps}{Neighborhood radius for DBSCAN subregion detection. Only used if \code{subregion_method = "dbscan"}. Default is 80.}
+\item{eps}{Neighborhood radius for DBSCAN subregion detection.
+Only used if \code{subregion_method = "dbscan"}. Default is 80.}
 
-\item{minPts}{Minimum number of points for DBSCAN core point. Only used if \code{subregion_method = "dbscan"}. Default is 10.}
+\item{minPts}{Minimum number of points for DBSCAN core point.
+Only used if \code{subregion_method = "dbscan"}.
+Default is 10.}
 
-\item{n_subregions}{Number of subregions to use if \code{subregion_method = "kmeans"}. Default is 3.}
+\item{n_subregions}{Number of subregions to use if
+\code{subregion_method = "kmeans"}. Default is 3.}
 }
 \value{
-A data frame containing boundary points with columns \code{x}, \code{y}, and \code{region_id}.
-If \code{multi_region = TRUE}, multiple boundaries are returned and labeled by \code{region_id}.
+A data frame containing boundary points with
+columns \code{x}, \code{y}, and \code{region_id}.
+If \code{multi_region = TRUE}, multiple boundaries are returned
+and labeled by \code{region_id}.
 Otherwise, a single boundary is returned with \code{region_id = 1}.
 }
 \description{
-Identifies and returns smoothed spatial boundary points for a specified cell cluster or population
-using a concave hull algorithm. The function supports both single-region and multi-region boundaries.
-In multi-region mode, subregions can be detected automatically via DBSCAN or manually using k-means clustering.
-Outlier cells are first removed using a k-nearest neighbor distance filter to ensure boundary smoothness.
+Identifies and returns smoothed spatial boundary points for a specified
+cell cluster or population using a concave hull algorithm.
+The function supports both single-region and multi-region boundaries.
+In multi-region mode, subregions can be detected automatically via
+DBSCAN or manually using k-means clustering.
+Outlier cells are first removed using a k-nearest neighbor distance
+filter to ensure boundary smoothness.
 }
 \examples{
 # Load coordinates
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-                              package = "SpNeigh"))
+    package = "SpNeigh"
+))
 head(coords)
 
 # Get boundary points of cluster 1
@@ -62,16 +79,20 @@ table(boundary_points$region_id)
 
 # Get boundary points of cluster 1 using kmeans method
 # and manually specify subregion number
-boundary_points <- GetBoundary(data = coords,
-                               one_cluster = 1,
-                               subregion_method = "kmeans",
-                               n_subregions = 2)
+boundary_points <- GetBoundary(
+    data = coords,
+    one_cluster = 1,
+    subregion_method = "kmeans",
+    n_subregions = 2
+)
 table(boundary_points$region_id)
 
 # Get boundary points of cluster 1 without multiple regions
-boundary_points <- GetBoundary(data = coords,
-                               one_cluster = 1,
-                               multi_region = FALSE)
+boundary_points <- GetBoundary(
+    data = coords,
+    one_cluster = 1,
+    multi_region = FALSE
+)
 table(boundary_points$region_id)
 
 }

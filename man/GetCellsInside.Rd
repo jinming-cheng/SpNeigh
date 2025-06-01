@@ -7,36 +7,44 @@
 GetCellsInside(data = NULL, boundary = NULL)
 }
 \arguments{
-\item{data}{A Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
+\item{data}{A Seurat object or a data frame with
+columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
 
-\item{boundary}{An \code{sf} object (polygon or ring) or a data frame of boundary points
-returned by \code{GetBoundary()}, \code{BuildBoundaryPoly()}, or \code{GetRingRegion()}.}
+\item{boundary}{An \code{sf} object (polygon or ring) or a data frame
+of boundary points returned by \code{GetBoundary()},
+\code{BuildBoundaryPoly()}, or \code{GetRingRegion()}.}
 }
 \value{
-A data frame (tibble) of cells located inside the given spatial region(s),
-with region assignment in a \code{region_id} column.
+A data frame (tibble) of cells located inside the
+given spatial region(s), with region assignment in
+a \code{region_id} column.
 }
 \description{
-Returns the subset of cells from the input data that fall spatially within a given boundary or ring.
-The boundary can be provided either as raw boundary points (from \code{GetBoundary()}), as polygons
-(from \code{BuildBoundaryPoly()}), or as ring regions (from \code{GetRingRegion()}).
+Returns the subset of cells from the input data that fall spatially
+within a given boundary or ring.
+The boundary can be provided either as raw boundary points
+(from \code{GetBoundary()}), as polygons (from \code{BuildBoundaryPoly()}),
+or as ring regions (from \code{GetRingRegion()}).
 The function uses spatial point-in-polygon matching via \code{sf::st_within}.
 }
 \examples{
 # Load coordinates
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-                              package = "SpNeigh"))
+    package = "SpNeigh"
+))
 head(coords)
 
 # Get cells inside boundaries
-boundary_points <- GetBoundary(data = coords, one_cluster = 2,
-                               eps = 120, minPts = 10)
-cells_inside <- GetCellsInside(data = coords, boundary =  boundary_points)
+boundary_points <- GetBoundary(
+    data = coords, one_cluster = 2,
+    eps = 120, minPts = 10
+)
+cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
 cells_inside
 
 # Get cells inside rings
 ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-cells_ring <- GetCellsInside(data = coords, boundary =  ring_regions)
+cells_ring <- GetCellsInside(data = coords, boundary = ring_regions)
 cells_ring
 
 }

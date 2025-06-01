@@ -22,53 +22,66 @@ PlotBoundary(
 )
 }
 \arguments{
-\item{data}{A Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
+\item{data}{A Seurat object or a data frame with
+columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
 
-\item{one_cluster}{The cluster ID to plot and optionally compute its boundary.
-Required if \code{sub_plot = TRUE} and \code{boundary} is not provided.}
+\item{one_cluster}{The cluster ID to plot and optionally compute its
+boundary. Required if \code{sub_plot = TRUE} and \code{boundary}
+is not provided.}
 
 \item{boundary}{A data frame with columns \code{x}, \code{y}, and \code{region_id}
 or an \code{sf} object of \code{POLYGON} or \code{LINESTRING} geometries.}
 
 \item{colors}{A vector of cluster colors. Default uses \code{my_colors_15}.}
 
-\item{point_size}{Numeric. Size of the points representing cells. Default is 0.5.}
+\item{point_size}{Numeric. Size of the points representing cells.
+Default is 0.5.}
 
 \item{color_boundary}{Color for boundary lines. Default is \code{"black"}.}
 
-\item{linewidth_boundary}{Numeric. Line width for boundary outlines. Default is 1.5.}
+\item{linewidth_boundary}{Numeric. Line width for boundary outlines.
+Default is 1.5.}
 
-\item{sub_plot}{Logical. If \code{TRUE}, only cells from the specified \code{one_cluster} are plotted.
+\item{sub_plot}{Logical. If \code{TRUE}, only cells from the specified
+\code{one_cluster} are plotted.
 If \code{FALSE} (default), all clusters are plotted.}
 
-\item{split_by}{Optional column name in \code{data} to facet the plot by (e.g., sample, condition).}
+\item{split_by}{Optional column name in \code{data} to facet the plot by
+(e.g., sample, condition).}
 
-\item{ncol}{Number of columns in the faceted plot when \code{split_by} is used. Passed to \code{ggplot2::facet_wrap()}. Default is \code{NULL}, which lets ggplot2 determine layout automatically.}
+\item{ncol}{Number of columns in the faceted plot when \code{split_by} is used.
+Passed to \code{ggplot2::facet_wrap()}. Default is \code{NULL},
+which lets ggplot2 determine layout automatically.}
 
 \item{angle_x_label}{Numeric angle (in degrees) to rotate the x-axis labels.
-Useful for improving label readability in faceted or dense plots.
-Default is 0 (no rotation).}
+Useful for improving label readability in faceted
+or dense plots. Default is 0 (no rotation).}
 
 \item{theme_ggplot}{A ggplot2 theme object. Default is \code{my_theme_ggplot()}.}
 
 \item{legend_size}{Numeric. Size of legend keys. Default is 2.}
 
-\item{...}{Additional arguments passed to \code{GetBoundary()} when auto-generating boundaries.}
+\item{...}{Additional arguments passed to \code{GetBoundary()}
+when auto-generating boundaries.}
 }
 \value{
-A ggplot object displaying the spatial layout of cells, with optional boundary overlays.
+A ggplot object displaying the spatial layout of cells,
+with optional boundary overlays.
 }
 \description{
-Plots spatial cell locations and overlays cluster or population boundaries if available.
-If \code{boundary} is not provided and \code{one_cluster} is specified, the boundary will be automatically
-generated using the \code{GetBoundary()} function. This function supports plotting either all clusters
-or a specific cluster using \code{sub_plot = TRUE}. Boundaries can be overlaid as polygons to visualize
-spatial subregions.
+Plots spatial cell locations and overlays cluster or population boundaries
+if available.
+If \code{boundary} is not provided and \code{one_cluster} is specified, the boundary
+will be automatically generated using the \code{GetBoundary()} function.
+This function supports plotting either all clusters
+or a specific cluster using \code{sub_plot = TRUE}. Boundaries can be overlaid
+as polygons to visualize spatial subregions.
 }
 \examples{
 # Load coordinates
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-                              package = "SpNeigh"))
+    package = "SpNeigh"
+))
 head(coords)
 
 # Plot all cells without boundaries
@@ -78,8 +91,10 @@ PlotBoundary(coords)
 PlotBoundary(coords, one_cluster = 2)
 
 # Manually compute boundary and plot
-boundary_points <- GetBoundary(data = coords, one_cluster = 2,
-                               eps = 120, minPts = 10)
+boundary_points <- GetBoundary(
+    data = coords, one_cluster = 2,
+    eps = 120, minPts = 10
+)
 PlotBoundary(data = coords, boundary = boundary_points)
 
 }

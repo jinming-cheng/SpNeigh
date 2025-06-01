@@ -14,14 +14,17 @@ PlotRegion(
 )
 }
 \arguments{
-\item{boundary_poly}{An \code{sf} object of \code{POLYGON} geometries containing a \code{region_id} column.
-Typically created by \code{BuildBoundaryPoly()} or \code{GetRingRegion()}.}
+\item{boundary_poly}{An \code{sf} object of \code{POLYGON} geometries
+containing a \code{region_id} column. Typically created by
+\code{BuildBoundaryPoly()} or \code{GetRingRegion()}.}
 
-\item{alpha}{Numeric value controlling the transparency of the filled regions. Default is \code{0.5}.}
+\item{alpha}{Numeric value controlling the transparency of the filled
+regions. Default is \code{0.5}.}
 
 \item{color_boundary}{Color of the region outlines. Default is \code{"black"}.}
 
-\item{linewidth_boundary}{Numeric line width of the region borders. Default is \code{1}.}
+\item{linewidth_boundary}{Numeric line width of the region borders.
+Default is \code{1}.}
 
 \item{theme_ggplot}{A ggplot2 theme object. Default is \code{my_theme_ggplot()}.}
 
@@ -31,18 +34,23 @@ Typically created by \code{BuildBoundaryPoly()} or \code{GetRingRegion()}.}
 A \code{ggplot} object displaying filled spatial regions by \code{region_id}.
 }
 \description{
-Creates a ggplot of spatial regions (e.g., subregions or ring areas) using filled polygons.
-Each region is automatically assigned a fill color based on its \code{region_id}. This function is
-commonly used to visualize the area inside spatial boundaries or surrounding rings, such as those
-created by \code{BuildBoundaryPoly()} or \code{GetRingRegion()}.
+Creates a ggplot of spatial regions (e.g., subregions or ring areas)
+using filled polygons.
+Each region is automatically assigned a fill color based on its \code{region_id}.
+This function is commonly used to visualize the area inside
+spatial boundaries or surrounding rings, such as those created by
+\code{BuildBoundaryPoly()} or \code{GetRingRegion()}.
 }
 \examples{
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-                              package = "SpNeigh"))
+    package = "SpNeigh"
+))
 
 # Plot filled boundary regions
-boundary_points <- GetBoundary(data = coords, one_cluster = 2,
-                               eps = 120, minPts = 10)
+boundary_points <- GetBoundary(
+    data = coords, one_cluster = 2,
+    eps = 120, minPts = 10
+)
 boundary_polys <- BuildBoundaryPoly(boundary_points)
 PlotRegion(boundary_poly = boundary_polys)
 

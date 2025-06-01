@@ -19,41 +19,57 @@ PlotSpatialExpression(
 )
 }
 \arguments{
-\item{exp_mat}{A normalized gene expression matrix (genes x cells), either a \code{matrix} or \code{dgCMatrix}.
+\item{exp_mat}{A normalized gene expression matrix (genes x cells),
+either a \code{matrix} or \code{dgCMatrix}.
 Typically log-normalized counts, e.g., from a Seurat object.}
 
-\item{spatial_distance}{A named numeric vector containing the spatial distance (or weights) for each cell.}
+\item{spatial_distance}{A named numeric vector containing the
+spatial distance (or weights) for each cell.}
 
-\item{genes}{Character vector specifying gene names to be plotted. Must match row names in \code{exp_mat}.}
+\item{genes}{Character vector specifying gene names to be plotted.
+Must match row names in \code{exp_mat}.}
 
-\item{n_bins}{Integer. Number of bins to divide the spatial distance into. Default is \code{50}.}
+\item{n_bins}{Integer. Number of bins to divide the spatial distance into.
+Default is \code{50}.}
 
-\item{scale_method}{A string indicating how to scale the average expression values across bins for each gene.
+\item{scale_method}{A string indicating how to scale the
+average expression values across bins for each gene.
 Options are:
 \describe{
-\item{\code{"none"}}{No scaling (default). The average expression is plotted as-is.}
-\item{\code{"zscore"}}{Standardize expression (mean 0, SD 1) per gene using \code{scale()}.}
-\item{\code{"minmax"}}{Normalize expression to [0, 1] range per gene using \code{scales::rescale()}.}
+\item{\code{"none"}}{No scaling (default). The average expression
+is plotted as-is.}
+\item{\code{"zscore"}}{Standardize expression (mean 0, SD 1)
+per gene using \code{scale()}.}
+\item{\code{"minmax"}}{Normalize expression to [0, 1] range per gene
+using \code{scales::rescale()}.}
 }}
 
-\item{n_labels}{Integer. Number of axis labels to show along the distance axis. Default is \code{6}.}
+\item{n_labels}{Integer. Number of axis labels to show along the
+distance axis. Default is \code{6}.}
 
-\item{row_gap}{Numeric between 0 (inclusive) and 1 (exclusive). Gap between rows (genes) in the plot. Default is \code{0.1}.}
+\item{row_gap}{Numeric between 0 (inclusive) and 1 (exclusive).
+Gap between rows (genes) in the plot. Default is \code{0.1}.}
 
-\item{column_gap}{Numeric between 0 (inclusive) and 1 (exclusive). Gap between columns (distance bins) in the plot. Default is \code{0}.}
+\item{column_gap}{Numeric between 0 (inclusive) and 1 (exclusive).
+Gap between columns (distance bins) in the plot.
+Default is \code{0}.}
 
-\item{label_x}{Character. Label for the x-axis. Default is "Spatial distance".}
+\item{label_x}{Character. Label for the x-axis.
+Default is "Spatial distance".}
 
 \item{label_y}{Character. Label for the y-axis. Default is "Gene".}
 
 \item{theme_ggplot}{A ggplot2 theme object. Default is \code{my_theme_ggplot()}.}
 }
 \value{
-A ggplot2 object displaying a heatmap of binned average gene expression across spatial distances.
+A ggplot2 object displaying a heatmap of binned
+average gene expression across spatial distances.
 }
 \description{
-Visualizes how the average expression of specified genes varies along a spatial distance gradient.
-The spatial distance is binned, and the average expression within each bin is plotted as a heatmap.
+Visualizes how the average expression of specified genes varies
+along a spatial distance gradient.
+The spatial distance is binned, and the average expression within
+each bin is plotted as a heatmap.
 }
 \examples{
 # Example spatial expression heatmap
@@ -61,8 +77,10 @@ set.seed(1)
 exp_mat <- matrix(runif(1000), nrow = 10)
 rownames(exp_mat) <- paste0("Gene", 1:10)
 spatial_distance <- runif(100)
-PlotSpatialExpression(exp_mat = exp_mat,
-                      spatial_distance = spatial_distance,
-                      genes = rownames(exp_mat)[1:5])
+PlotSpatialExpression(
+    exp_mat = exp_mat,
+    spatial_distance = spatial_distance,
+    genes = rownames(exp_mat)[1:5]
+)
 
 }

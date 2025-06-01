@@ -1,18 +1,21 @@
 Package: SpNeigh
 Title: Weighted Spatial Neighborhood Analysis for Transcriptomics
-Version: 0.8.0
+Version: 0.9.0
 Authors@R: 
     person(given = "Jinming", 
            family = "Cheng", 
            email="jinming.cheng@outlook.com", 
            role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-3806-4694"))
-Description: SpNeigh provides methods for neighborhood-aware spatial transcriptomics analysis. 
-    It supports boundary detection, spatial weighting (centroid- and boundary-based), 
-    spatially-informed differential expression using spline-based models, and spatial 
-    enrichment scoring via the Spatial Enrichment Index (SEI). Designed for seamless 
-    integration with Seurat objects and spatial data frames, SpNeigh enables interpretable 
-    and publication-quality analyses of spatial expression patterns.
+Description: SpNeigh provides methods for neighborhood-aware spatial 
+             transcriptomics analysis. It supports boundary detection, 
+             spatial weighting (centroid- and boundary-based), 
+             spatially-informed differential expression using spline-based 
+             models, and spatial enrichment scoring via the 
+             Spatial Enrichment Index (SEI). Designed for seamless 
+             integration with Seurat objects and spatial data frames, 
+             SpNeigh enables interpretable and publication-quality 
+             analyses of spatial expression patterns.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -41,7 +44,8 @@ Suggests:
     BiocStyle,
     knitr,
     rmarkdown
-biocViews: Spatial, SingleCell, GeneExpression, DifferentialExpression, Transcriptomics, Software
+biocViews: Spatial, SingleCell, GeneExpression, DifferentialExpression, 
+           Transcriptomics, Software
 URL: https://github.com/jinming-cheng/SpNeigh
 BugReports: https://github.com/jinming-cheng/SpNeigh/issues
 Depends: 

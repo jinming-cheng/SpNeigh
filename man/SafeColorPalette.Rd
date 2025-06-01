@@ -4,14 +4,16 @@
 \alias{SafeColorPalette}
 \title{Generate a safe color palette for discrete clusters}
 \usage{
-SafeColorPalette(n_clusters, base_colors = my_colors_15, verbose = TRUE)
+SafeColorPalette(n_clusters = NULL, base_colors = my_colors_15, verbose = TRUE)
 }
 \arguments{
 \item{n_clusters}{Number of unique clusters.}
 
-\item{base_colors}{A character vector of base colors. Default is \code{my_colors_15}.}
+\item{base_colors}{A character vector of base colors.
+Default is \code{my_colors_15}.}
 
-\item{verbose}{Logical. If \code{TRUE}, displays a message when extended colors are used. Default is \code{TRUE}.}
+\item{verbose}{Logical. If \code{TRUE}, displays a message when
+extended colors are used. Default is \code{TRUE}.}
 }
 \value{
 A character vector of colors of length \code{n_clusters}.

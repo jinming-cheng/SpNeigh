@@ -7,30 +7,38 @@
 StatsCellsInside(cells_inside = NULL)
 }
 \arguments{
-\item{cells_inside}{An \code{sf} object of cells returned by \code{GetCellsInside()}. Must contain \code{cluster} and \code{region_id} columns.}
+\item{cells_inside}{An \code{sf} object of cells returned by \code{GetCellsInside()}.
+Must contain \code{cluster} and \code{region_id} columns.}
 }
 \value{
-A data frame with one row per cluster per region, containing the following columns:
+A data frame with one row per cluster per region,
+containing the following columns:
 \itemize{
 \item \code{region_id}: Identifier for each spatial region.
 \item \code{cluster}: Cluster label of the cells.
 \item \code{count}: Number of cells from the given cluster in the region.
-\item \code{proportion}: Proportion of cells from the given cluster relative to the total number of cells in the region.
+\item \code{proportion}: Proportion of cells from the given cluster
+relative to the total number of cells
+in the region.
 }
 }
 \description{
-Computes the number and proportion of cells from each cluster inside boundaries or ring regions.
-This function is useful for downstream visualizations such as bar plots or pie charts
-showing the spatial composition of cell types per region.
+Computes the number and proportion of cells from each cluster
+inside boundaries or ring regions.
+This function is useful for downstream visualizations such as bar plots or
+pie charts showing the spatial composition of cell types per region.
 }
 \examples{
 # Load coordinates data
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-                              package = "SpNeigh"))
+    package = "SpNeigh"
+))
 
 # Get boundary and cells inside
-boundary_points <- GetBoundary(data = coords, one_cluster = 2,
-                               eps = 120, minPts = 10)
+boundary_points <- GetBoundary(
+    data = coords, one_cluster = 2,
+    eps = 120, minPts = 10
+)
 cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
 
 # Summarize cluster statistics per region

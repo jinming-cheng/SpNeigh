@@ -16,25 +16,31 @@ or an \code{sf} object of \code{POLYGON} or \code{LINESTRING} geometries.}
 
 \item{color_boundary}{Color for boundary lines. Default is \code{"black"}.}
 
-\item{linewidth_boundary}{Numeric. Line width for boundary outlines. Default is 1.5.}
+\item{linewidth_boundary}{Numeric. Line width for boundary outlines.
+Default is 1.5.}
 }
 \value{
 A \code{ggplot2::geom_path} layer that can be added to an existing plot.
 }
 \description{
-Overlays spatial boundaries (from points or polygons) onto a \code{ggplot2} object.
-The input can be either a data frame of boundary points or an \code{sf} object of \code{POLYGON} geometries.
-This function is typically used as an additive layer (\code{+ AddBoundary(...)}) in conjunction with
-a base plot created using \code{PlotBoundary()}.
+Overlays spatial boundaries (from points or polygons) onto
+a \code{ggplot2} object.
+The input can be either a data frame of boundary points or an \code{sf} object
+of \code{POLYGON} geometries.
+This function is typically used as an additive layer (\code{+ AddBoundary(...)})
+in conjunction with a base plot created using \code{PlotBoundary()}.
 }
 \examples{
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-                              package = "SpNeigh"))
+    package = "SpNeigh"
+))
 
 # Automatically get boundary for a cluster
-boundary_points <- GetBoundary(data = coords, one_cluster = 2,
-                               subregion_method = "dbscan",
-                               eps = 120, minPts = 10)
+boundary_points <- GetBoundary(
+    data = coords, one_cluster = 2,
+    subregion_method = "dbscan",
+    eps = 120, minPts = 10
+)
 
 # Plot with boundary overlay
 PlotBoundary(coords) + AddBoundary(boundary_points)

@@ -13,46 +13,67 @@ RunSpatialDE(
 )
 }
 \arguments{
-\item{exp_mat}{A normalized gene expression matrix (genes x cells), either a \code{matrix} or \code{dgCMatrix}.
+\item{exp_mat}{A normalized gene expression matrix (genes x cells),
+either a \code{matrix} or \code{dgCMatrix}.
 Typically log-normalized counts, e.g., from a Seurat object.}
 
-\item{cell_ids}{A character vector of cell IDs (column names of \code{exp_mat}) used for DE analysis.}
+\item{cell_ids}{A character vector of cell IDs (column names of \code{exp_mat})
+used for DE analysis.}
 
-\item{spatial_distance}{A named numeric vector containing the spatial distance (or weights) for each cell.
-Must be the same length as \code{cell_ids}. Scaled distances are recommended.}
+\item{spatial_distance}{A named numeric vector containing the spatial
+distance (or weights) for each cell.
+Must be the same length as \code{cell_ids}.
+Scaled distances are recommended.}
 
-\item{adj_p.value}{Adjusted p-value threshold for reporting differentially expressed genes. Default is \code{0.05}.}
+\item{adj_p.value}{Adjusted p-value threshold for reporting
+differentially expressed genes. Default is \code{0.05}.}
 
 \item{df}{Integer. Degrees of freedom for the spline basis. Default is 3.}
 }
 \value{
 A data frame of differentially expressed genes, including:
 \describe{
-\item{AveExpr, F, P.Value, adj.P.Val}{limma differential expression outputs}
-\item{Z1, Z2, Z3}{Spline coefficients (Z1 typically corresponds to linear trend)}
+\item{AveExpr, F, P.Value, adj.P.Val}{limma differential expression
+outputs}
+\item{Z1, Z2, Z3}{Spline coefficients (Z1 typically corresponds
+to linear trend)}
 \item{gene}{Gene name (from \code{exp_mat})}
 \item{trend}{"Positive" or "Negative" trend based on the sign of Z1}
 }
-The first spline coefficient (\code{Z1}) captures the main expression trend along the spatial distance.
+The first spline coefficient (\code{Z1}) captures the main expression trend
+along the spatial distance.
 }
 \description{
-Performs spatially-aware differential expression (DE) analysis by modeling gene expression
-as a smooth function of a continuous spatial covariate (e.g., distance to a boundary or centroid).
-Natural spline basis functions are used to capture non-linear trends in expression relative to spatial distance.
-This method is suitable for identifying genes whose expression varies continuously across spatial structures.
+Performs spatially-aware differential expression (DE) analysis by
+modeling gene expression as a smooth function of a continuous
+spatial covariate (e.g., distance to a boundary or centroid).
+Natural spline basis functions are used to capture non-linear trends
+in expression relative to spatial distance.
+This method is suitable for identifying genes whose expression varies
+continuously across spatial structures.
 }
 \examples{
 # Load example data
-coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds", package = "SpNeigh"))
-logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds", package = "SpNeigh"))
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+    package = "SpNeigh"
+))
+logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
+    package = "SpNeigh"
+))
 
 # Identify cluster-specific cells and compute spatial weights
 cells_c0 <- subset(coords, cluster == 0)$cell
 bon_c0 <- GetBoundary(data = coords, one_cluster = 0)
-weights <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c0, boundary = bon_c0)
+weights <- ComputeBoundaryWeights(
+    data = coords, cell_ids = cells_c0,
+    boundary = bon_c0
+)
 
 # Run spatial DE
-result <- RunSpatialDE(exp_mat = logNorm_expr, cell_ids = cells_c0, spatial_distance = weights)
+result <- RunSpatialDE(
+    exp_mat = logNorm_expr, cell_ids = cells_c0,
+    spatial_distance = weights
+)
 head(result)
 
 }

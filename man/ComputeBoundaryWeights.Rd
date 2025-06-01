@@ -14,27 +14,36 @@ ComputeBoundaryWeights(
 )
 }
 \arguments{
-\item{data}{A data frame or Seurat object containing spatial coordinates. Must include columns: \code{cell}, \code{x}, and \code{y}.}
+\item{data}{A data frame or Seurat object containing spatial coordinates.
+Must include columns: \code{cell}, \code{x}, and \code{y}.}
 
 \item{cell_ids}{A character vector of cell IDs to use for weight computation.}
 
-\item{boundary}{Either an \code{sf} object containing boundary geometries (POLYGON or LINESTRING),
-or a data frame of boundary points returned from \code{GetBoundary()}.}
+\item{boundary}{Either an \code{sf} object containing boundary geometries
+(POLYGON or LINESTRING), or a data frame of boundary points
+returned from \code{GetBoundary()}.}
 
-\item{scale}{Logical. Whether to scale distances to the range [0, 1] before applying decay functions. Default is \code{TRUE}.}
+\item{scale}{Logical. Whether to scale distances to the range [0, 1]
+before applying decay functions. Default is \code{TRUE}.}
 
-\item{method}{Decay function to convert distances to weights. One of: \code{"inverse"}, \code{"gaussian"}, \code{"linear"}, or \code{"quadratic"}.}
+\item{method}{Decay function to convert distances to weights.
+One of: \code{"inverse"}, \code{"gaussian"}, \code{"linear"},
+or \code{"quadratic"}.}
 
-\item{sigma}{Standard deviation for the Gaussian decay (used only if \code{method = "gaussian"}). Default is \code{0.5} (recommended for scaled distances).}
+\item{sigma}{Standard deviation for the Gaussian decay
+(used only if \code{method = "gaussian"}).
+Default is \code{0.5} (recommended for scaled distances).}
 }
 \value{
-A named numeric vector of weights, with names corresponding to \code{cell_ids}.
+A named numeric vector of weights, with names corresponding
+to \code{cell_ids}.
 }
 \description{
-Computes spatial weights for a subset of cells based on their Euclidean distance
-to the nearest boundary segment. This method supports both closed boundary polygons
-and open boundary edges (e.g., LINESTRINGs), and is useful for modeling
-proximity-based enrichment near anatomical or user-defined regions.
+Computes spatial weights for a subset of cells based on their Euclidean
+distance to the nearest boundary segment. This method supports both
+closed boundary polygons and open boundary edges (e.g., LINESTRINGs),
+and is useful for modeling proximity-based enrichment near anatomical
+or user-defined regions.
 }
 \details{
 Supports multiple decay methods for converting distance into weights.
@@ -42,7 +51,9 @@ Optionally scales distances to the [0, 1] range before computing weights.
 }
 \examples{
 # Load spatial coordinates
-coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds", package = "SpNeigh"))
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+    package = "SpNeigh"
+))
 
 # Get and build boundary polygons from cluster 2
 boundary_points <- GetBoundary(data = coords, one_cluster = 2)
@@ -50,12 +61,16 @@ boundary_polys <- BuildBoundaryPoly(boundary_points)
 
 # Compute weights to polygon boundary
 cells_c2 <- subset(coords, cluster == 2)$cell
-weights <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c2,
-                                  boundary = boundary_polys[1, ])
+weights <- ComputeBoundaryWeights(
+    data = coords, cell_ids = cells_c2,
+    boundary = boundary_polys[1, ]
+)
 
 # Compute weights to a specific boundary edge
 boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1, ])
-weights_edge <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c2,
-                                       boundary = boundary_edges[2, ])
+weights_edge <- ComputeBoundaryWeights(
+    data = coords, cell_ids = cells_c2,
+    boundary = boundary_edges[2, ]
+)
 
 }

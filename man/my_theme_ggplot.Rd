@@ -17,6 +17,6 @@ and adjusts text sizes and margins for better readability in figures.
 \examples{
 library(ggplot2)
 ggplot(mtcars, aes(mpg, wt)) +
-  geom_point() +
-  my_theme_ggplot()
+    geom_point() +
+    my_theme_ggplot()
 }

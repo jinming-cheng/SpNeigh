@@ -9,39 +9,48 @@ SplitBoundaryPolyByAnchor(boundary_poly = NULL, pt1 = NULL, pt2 = NULL)
 \arguments{
 \item{boundary_poly}{An sf POLYGON object.}
 
-\item{pt1}{A numeric vector of length 2 (x, y) or NULL. If NULL, the leftmost boundary point is used.}
+\item{pt1}{A numeric vector of length 2 (x, y) or NULL.
+If NULL, the leftmost boundary point is used.}
 
-\item{pt2}{A numeric vector of length 2 (x, y) or NULL. If NULL, the rightmost boundary point is used.}
+\item{pt2}{A numeric vector of length 2 (x, y) or NULL.
+If NULL, the rightmost boundary point is used.}
 }
 \value{
-An sf object with two LINESTRING features and a 'region_id' column indicating edge1 and edge2.
+An sf object with two LINESTRING features and a 'region_id' column
+indicating edge1 and edge2.
 }
 \description{
-This function takes an sf POLYGON object and two anchor points (or infers them)
-to split the polygon boundary into two LINESTRING edge segments.
+This function takes an sf POLYGON object and two anchor points
+(or infers them) to split the polygon boundary into
+two LINESTRING edge segments.
 }
 \examples{
 # Load coordinates
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-                              package = "SpNeigh"))
+    package = "SpNeigh"
+))
 head(coords)
 
 # Build boundary polygons from the boundary points
-boundary_points <- GetBoundary(data = coords, one_cluster = 2,
-                               subregion_method = "dbscan",
-                               eps = 120, minPts = 10)
+boundary_points <- GetBoundary(
+    data = coords, one_cluster = 2,
+    subregion_method = "dbscan",
+    eps = 120, minPts = 10
+)
 boundary_polys <- BuildBoundaryPoly(boundary_points)
 
-# Split boundary polygon 1 into two edges using leftmost and rightmost anchor points
-boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1,])
+# Split boundary polygon 1 into two edges using leftmost
+# and rightmost anchor points
+boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1, ])
 plot(boundary_edges, lwd = 2)
 
 # Split boundary polygon 1 into two edges using two anchor points
 pt1 <- c(4000, 1500)
 pt2 <- c(2000, 3000)
-boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1,],
-                                            pt1 = pt1,
-                                            pt2 = pt2)
+boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1, ],
+    pt1 = pt1,
+    pt2 = pt2
+)
 plot(boundary_edges, lwd = 2)
 
 }

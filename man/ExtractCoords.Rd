@@ -7,26 +7,30 @@
 ExtractCoords(data = NULL, extract_cluster = TRUE)
 }
 \arguments{
-\item{data}{A Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
+\item{data}{A Seurat object or a data frame with
+columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
 
-\item{extract_cluster}{Logical. Whether to extract the \code{seurat_clusters} column from the
-Seurat object when available. Ignored if \code{data} is a data frame. Default is \code{TRUE}.}
+\item{extract_cluster}{Logical. Whether to extract the \code{seurat_clusters}
+column from the Seurat object when available.
+Ignored if \code{data} is a data frame. Default is \code{TRUE}.}
 }
 \value{
-A data frame with columns \code{x}, \code{y}, \code{cell}, and optionally \code{cluster},
-representing spatial coordinates and cluster assignments.
+A data frame with columns \code{x}, \code{y}, \code{cell}, and optionally
+\code{cluster}, representing spatial coordinates and cluster assignments.
 }
 \description{
-This function extracts a spatial coordinate data frame from either a Seurat object
-or a user-supplied data frame. When a Seurat object is provided, it retrieves
-tissue coordinates (\code{x}, \code{y}) and optionally the cluster identities (e.g., \code{seurat_clusters}).
-When a data frame is provided, it is returned as-is after checking that it contains
-the required columns.
+This function extracts a spatial coordinate data frame from either
+a Seurat object or a user-supplied data frame.
+When a Seurat object is provided, it retrieves tissue coordinates (\code{x}, \code{y})
+and optionally the cluster identities (e.g., \code{seurat_clusters}).
+When a data frame is provided, it is returned as-is after checking that
+it contains the required columns.
 }
 \examples{
 # Load coordinates
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-                              package = "SpNeigh"))
+    package = "SpNeigh"
+))
 
 # An exmaple of the coordinate data.frame used for analysis
 head(coords)

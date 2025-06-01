@@ -12,29 +12,36 @@ PlotEdge(
 )
 }
 \arguments{
-\item{boundary_poly}{An \code{sf} object containing \code{POLYGON} or \code{LINESTRING} geometries and a \code{region_id} column.}
+\item{boundary_poly}{An \code{sf} object containing \code{POLYGON} or \code{LINESTRING}
+geometries and a \code{region_id} column.}
 
-\item{linewidth_boundary}{Numeric value specifying the line width of the edge. Default is \code{1}.}
+\item{linewidth_boundary}{Numeric value specifying the line width of
+the edge. Default is \code{1}.}
 
 \item{theme_ggplot}{A ggplot2 theme object. Default is \code{my_theme_ggplot()}.}
 
 \item{...}{Additional arguments passed to \code{ggplot2::geom_sf()}.}
 }
 \value{
-A \code{ggplot} object displaying the edge outlines colored by \code{region_id}.
+A \code{ggplot} object displaying the edge outlines colored
+by \code{region_id}.
 }
 \description{
-Plots boundary edges as colored \code{LINESTRING} or \code{POLYGON} outlines using \code{ggplot2}.
-This function is especially useful for visualizing specific edges extracted from
-a polygon using \code{SplitBoundaryPolyByAnchor()}.
+Plots boundary edges as colored \code{LINESTRING} or \code{POLYGON} outlines
+using \code{ggplot2}.
+This function is especially useful for visualizing specific edges
+extracted from a polygon using \code{SplitBoundaryPolyByAnchor()}.
 }
 \examples{
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-                              package = "SpNeigh"))
+    package = "SpNeigh"
+))
 
 # Build boundary polygon and plot its outline
-boundary_points <- GetBoundary(data = coords, one_cluster = 2,
-                               eps = 120, minPts = 10)
+boundary_points <- GetBoundary(
+    data = coords, one_cluster = 2,
+    eps = 120, minPts = 10
+)
 boundary_polys <- BuildBoundaryPoly(boundary_points)
 PlotEdge(boundary_poly = boundary_polys)
 

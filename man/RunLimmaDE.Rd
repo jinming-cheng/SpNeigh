@@ -14,23 +14,31 @@ RunLimmaDE(
 )
 }
 \arguments{
-\item{exp_mat}{A normalized gene expression matrix (genes x cells), either a \code{matrix} or \code{dgCMatrix}.
+\item{exp_mat}{A normalized gene expression matrix (genes x cells),
+either a \code{matrix} or \code{dgCMatrix}.
 Typically log-normalized counts, e.g., from a Seurat object.}
 
-\item{cells_reference}{A character vector of cell IDs to use as the reference (baseline) group.}
+\item{cells_reference}{A character vector of cell IDs to use as the
+reference (baseline) group.}
 
-\item{cells_target}{A character vector of cell IDs to use as the target (comparison) group.}
+\item{cells_target}{A character vector of cell IDs to use as the
+target (comparison) group.}
 
-\item{weights}{Optional numeric vector of observation-level weights. Must be named with cell IDs and
+\item{weights}{Optional numeric vector of observation-level weights.
+Must be named with cell IDs and
 match the length of \code{cells_reference + cells_target}.}
 
-\item{adj_p.value}{Adjusted p-value threshold for reporting differentially expressed genes. Default is \code{0.05}.}
+\item{adj_p.value}{Adjusted p-value threshold for reporting
+differentially expressed genes. Default is \code{0.05}.}
 
-\item{min.pct}{Minimum proportion of cells expressing the gene in either group (values between 0 and 1).
-Genes not meeting this threshold are excluded before testing. Default is \code{0}.}
+\item{min.pct}{Minimum proportion of cells expressing the gene in
+either group (values between 0 and 1).
+Genes not meeting this threshold are excluded before testing.
+Default is \code{0}.}
 }
 \value{
-A data frame with differentially expressed genes, sorted by absolute log fold change.
+A data frame with differentially expressed genes,
+sorted by absolute log fold change.
 Includes columns:
 \describe{
 \item{logFC}{Log2 fold change of expression (target vs. reference)}
@@ -42,24 +50,31 @@ Includes columns:
 }
 }
 \description{
-Performs differential expression analysis between two groups of cells using the
-\code{limma} linear modeling framework. Supports optional observation-level weights
-(e.g., spatial weights) and filters genes by minimum expression threshold across groups.
+Performs differential expression analysis between two groups of cells
+using the \code{limma} linear modeling framework.
+Supports optional observation-level weights (e.g., spatial weights)
+and filters genes by minimum expression threshold across groups.
 }
 \examples{
 # Load coordinates and log-normalized expression data
-coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds", package = "SpNeigh"))
-logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds", package = "SpNeigh"))
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+    package = "SpNeigh"
+))
+logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
+    package = "SpNeigh"
+))
 
 # Subset cells from cluster 0 and 2
 cells_ref <- subset(coords, cluster == 0)$cell
 cells_tar <- subset(coords, cluster == 2)$cell
 
 # Run differential expression with minimum expression threshold
-tab <- RunLimmaDE(exp_mat = logNorm_expr,
-                  cells_reference = cells_ref,
-                  cells_target = cells_tar,
-                  min.pct = 0.25)
+tab <- RunLimmaDE(
+    exp_mat = logNorm_expr,
+    cells_reference = cells_ref,
+    cells_target = cells_tar,
+    min.pct = 0.25
+)
 
 head(tab[, c("gene", "logFC", "adj.P.Val", "pct.reference", "pct.target")])
 

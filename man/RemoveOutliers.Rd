@@ -9,23 +9,28 @@ RemoveOutliers(coords, k = 5, distance_cutoff = 30)
 \arguments{
 \item{coords}{A data frame or matrix of cell coordinates.}
 
-\item{k}{The number of nearest neighbors to use for computing local distances. Default is 5.}
+\item{k}{The number of nearest neighbors to use for computing
+local distances. Default is 5.}
 
-\item{distance_cutoff}{A numeric threshold on the average distance to neighbors.
-Cells with a higher mean distance will be removed. Default is 30.}
+\item{distance_cutoff}{A numeric threshold on the average distance
+to neighbors. Cells with a higher mean distance
+will be removed. Default is 30.}
 }
 \value{
 A data frame containing the filtered coordinates with an additional column:
 \itemize{
-\item \code{mean_knn_dist}: The average distance to the \code{k} nearest neighbors for each point.
+\item \code{mean_knn_dist}: The average distance to the \code{k}
+nearest neighbors for each point.
 }
-Only points with a \code{mean_knn_dist} less than the specified \code{distance_cutoff} are retained.
+Only points with a \code{mean_knn_dist} less than the specified
+\code{distance_cutoff} are retained.
 }
 \description{
-Identifies and removes spatial outliers based on local density. For each cell,
-the average distance to its k nearest neighbors is computed. Cells with a mean
-k-NN distance greater than a specified cutoff are considered outliers and removed.
-This helps retain densely connected cells while filtering isolated ones.
+Identifies and removes spatial outliers based on local density.
+For each cell, the average distance to its k nearest neighbors is computed.
+Cells with a mean k-NN distance greater than a specified cutoff are
+considered outliers and removed. This helps retain densely connected cells
+while filtering isolated ones.
 }
 \examples{
 # Set seed for reproducibility
@@ -42,12 +47,14 @@ x2 <- runif(n2, min = 10, max = 15)
 y2 <- runif(n2, min = 10, max = 15)
 
 # Combine clustered points and outliers
-coords <- data.frame(x = c(x1, x2), y = c(y1, y2) )
+coords <- data.frame(x = c(x1, x2), y = c(y1, y2))
 dim(coords)
 
 # Plot clustered points and outlier points
-plot(coords$x, coords$y, pch = 16,
-     col = rep(c("red","green"), times = c(20,5)) )
+plot(coords$x, coords$y,
+    pch = 16,
+    col = rep(c("red", "green"), times = c(20, 5))
+)
 
 # Remove outlier points with a specified knn distance cutoff
 new_coords <- RemoveOutliers(coords, k = 5, distance_cutoff = 2)

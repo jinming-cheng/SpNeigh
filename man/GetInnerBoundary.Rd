@@ -7,28 +7,35 @@
 GetInnerBoundary(boundary = NULL, dist = 50)
 }
 \arguments{
-\item{boundary}{A data frame of boundary points (with columns \code{x}, \code{y}, \code{region_id})
+\item{boundary}{A data frame of boundary points
+(with columns \code{x}, \code{y}, \code{region_id})
 or an \code{sf} object of \code{POLYGON} geometries.}
 
-\item{dist}{A positive numeric value specifying how far inward to shrink the boundary.
-This is automatically converted to a negative buffer distance. Default is 50.}
+\item{dist}{A positive numeric value specifying how far inward to
+shrink the boundary.
+This is automatically converted to a negative buffer distance.
+Default is 50.}
 }
 \value{
-An \code{sf} object containing the inward-shrunk polygons, one per \code{region_id}.
+An \code{sf} object containing the inward-shrunk polygons,
+one per \code{region_id}.
 }
 \description{
-Computes an inward-shifted (contracted) boundary by applying a negative spatial buffer
-to an existing boundary polygon. This function is a wrapper around \code{GetOuterBoundary()}
-and is useful for defining an inner region around a spatial cluster or structure.
+Computes an inward-shifted (contracted) boundary by applying a
+negative spatial buffer to an existing boundary polygon.
+This function is a wrapper around \code{GetOuterBoundary()} and is useful
+for defining an inner region around a spatial cluster or structure.
 }
 \details{
-Be careful: if the shrinkage distance is too large, the resulting geometry may become invalid
-or disappear entirely, especially for narrow or irregular shapes.
+Be careful: if the shrinkage distance is too large, the resulting geometry
+may become invalid or disappear entirely, especially for narrow
+or irregular shapes.
 }
 \examples{
 # Load coordinates
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-                              package = "SpNeigh"))
+    package = "SpNeigh"
+))
 
 # Get boundary polygons of cluster 2
 boundary_points <- GetBoundary(data = coords, one_cluster = 2)

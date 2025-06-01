@@ -4,25 +4,29 @@
 \alias{BoundaryPolyToPoints}
 \title{Convert boundary polygons to boundary point coordinates}
 \usage{
-BoundaryPolyToPoints(boundary_poly)
+BoundaryPolyToPoints(boundary_poly = NULL)
 }
 \arguments{
-\item{boundary_poly}{An \code{sf} object containing only \code{POLYGON} or \code{LINESTRING} geometries.
-Must include a \code{region_id} column for labeling subregions.}
+\item{boundary_poly}{An \code{sf} object containing only \code{POLYGON} or
+\code{LINESTRING} geometries.
+Must include a \code{region_id} column for labeling
+subregions.}
 }
 \value{
-A data frame with columns \code{x}, \code{y}, and \code{region_id}, containing the vertex coordinates
-of the boundary geometries.
+A data frame with columns \code{x}, \code{y}, and \code{region_id},
+containing the vertex coordinates of the boundary geometries.
 }
 \description{
-Extracts the vertex coordinates (\code{x}, \code{y}) of boundary geometries from an \code{sf} object
-containing \code{POLYGON} or \code{LINESTRING} features. This is useful for recovering the original
-boundary points from smoothed or labeled polygonal regions.
+Extracts the vertex coordinates (\code{x}, \code{y}) of boundary geometries
+from an \code{sf} object containing \code{POLYGON} or \code{LINESTRING} features.
+This is useful for recovering the original boundary points from
+smoothed or labeled polygonal regions.
 }
 \examples{
 # Load coordinates and generate boundary
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-                              package = "SpNeigh"))
+    package = "SpNeigh"
+))
 boundary_points <- GetBoundary(data = coords, one_cluster = 2)
 boundary_polys <- BuildBoundaryPoly(boundary_points)
 

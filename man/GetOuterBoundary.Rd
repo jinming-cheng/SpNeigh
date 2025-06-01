@@ -2,33 +2,41 @@
 % Please edit documentation in R/GetBoundary.R
 \name{GetOuterBoundary}
 \alias{GetOuterBoundary}
-\title{Generate an outer or inner boundary polygon by buffering an existing boundary}
+\title{Generate an outer or inner boundary polygon by buffering
+an existing boundary}
 \usage{
 GetOuterBoundary(boundary = NULL, dist = 100)
 }
 \arguments{
-\item{boundary}{A data frame of boundary points (with columns \code{x}, \code{y}, \code{region_id}) or an \code{sf} object.}
+\item{boundary}{A data frame of boundary points
+(with columns \code{x}, \code{y}, \code{region_id}) or an \code{sf} object.}
 
 \item{dist}{A numeric value specifying the buffer distance in spatial units.
-Use positive values to expand (outer boundary), and negative values to shrink (inner boundary). Default is 100.}
+Use positive values to expand (outer boundary),
+and negative values to shrink (inner boundary). Default is 100.}
 }
 \value{
-An \code{sf} object of expanded outer boundary polygons with the same \code{region_id} values as the original input.
+An \code{sf} object of expanded outer boundary polygons with the
+same \code{region_id} values as the original input.
 }
 \description{
-Computes an expanded or shrunken boundary by applying a spatial buffer to an existing polygon.
-The input can be either boundary points (as returned by \code{GetBoundary()}) or polygon geometries
-(as returned by \code{BuildBoundaryPoly()}). This is useful for defining outer spatial neighborhoods
-or for shrinking boundaries inward to define inner regions.
+Computes an expanded or shrunken boundary by applying a spatial buffer
+to an existing polygon.
+The input can be either boundary points (as returned by \code{GetBoundary()})
+or polygon geometries (as returned by \code{BuildBoundaryPoly()}).
+This is useful for defining outer spatial neighborhoods or for
+shrinking boundaries inward to define inner regions.
 }
 \details{
 Be careful: when using a negative buffer distance (for inner boundaries),
-polygons may collapse, become invalid, or disappear entirely if the buffer width exceeds the shape's interior size.
+polygons may collapse, become invalid, or disappear entirely if the
+buffer width exceeds the shape's interior size.
 }
 \examples{
 # Load coordinates
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-                              package = "SpNeigh"))
+    package = "SpNeigh"
+))
 
 # Get boundary points of cluster 2
 boundary_points <- GetBoundary(data = coords, one_cluster = 2)

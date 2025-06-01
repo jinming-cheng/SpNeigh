@@ -7,28 +7,32 @@
 SplineDesign(x, df = 3)
 }
 \arguments{
-\item{x}{A numeric vector representing a continuous covariate (e.g., distance or pseudotime).}
+\item{x}{A numeric vector representing a continuous covariate
+(e.g., distance or pseudotime).}
 
 \item{df}{Integer. Degrees of freedom for the spline basis. Default is 3.}
 }
 \value{
-A numeric matrix with orthonormal columns (same number of rows as \code{x}).
-The columns represent smoothed trends extracted from the spline basis.
-The first column is directionally aligned with the input vector (\code{x}).
+A numeric matrix with orthonormal columns
+(same number of rows as \code{x}). The columns represent smoothed
+trends extracted from the spline basis. The first column is
+directionally aligned with the input vector (\code{x}).
 }
 \description{
-Constructs an orthonormal design matrix from a numeric covariate (e.g., spatial distance)
-using a natural cubic spline basis. The output matrix can be used in linear modeling
-to capture smooth, non-linear trends along continuous variables.
+Constructs an orthonormal design matrix from a numeric covariate
+(e.g., spatial distance) using a natural cubic spline basis.
+The output matrix can be used in linear modeling to capture smooth,
+non-linear trends along continuous variables.
 }
 \details{
-The first column of the resulting matrix is aligned to show a positive correlation
-with the input vector and typically captures the main linear or monotonic trend.
+The first column of the resulting matrix is aligned to show
+a positive correlation with the input vector and typically captures
+the main linear or monotonic trend.
 }
 \examples{
 x <- seq(0, 1, length.out = 100)
 Z <- SplineDesign(x)
-cor(Z[, 1], x)  # Should be > 0
+cor(Z[, 1], x) # Should be > 0
 
 # Use Z in modeling
 y <- sin(2 * pi * x) + rnorm(100, sd = 0.2)

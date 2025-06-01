@@ -13,18 +13,26 @@ ComputeCentroidWeights(
 )
 }
 \arguments{
-\item{data}{A data frame or Seurat object containing spatial coordinates. Must include columns: \code{cell}, \code{x}, and \code{y}.}
+\item{data}{A data frame or Seurat object containing spatial coordinates.
+Must include columns: \code{cell}, \code{x}, and \code{y}.}
 
 \item{cell_ids}{A character vector of cell IDs to use for weight computation.}
 
-\item{scale}{Logical. Whether to scale distances to the range [0, 1] before applying decay functions. Default is \code{TRUE}.}
+\item{scale}{Logical. Whether to scale distances to the range [0, 1]
+before applying decay functions. Default is \code{TRUE}.}
 
-\item{method}{Decay function to convert distances to weights. One of: \code{"inverse"}, \code{"gaussian"}, \code{"linear"}, or \code{"quadratic"}.}
+\item{method}{Decay function to convert distances to weights.
+One of: \code{"inverse"}, \code{"gaussian"}, \code{"linear"},
+or \code{"quadratic"}.}
 
-\item{sigma}{Standard deviation for the Gaussian decay (used only if \code{method = "gaussian"}). Default is \code{0.5} (recommended for scaled distances).}
+\item{sigma}{Standard deviation for the Gaussian decay
+(used only if \code{method = "gaussian"}).
+Default is \code{0.5} (recommended for scaled distances).}
 }
 \value{
-A named numeric vector of weights (length = number of cells in \code{cell_ids}). Higher weights correspond to cells closer to the centroid.
+A named numeric vector of weights
+(length = number of cells in \code{cell_ids}).
+Higher weights correspond to cells closer to the centroid.
 }
 \description{
 Computes spatial weights for a set of cells based on their Euclidean distance
@@ -34,7 +42,9 @@ Supports multiple decay methods and optional distance scaling.
 }
 \examples{
 # Load spatial coordinates
-coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds", package = "SpNeigh"))
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+    package = "SpNeigh"
+))
 
 # Select cells from cluster 2
 cells_c2 <- subset(coords, cluster == 2)$cell

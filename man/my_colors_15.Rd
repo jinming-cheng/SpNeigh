@@ -14,8 +14,8 @@ my_colors_15
 A character vector containing 15 colors.
 }
 \examples{
-plot(1:15, 1:15, pch=16, col=my_colors_15)
-barplot(rep(1,15), col=my_colors_15)
+plot(1:15, 1:15, pch = 16, col = my_colors_15)
+barplot(rep(1, 15), col = my_colors_15)
 
 }
 \keyword{datasets}

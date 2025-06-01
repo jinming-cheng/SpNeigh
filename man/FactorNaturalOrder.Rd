@@ -7,15 +7,18 @@
 FactorNaturalOrder(x)
 }
 \arguments{
-\item{x}{A character or numeric vector to convert to a factor with natural order.}
+\item{x}{A character or numeric vector to convert to a factor with
+natural order.}
 }
 \value{
 A factor with levels sorted in natural (human-readable) order.
 }
 \description{
 Converts a character or numeric vector into a factor where the levels are
-ordered naturally (e.g., \code{a1}, \code{a2}, ..., \code{a10} instead of lexicographically as \code{a1}, \code{a10}, \code{a2}, ...).
-This is useful for plotting or labeling grouped data where numeric substrings should follow numeric order.
+ordered naturally (e.g., \code{a1}, \code{a2}, ..., \code{a10} instead of
+lexicographically as \code{a1}, \code{a10}, \code{a2}, ...).
+This is useful for plotting or labeling grouped data where numeric
+substrings should follow numeric order.
 }
 \examples{
 # Numeric vector

@@ -4,43 +4,58 @@
 \alias{ComputeSpatialEnrichmentIndex}
 \title{Compute Spatial Enrichment Index (SEI) for Each Gene}
 \usage{
-ComputeSpatialEnrichmentIndex(exp_mat, weights)
+ComputeSpatialEnrichmentIndex(exp_mat = NULL, weights = NULL)
 }
 \arguments{
-\item{exp_mat}{A normalized gene expression matrix with genes as rows and cells as columns.
-Should be of class \code{matrix} or \code{dgCMatrix}.}
+\item{exp_mat}{A normalized gene expression matrix with genes as rows and
+cells as columns. Should be of class \code{matrix} or \code{dgCMatrix}.}
 
-\item{weights}{A numeric vector of spatial weights (e.g., from \code{ComputeBoundaryWeights} or \code{ComputeCentroidWeights}).
-Must be the same length as the number of columns (cells) in \code{exp_mat}.}
+\item{weights}{A numeric vector of spatial weights (e.g.,
+from \code{ComputeBoundaryWeights} or \code{ComputeCentroidWeights}).
+Must be the same length as the number of columns (cells)
+in \code{exp_mat}.}
 }
 \value{
 A data frame with the following columns:
 \describe{
 \item{\code{gene}}{Gene name}
-\item{\code{SEI}}{Spatial enrichment index: weighted mean expression across cells}
+\item{\code{SEI}}{Spatial enrichment index: weighted mean expression
+across cells}
 \item{\code{mean_expr}}{Mean expression across all cells (unweighted)}
-\item{\code{normalized_SEI}}{Ratio of SEI to mean expression; used to compare genes independent of baseline expression}
+\item{\code{normalized_SEI}}{Ratio of SEI to mean expression;
+used to compare genes independent of
+baseline expression}
 }
 The result is sorted in descending order by \code{normalized_SEI}.
 }
 \description{
-Calculates the spatial enrichment index (SEI) for each gene based on a user-supplied set
-of spatial weights. The SEI reflects the extent to which gene expression is enriched
-in spatially weighted regions of the tissue (e.g., near boundaries or centroids).
+Calculates the spatial enrichment index (SEI) for each gene based on
+a user-supplied set of spatial weights. The SEI reflects the extent to
+which gene expression is enriched in spatially weighted regions of
+the tissue (e.g., near boundaries or centroids).
 }
 \details{
-This method supports both dense (\code{matrix}) and sparse (\code{dgCMatrix}) gene expression formats,
-and can be applied using any distance-based weighting scheme.
+This method supports both dense (\code{matrix}) and sparse (\code{dgCMatrix})
+gene expression formats, and can be applied using any distance-based
+weighting scheme.
 }
 \examples{
 # Load spatial coordinates and log-normalized expression
-coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds", package = "SpNeigh"))
-logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds", package = "SpNeigh"))
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+    package = "SpNeigh"
+))
+logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
+    package = "SpNeigh"
+))
 
 # Compute spatial weights and SEI
 bon_c0 <- GetBoundary(data = coords, one_cluster = 0)
 cells_c0 <- subset(coords, cluster == 0)$cell
-weights <- ComputeBoundaryWeights(data = coords, cell_ids = cells_c0, boundary = bon_c0)
+weights <- ComputeBoundaryWeights(
+    data = coords,
+    cell_ids = cells_c0,
+    boundary = bon_c0
+)
 sei_df <- ComputeSpatialEnrichmentIndex(logNorm_expr[, cells_c0], weights)
 head(sei_df)
 

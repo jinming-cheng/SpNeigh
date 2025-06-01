@@ -2,39 +2,51 @@
 % Please edit documentation in R/ComputeSpatialInteractionMatrix.R
 \name{ComputeSpatialInteractionMatrix}
 \alias{ComputeSpatialInteractionMatrix}
-\title{Compute a spatial neighborhood interaction matrix using K-nearest neighbors (KNN)}
+\title{Compute a spatial neighborhood interaction matrix using
+K-nearest neighbors (KNN)}
 \usage{
 ComputeSpatialInteractionMatrix(data = NULL, k = 10)
 }
 \arguments{
-\item{data}{A Seurat object or a data frame with columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
+\item{data}{A Seurat object or a data frame with
+columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
 
-\item{k}{Integer. Number of nearest neighbors to use for each cell. Default is 10.}
+\item{k}{Integer. Number of nearest neighbors to use for each cell.
+Default is 10.}
 }
 \value{
-A numeric matrix where rows represent focal clusters and columns represent neighboring clusters.
-Each cell in the matrix indicates how frequently a neighbor cluster appears among the k-nearest neighbors
-of cells from the focal cluster.
+A numeric matrix where rows represent focal clusters and columns
+represent neighboring clusters. Each cell in the matrix indicates
+how frequently a neighbor cluster appears among the k-nearest
+neighbors of cells from the focal cluster.
 }
 \description{
-Computes a spatial interaction matrix where each entry quantifies the number of neighboring cells
-from a given cluster (columns) that are among the \code{k}-nearest neighbors of cells in another cluster (rows).
-This provides a summary of spatial proximity and enrichment of neighboring clusters around each focal cluster.
+Computes a spatial interaction matrix where each entry quantifies
+the number of neighboring cells from a given cluster (columns) that are
+among the \code{k}-nearest neighbors of cells in another cluster (rows).
+This provides a summary of spatial proximity and enrichment of
+neighboring clusters around each focal cluster.
 }
 \details{
-The matrix is built by identifying the \code{k} nearest neighbors for each cell based on spatial coordinates,
-and then tabulating the cluster identities of those neighbors with respect to the cluster identity of the focal cell.
+The matrix is built by identifying the \code{k} nearest neighbors for each cell
+based on spatial coordinates, and then tabulating the cluster identities
+of those neighbors with respect to the cluster identity of the focal cell.
 }
 \examples{
 # Load coordinates
-coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds", package = "SpNeigh"))
+coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+    package = "SpNeigh"
+))
 
 # Compute interaction matrix using all cells
 interaction_matrix <- ComputeSpatialInteractionMatrix(coords)
 head(interaction_matrix)
 
 # Compute interaction matrix for cells inside boundaries
-boundary_points <- GetBoundary(data = coords, one_cluster = 2, eps = 120, minPts = 10)
+boundary_points <- GetBoundary(
+    data = coords, one_cluster = 2,
+    eps = 120, minPts = 10
+)
 cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
 coords_sub <- subset(coords, cell \%in\% cells_inside$cell)
 ComputeSpatialInteractionMatrix(coords_sub)

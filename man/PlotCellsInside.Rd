@@ -14,9 +14,11 @@ PlotCellsInside(
 )
 }
 \arguments{
-\item{cells_inside}{An \code{sf} object of cells returned by \code{GetCellsInside()}. Must contain \code{cluster} and \code{region_id} columns.}
+\item{cells_inside}{An \code{sf} object of cells returned by \code{GetCellsInside()}.
+Must contain \code{cluster} and \code{region_id} columns.}
 
-\item{point_size}{Numeric. Size of the points representing cells. Default is 0.5.}
+\item{point_size}{Numeric. Size of the points representing cells.
+Default is 0.5.}
 
 \item{colors}{A vector of cluster colors. Default uses \code{my_colors_15}.}
 
@@ -24,21 +26,25 @@ PlotCellsInside(
 
 \item{legend_size}{Numeric. Size of legend keys. Default is 2.}
 
-\item{fixed_aspect_ratio}{Logical. If \code{TRUE}, uses \code{geom_sf()} to preserve spatial scale.
-If \code{FALSE}, uses \code{geom_point()} with extracted coordinates. Default is \code{TRUE}.}
+\item{fixed_aspect_ratio}{Logical. If \code{TRUE}, uses \code{geom_sf()} to preserve
+spatial scale. If \code{FALSE}, uses \code{geom_point()}
+with extracted coordinates. Default is \code{TRUE}.}
 }
 \value{
-A \code{ggplot} object showing the cells colored by cluster within spatial regions.
+A \code{ggplot} object showing the cells colored by cluster within
+spatial regions.
 }
 \description{
-Visualizes cells that fall within defined spatial regions (boundaries or rings),
-typically obtained using the \code{GetCellsInside()} function. The cells are colored by cluster,
-and the function offers two plotting modes: using \code{geom_sf()} (with fixed 1:1 aspect ratio)
-or \code{geom_point()} (with more flexible layout).
+Visualizes cells that fall within defined spatial regions
+(boundaries or rings), typically obtained using
+the \code{GetCellsInside()} function. The cells are colored by cluster,
+and the function offers two plotting modes: using \code{geom_sf()}
+(with fixed 1:1 aspect ratio) or \code{geom_point()} (with more flexible layout).
 }
 \examples{
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-                              package = "SpNeigh"))
+    package = "SpNeigh"
+))
 
 # Plot cells inside boundaries
 boundary_points <- GetBoundary(data = coords, one_cluster = 2)
