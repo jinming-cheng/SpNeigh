@@ -53,9 +53,10 @@
 #' exp_mat <- t(exp_mat)
 #' colnames(exp_mat) <- df$cell
 #'
+#' # set a random seed when shuffle is TRUE to reproduce the plot
 #' set.seed(123)
 #' PlotExpression(
-#'     data = df, exp_mat = exp_mat,
+#'     data = df, exp_mat = exp_mat, shuffle = TRUE,
 #'     genes = c("gene1", "gene2"), point_size = 2
 #' )
 #'
@@ -267,7 +268,7 @@ PlotSpatialExpression <- function(
 
     df_long <- df %>%
         tidyr::pivot_longer(
-            cols = -.data$distance,
+            cols = -"distance",
             names_to = "gene", values_to = "expression"
         ) %>%
         dplyr::mutate(bin = cut(.data$distance,
@@ -299,7 +300,7 @@ PlotSpatialExpression <- function(
 
     # --- Label setup for x-axis ---
     df_labels <- df_long %>%
-        dplyr::select(.data$bin, .data$avg_distance) %>%
+        dplyr::select("bin", "avg_distance") %>%
         dplyr::distinct() %>%
         dplyr::arrange(.data$avg_distance)
 

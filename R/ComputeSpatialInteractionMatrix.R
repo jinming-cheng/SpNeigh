@@ -43,11 +43,12 @@
 #' coords_sub <- subset(coords, cell %in% cells_inside$cell)
 #' ComputeSpatialInteractionMatrix(coords_sub)
 #'
-#' # Compute interaction matrix for cells inside ring regions
+#' # Compute interaction matrix for cells inside ring region 2
 #' ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-#' cells_ring <- GetCellsInside(data = coords, boundary = ring_regions)
+#' cells_ring <- GetCellsInside(data = coords, boundary = ring_regions[2, ])
 #' coords_sub <- subset(coords, cell %in% cells_ring$cell)
 #' ComputeSpatialInteractionMatrix(coords_sub)
+#'
 ComputeSpatialInteractionMatrix <- function(data = NULL, k = 10) {
     # --- Extract coordinates from data ---
     sp_coords <- ExtractCoords(data)
@@ -67,9 +68,9 @@ ComputeSpatialInteractionMatrix <- function(data = NULL, k = 10) {
     # Annotate with cluster identities
     neighbor_annot <- knn_df %>%
         dplyr::left_join(sp_coords, by = "cell") %>%
-        dplyr::rename(cell_cluster = .data$cluster) %>%
+        dplyr::rename(cell_cluster = "cluster") %>%
         dplyr::left_join(sp_coords, by = c("neighbor" = "cell")) %>%
-        dplyr::rename(neighbor_cluster = .data$cluster)
+        dplyr::rename(neighbor_cluster = "cluster")
 
     # --- Build interaction matrix ---
     interaction_counts <- neighbor_annot %>%
@@ -77,8 +78,8 @@ ComputeSpatialInteractionMatrix <- function(data = NULL, k = 10) {
 
     interaction_matrix <- interaction_counts %>%
         tidyr::pivot_wider(
-            names_from = .data$neighbor_cluster,
-            values_from = .data$count,
+            names_from = "neighbor_cluster",
+            values_from = "count",
             values_fill = 0
         ) %>%
         tibble::column_to_rownames("cell_cluster")

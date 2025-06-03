@@ -59,7 +59,7 @@ PlotInteractionMatrix <- function(
     # Convert to long format for ggplot
     df_long <- as.data.frame(scaled_mat) %>%
         tibble::rownames_to_column("Focal") %>%
-        tidyr::pivot_longer(-.data$Focal,
+        tidyr::pivot_longer(-"Focal",
             names_to = "Neighbor", values_to = "Zscore"
         )
 

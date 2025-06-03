@@ -95,14 +95,13 @@ SafeColorPalette <- function(
     )
 
     if (verbose) {
-        message(sprintf(
-            c(
-                "Note: %d base colors provided. Generated %d additional",
-                " colors using `scales::hue_pal()` (total = %d)",
-                " to match %d clusters."
-            ),
-            n_base, extra_needed, n_clusters, n_clusters
-        ))
+        msg_fmt <- paste0(
+            "Note: %d base colors provided. ",
+            "Generated %d additional colors using `scales::hue_pal()` ",
+            "(total = %d) to match %d clusters."
+        )
+
+        message(sprintf(msg_fmt, n_base, extra_needed, n_clusters, n_clusters))
     }
 
     return(extended_colors)

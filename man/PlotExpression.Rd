@@ -93,9 +93,10 @@ exp_mat <- data.frame(
 exp_mat <- t(exp_mat)
 colnames(exp_mat) <- df$cell
 
+# set a random seed when shuffle is TRUE to reproduce the plot
 set.seed(123)
 PlotExpression(
-    data = df, exp_mat = exp_mat,
+    data = df, exp_mat = exp_mat, shuffle = TRUE,
     genes = c("gene1", "gene2"), point_size = 2
 )
 

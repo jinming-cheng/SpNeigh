@@ -421,7 +421,7 @@ BoundaryPolyToPoints <- function(boundary_poly = NULL) {
     df <- boundary_points |>
         sf::st_drop_geometry() |>
         dplyr::mutate(x = coords[, 1], y = coords[, 2]) |>
-        dplyr::select(.data$x, .data$y, .data$region_id)
+        dplyr::select("x", "y", "region_id")
 
     return(df)
 }

@@ -1,7 +1,7 @@
 Package: SpNeigh
 Title: Spatial Neighborhood Modeling and Differential Expression
     Analysis for Transcriptomics
-Version: 0.9.0
+Version: 0.9.1
 Authors@R: 
     person(given = "Jinming", 
            family = "Cheng", 
@@ -43,7 +43,8 @@ Imports:
 Suggests: 
     BiocStyle,
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 biocViews: Spatial, SingleCell, GeneExpression, DifferentialExpression,
     Transcriptomics, Software
 URL: https://github.com/jinming-cheng/SpNeigh
@@ -51,3 +52,4 @@ BugReports: https://github.com/jinming-cheng/SpNeigh/issues
 Depends: 
     R (>= 4.4.0)
 VignetteBuilder: knitr
+Config/testthat/edition: 3

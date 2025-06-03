@@ -223,15 +223,15 @@ RunSpatialDE <- function(
 
     all_cells <- cell_ids
 
-    if (!is.null(spatial_distance)) {
-        if (is.null(names(spatial_distance)) ||
-            length(spatial_distance) != length(all_cells)) {
-            stop(
-                "'spatial_distance' must be a named vector, and its",
-                " length must match the number of selected cells."
-            )
-        }
+
+    if (is.null(spatial_distance) || is.null(names(spatial_distance)) ||
+        length(spatial_distance) != length(all_cells)) {
+        stop(
+            "'spatial_distance' must be a named vector, and its",
+            " length must match the number of selected cells."
+        )
     }
+
 
     # --- Make spatial_distance numeric and in correct order ---
     t1 <- as.numeric(spatial_distance[all_cells])
