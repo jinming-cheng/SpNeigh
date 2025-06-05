@@ -19,16 +19,16 @@ Must include columns: \code{cell}, \code{x}, and \code{y}.}
 
 \item{cell_ids}{A character vector of cell IDs to use for weight computation.}
 
-\item{boundary}{Either an \code{sf} object containing boundary geometries
-(POLYGON or LINESTRING), or a data frame of boundary points
+\item{boundary}{Either an \code{sf} object containing boundary
+geometries (\code{POLYGON} or \code{LINESTRING}),
+or a data frame of boundary points
 returned from \code{GetBoundary()}.}
 
 \item{scale}{Logical. Whether to scale distances to the range [0, 1]
 before applying decay functions. Default is \code{TRUE}.}
 
 \item{method}{Decay function to convert distances to weights.
-One of: \code{"inverse"}, \code{"gaussian"}, \code{"linear"},
-or \code{"quadratic"}.}
+One of: "inverse", "gaussian", "linear", or "quadratic".}
 
 \item{sigma}{Standard deviation for the Gaussian decay
 (used only if \code{method = "gaussian"}).

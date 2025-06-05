@@ -146,11 +146,12 @@ ExtractCoords <- function(data = NULL, extract_cluster = TRUE) {
 #' @param multi_region Logical. If `TRUE`, identifies multiple spatial
 #'                     subregions within the cluster. Default is `TRUE`.
 #' @param subregion_method Subregion detection method when
-#'        `multi_region = TRUE`. Choose from `"dbscan"` (automatic)
-#'        or `"kmeans"` (manual). Default is `"dbscan"`.
-#' @param eps Neighborhood radius for DBSCAN subregion detection.
-#'            Only used if `subregion_method = "dbscan"`. Default is 80.
-#' @param minPts Minimum number of points for DBSCAN core point.
+#'        `multi_region = TRUE`. Choose from "dbscan" (automatic)
+#'        or "kmeans" (manual). Default is "dbscan".
+#' @param eps Neighborhood radius for \code{DBSCAN} subregion detection.
+#'            Only used if `subregion_method = "dbscan"`.
+#'            Default is 80.
+#' @param minPts Minimum number of points for \code{DBSCAN} core point.
 #'               Only used if `subregion_method = "dbscan"`.
 #'               Default is 10.
 #' @param n_subregions Number of subregions to use if

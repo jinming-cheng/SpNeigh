@@ -12,8 +12,7 @@
 #' @param scale Logical. Whether to scale distances to the range \[0, 1\]
 #'              before applying decay functions. Default is `TRUE`.
 #' @param method Decay function to convert distances to weights.
-#'               One of: `"inverse"`, `"gaussian"`, `"linear"`,
-#'               or `"quadratic"`.
+#'               One of: "inverse", "gaussian", "linear", or "quadratic".
 #' @param sigma Standard deviation for the Gaussian decay
 #'              (used only if `method = "gaussian"`).
 #'              Default is `0.5` (recommended for scaled distances).
@@ -104,8 +103,9 @@ ComputeCentroidWeights <- function(
 #'
 #' @importFrom methods is
 #' @inheritParams ComputeCentroidWeights
-#' @param boundary Either an `sf` object containing boundary geometries
-#'                 (POLYGON or LINESTRING), or a data frame of boundary points
+#' @param boundary Either an `sf` object containing boundary
+#'                 geometries (`POLYGON` or `LINESTRING`),
+#'                 or a data frame of boundary points
 #'                 returned from `GetBoundary()`.
 #'
 #' @return A named numeric vector of weights, with names corresponding
@@ -185,7 +185,7 @@ ComputeBoundaryWeights <- function(
         boundary_lines <- sf::st_boundary(boundary_sf)
     }
 
-    # Compute distance matrix [cells × boundaries]
+    # Compute distance matrix [cells x boundaries]
     dist_mat <- sf::st_distance(cell_sf, boundary_lines)
     min_dists <- apply(dist_mat, 1, min)
     dists <- as.numeric(min_dists)

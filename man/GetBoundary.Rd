@@ -34,13 +34,14 @@ will be removed. Default is 30.}
 subregions within the cluster. Default is \code{TRUE}.}
 
 \item{subregion_method}{Subregion detection method when
-\code{multi_region = TRUE}. Choose from \code{"dbscan"} (automatic)
-or \code{"kmeans"} (manual). Default is \code{"dbscan"}.}
+\code{multi_region = TRUE}. Choose from "dbscan" (automatic)
+or "kmeans" (manual). Default is "dbscan".}
 
-\item{eps}{Neighborhood radius for DBSCAN subregion detection.
-Only used if \code{subregion_method = "dbscan"}. Default is 80.}
+\item{eps}{Neighborhood radius for \code{DBSCAN} subregion detection.
+Only used if \code{subregion_method = "dbscan"}.
+Default is 80.}
 
-\item{minPts}{Minimum number of points for DBSCAN core point.
+\item{minPts}{Minimum number of points for \code{DBSCAN} core point.
 Only used if \code{subregion_method = "dbscan"}.
 Default is 10.}
 

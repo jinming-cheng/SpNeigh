@@ -22,8 +22,7 @@ Must include columns: \code{cell}, \code{x}, and \code{y}.}
 before applying decay functions. Default is \code{TRUE}.}
 
 \item{method}{Decay function to convert distances to weights.
-One of: \code{"inverse"}, \code{"gaussian"}, \code{"linear"},
-or \code{"quadratic"}.}
+One of: "inverse", "gaussian", "linear", or "quadratic".}
 
 \item{sigma}{Standard deviation for the Gaussian decay
 (used only if \code{method = "gaussian"}).

@@ -38,7 +38,8 @@ outputs}
 \item{Z1, Z2, Z3}{Spline coefficients (Z1 typically corresponds
 to linear trend)}
 \item{gene}{Gene name (from \code{exp_mat})}
-\item{trend}{"Positive" or "Negative" trend based on the sign of Z1}
+\item{trend}{"Positive" or "Negative" trend based
+on the sign of \code{Z1}}
 }
 The first spline coefficient (\code{Z1}) captures the main expression trend
 along the spatial distance.
