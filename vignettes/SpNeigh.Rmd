@@ -3,14 +3,10 @@ title: "Getting Started with SpNeigh"
 author:
   - name: Jinming Cheng
     affiliation:
-    - &wehi_bioinfo Bioinformatics Division, 
-                    The Walter and Eliza Hall Institute of Medical Research, 
-                    Parkville, VIC 3052, 
-                    Australia
-    - &uom_med Department of Medical Biology, 
-               The University of Melbourne, 
-               Parkville, VIC 3010, 
-               Australia
+    - &duk_nus Centre for Quantitative Medicine,
+               Duke-NUS Medical School,
+               Singapore, 169857, 
+               Singapore
     # email: jinming.cheng@outlook.com
     
 
