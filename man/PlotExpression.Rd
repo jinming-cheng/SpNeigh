@@ -22,7 +22,9 @@ PlotExpression(
 }
 \arguments{
 \item{data}{A Seurat object or a data frame with
-columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
+columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.
+If a Seurat object is provided, the \code{seurat_clusters}
+metadata column will be used as the \code{cluster}.}
 
 \item{exp_mat}{A gene expression matrix (genes x cells) of class
 \code{matrix} or \code{dgCMatrix}. If \code{data} is a Seurat object,

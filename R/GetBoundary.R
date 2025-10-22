@@ -84,6 +84,8 @@ RemoveOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 #'
 #' @param data A Seurat object or a data frame with
 #'             columns: `x`, `y`, `cell`, and `cluster`.
+#'             If a Seurat object is provided, the `seurat_clusters`
+#'             metadata column will be used as the `cluster`.
 #' @param extract_cluster Logical. Whether to extract the `seurat_clusters`
 #'                        column from the Seurat object when available.
 #'                        Ignored if `data` is a data frame. Default is `TRUE`.

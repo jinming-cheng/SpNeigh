@@ -8,7 +8,9 @@ GetCellsInside(data = NULL, boundary = NULL)
 }
 \arguments{
 \item{data}{A Seurat object or a data frame with
-columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
+columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.
+If a Seurat object is provided, the \code{seurat_clusters}
+metadata column will be used as the \code{cluster}.}
 
 \item{boundary}{An \code{sf} object (polygon or ring) or a data frame
 of boundary points returned by \code{GetBoundary()},

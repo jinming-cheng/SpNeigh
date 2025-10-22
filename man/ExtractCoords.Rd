@@ -8,7 +8,9 @@ ExtractCoords(data = NULL, extract_cluster = TRUE)
 }
 \arguments{
 \item{data}{A Seurat object or a data frame with
-columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.}
+columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.
+If a Seurat object is provided, the \code{seurat_clusters}
+metadata column will be used as the \code{cluster}.}
 
 \item{extract_cluster}{Logical. Whether to extract the \code{seurat_clusters}
 column from the Seurat object when available.
