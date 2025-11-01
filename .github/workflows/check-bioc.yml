@@ -252,6 +252,8 @@ jobs:
 
       - name: Test coverage
         if: github.ref == 'refs/heads/main' && env.run_covr == 'true' && runner.os == 'Linux'
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: |
           covr::codecov(type="all", commentDontrun=FALSE)
         shell: Rscript {0}
