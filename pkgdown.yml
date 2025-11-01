@@ -1,0 +1,6 @@
+pandoc: 3.6.3
+pkgdown: 2.1.1
+pkgdown_sha: ~
+articles:
+  SpNeigh: SpNeigh.html
+last_built: 2025-11-01T13:35Z
