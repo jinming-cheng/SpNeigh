@@ -63,7 +63,7 @@ We show how to:
 
 - Identify spatial boundaries and neighboring ring regions
 - Explore spatial interaction patterns between clusters
-- Perform different expression analysis between two cell populations
+- Perform differential expression analysis between two cell populations
 - Compute spatial weights from boundary or centroid proximity
 - Perform spatial differential expression analysis along spatial gradients
 - Perform spatial enrichment analysis along spatial gradients
@@ -166,6 +166,11 @@ table(bon_points_c2$region_id)
 Add boundaries of cluster 2 to the spatial plot
 ```{r PlotWithBoundary_C2, fig.width=6.6, fig.height=4.2}
 PlotBoundary(coords, boundary = bon_points_c2)
+```
+
+Alternatively, add boundaries of cluster 2 using AddBoundary() function
+```{r}
+# PlotBoundary(coords) + AddBoundary(boundary = bon_points_c2)
 ```
 
 Plot boundary regions
