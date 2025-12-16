@@ -6,6 +6,9 @@
 \usage{
 ComputeSEI(...)
 }
+\arguments{
+\item{...}{Parameters in \code{ComputeSpatialEnrichmentIndex}.}
+}
 \value{
 A data frame containing the spatial enrichment index (SEI) results.
 }

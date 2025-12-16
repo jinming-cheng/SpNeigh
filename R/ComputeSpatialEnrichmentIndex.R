@@ -99,7 +99,7 @@ ComputeSpatialEnrichmentIndex <- function(exp_mat = NULL, weights = NULL) {
 
 #' @title Compute Spatial Enrichment Index (SEI)
 #' @description Alias for \code{\link{ComputeSpatialEnrichmentIndex}}.
-#' @inheritParams ComputeSpatialEnrichmentIndex
+#' @param ... Parameters in `ComputeSpatialEnrichmentIndex`.
 #' @return A data frame containing the spatial enrichment index (SEI) results.
 #' @export
 #' @examples
