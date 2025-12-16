@@ -55,6 +55,8 @@ spatial transcriptomics”. *bioRxiv* (2025).
   : Compute spatial weights based on distance to nearest boundary
 - [`ComputeCentroidWeights()`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeCentroidWeights.md)
   : Compute spatial weights based on distance to the centroid
+- [`ComputeSEI()`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeSEI.md)
+  : Compute Spatial Enrichment Index (SEI)
 - [`ComputeSpatialEnrichmentIndex()`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeSpatialEnrichmentIndex.md)
   : Compute Spatial Enrichment Index (SEI) for Each Gene
 - [`ComputeSpatialInteractionMatrix()`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeSpatialInteractionMatrix.md)
