@@ -95,3 +95,32 @@ ComputeSpatialEnrichmentIndex <- function(exp_mat = NULL, weights = NULL) {
 
     return(df)
 }
+
+
+#' @title Compute Spatial Enrichment Index (SEI)
+#' @description Alias for \code{\link{ComputeSpatialEnrichmentIndex}}.
+#' @inheritParams ComputeSpatialEnrichmentIndex
+#' @return A data frame containing the spatial enrichment index (SEI) results.
+#' @export
+#' @examples
+#' # Load spatial coordinates and log-normalized expression
+#' coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+#'     package = "SpNeigh"
+#' ))
+#' logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
+#'     package = "SpNeigh"
+#' ))
+#'
+#' # Compute spatial weights and SEI
+#' bon_c0 <- GetBoundary(data = coords, one_cluster = 0)
+#' cells_c0 <- subset(coords, cluster == 0)$cell
+#' weights <- ComputeBoundaryWeights(
+#'     data = coords,
+#'     cell_ids = cells_c0,
+#'     boundary = bon_c0
+#' )
+#' sei_df <- ComputeSEI(logNorm_expr[, cells_c0], weights)
+#' head(sei_df)
+ComputeSEI <- function(...) {
+    ComputeSpatialEnrichmentIndex(...)
+}

@@ -23,6 +23,10 @@ test_that("Test ComputeSpatialEnrichmentIndex", {
 
     expect_true(is.data.frame(sei_df))
 
+    sei_df <- ComputeSEI(exp_mat, weights)
+
+    expect_true(is.data.frame(sei_df))
+
     sei_df <- ComputeSpatialEnrichmentIndex(as.matrix(exp_mat), weights)
 
     expect_true(is.data.frame(sei_df))
