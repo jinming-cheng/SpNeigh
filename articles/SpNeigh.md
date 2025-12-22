@@ -609,7 +609,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] ggplot2_4.0.1    SpNeigh_0.9.2    BiocStyle_2.34.0
+#> [1] ggplot2_4.0.1    SpNeigh_0.99.0   BiocStyle_2.34.0
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.4        
@@ -633,11 +633,11 @@ sessionInfo()
 #>  [55] MASS_7.3-65            concaveman_1.2.0       classInt_0.4-11       
 #>  [58] tools_4.4.2            units_1.0-0            lmtest_0.9-40         
 #>  [61] otel_0.2.0             httpuv_1.6.16          future.apply_1.20.1   
-#>  [64] goftest_1.2-3          glue_1.8.0             dbscan_1.2.3          
+#>  [64] goftest_1.2-3          glue_1.8.0             dbscan_1.2.4          
 #>  [67] nlme_3.1-168           promises_1.5.0         grid_4.4.2            
 #>  [70] sf_1.0-23              Rtsne_0.17             cluster_2.1.8.1       
 #>  [73] reshape2_1.4.5         generics_0.1.4         gtable_0.3.6          
-#>  [76] spatstat.data_3.1-9    class_7.3-23           tidyr_1.3.1           
+#>  [76] spatstat.data_3.1-9    class_7.3-23           tidyr_1.3.2           
 #>  [79] data.table_1.17.8      sp_2.2-0               spatstat.geom_3.6-1   
 #>  [82] RcppAnnoy_0.0.22       ggrepel_0.9.6          RANN_2.6.2            
 #>  [85] pillar_1.11.1          stringr_1.6.0          limma_3.62.2          
@@ -645,8 +645,8 @@ sessionInfo()
 #>  [91] splines_4.4.2          dplyr_1.1.4            lattice_0.22-7        
 #>  [94] survival_3.8-3         FNN_1.1.4.1            deldir_2.0-4          
 #>  [97] tidyselect_1.2.1       miniUI_0.1.2           pbapply_1.7-4         
-#> [100] knitr_1.50             gridExtra_2.3          V8_8.0.1              
-#> [103] bookdown_0.46          scattermore_1.2        xfun_0.54             
+#> [100] knitr_1.51             gridExtra_2.3          V8_8.0.1              
+#> [103] bookdown_0.46          scattermore_1.2        xfun_0.55             
 #> [106] statmod_1.5.1          matrixStats_1.5.0      stringi_1.8.7         
 #> [109] lazyeval_0.2.2         yaml_2.3.12            evaluate_1.0.5        
 #> [112] codetools_0.2-20       tibble_3.3.0           BiocManager_1.30.27   
@@ -655,7 +655,7 @@ sessionInfo()
 #> [121] Rcpp_1.1.0             globals_0.18.0         spatstat.random_3.4-3 
 #> [124] png_0.1-8              spatstat.univar_3.1-5  parallel_4.4.2        
 #> [127] pkgdown_2.2.0          dotCall64_1.2          listenv_0.10.0        
-#> [130] viridisLite_0.4.2      scales_1.4.0           e1071_1.7-16          
+#> [130] viridisLite_0.4.2      scales_1.4.0           e1071_1.7-17          
 #> [133] ggridges_0.5.7         SeuratObject_5.3.0     purrr_1.2.0           
 #> [136] rlang_1.1.6            cowplot_1.2.0
 ```
