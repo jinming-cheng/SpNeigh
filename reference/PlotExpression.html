@@ -17,7 +17,7 @@ and returning either a combined plot or a list of individual ggplot objects."></
 
     <a class="navbar-brand me-2" href="../index.html">SpNeigh</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,7 @@ and returning either a combined plot or a list of individual ggplot objects.</p>
 <span>  exp_mat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  genes <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sub_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  cluster_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  one_cluster <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sub_cells <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  split_by <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -77,17 +78,22 @@ and returning either a combined plot or a list of individual ggplot objects.</p>
 
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>A Seurat object or a data frame with
-columns: <code>x</code>, <code>y</code>, <code>cell</code>, and <code>cluster</code>.
-If a Seurat object is provided, the <code>seurat_clusters</code>
-metadata column will be used as the <code>cluster</code>.</p></dd>
+<dd><p>A <code>Seurat</code> object, a <code>SpatialExperiment</code> object,
+or a data frame containing spatial coordinates.</p></dd>
 
 
 <dt id="arg-exp-mat">exp_mat<a class="anchor" aria-label="anchor" href="#arg-exp-mat"></a></dt>
-<dd><p>A gene expression matrix (genes x cells) of class
-<code>matrix</code> or <code>dgCMatrix</code>. If <code>data</code> is a Seurat object,
-the matrix will be extracted automatically
-using <code><a href="https://satijalab.github.io/seurat-object/reference/AssayData.html" class="external-link">Seurat::GetAssayData()</a></code>.</p></dd>
+<dd><p>A numeric gene expression matrix with genes as rows
+and cells as columns. Must be of class <code>matrix</code> or
+<code>dgCMatrix</code>.</p>
+<p>If <code>data</code> is a <code>Seurat</code> object, <code>exp_mat</code> can be
+omitted and will be automatically extracted using
+<code><a href="https://satijalab.github.io/seurat-object/reference/AssayData.html" class="external-link">Seurat::GetAssayData()</a></code> from the active assay.</p>
+<p>If <code>data</code> is a <code>SpatialExperiment</code> object, <code>exp_mat</code>
+can be omitted and will be automatically extracted from
+<code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">SingleCellExperiment::logcounts()</a></code>.</p>
+<p>The column names of <code>exp_mat</code> must match the cell identifiers
+used in downstream analyses.</p></dd>
 
 
 <dt id="arg-genes">genes<a class="anchor" aria-label="anchor" href="#arg-genes"></a></dt>
@@ -99,6 +105,14 @@ Must match row names in <code>exp_mat</code>.</p></dd>
 <dd><p>Logical. If <code>TRUE</code>, only a subset of cells is plotted
 (based on <code>one_cluster</code> or <code>sub_cells</code>).
 Default is <code>FALSE</code>.</p></dd>
+
+
+<dt id="arg-cluster-col">cluster_col<a class="anchor" aria-label="anchor" href="#arg-cluster-col"></a></dt>
+<dd><p>Character scalar specifying the metadata column name
+containing cluster assignments. If <code>NULL</code>, a default is used
+depending on the input object type:</p><ul><li><p><code>"seurat_clusters"</code> for <code>Seurat</code> objects</p></li>
+<li><p><code>"cluster"</code> for <code>SpatialExperiment</code> objects</p></li>
+</ul></dd>
 
 
 <dt id="arg-one-cluster">one_cluster<a class="anchor" aria-label="anchor" href="#arg-one-cluster"></a></dt>

@@ -2,38 +2,65 @@
 
 ## Introduction
 
-The **SpNeigh** package provides a flexible and interpretable framework
-for analyzing spatial neighborhoods in high-resolution spatial
-transcriptomics data. Designed with support for technologies such as 10x
-Xenium, Vizgen MERFISH, and 10x Visium HD, The **SpNeigh** facilitates a
-range of region-aware and distance-aware analyses. Key features include
-boundary detection, spatial weight calculation based on proximity to
-structural landmarks (e.g., region centroid or boundary),
-spatially-informed differential expression testing using spline-based
-modeling, and visualization of local cellular interactions.
+Recent spatial transcriptomics technologies such as **10x Xenium**,
+**MERFISH**, and **Visium HD** enable high-resolution profiling of gene
+expression while preserving tissue architecture. These platforms have
+opened new avenues for studying tissue organization, cell–cell
+interactions, and spatial gene regulation.
 
-By integrating spatial geometry with transcriptomic profiles,
-**SpNeigh** helps uncover biologically meaningful spatial patterns, such
-as boundary-enriched genes, spatial gradients, and intercellular
-interactions, enabling deeper insights into tissue organization and
-cellular communication.
+Most existing methods focus on identifying globally spatially variable
+genes or enhancing spatial visualization, with limited support for
+modeling **local spatial context**, such as region boundaries, cell
+neighborhoods, or gradients across tissue structures.
 
-This vignette demonstrates the key functionalities of the **SpNeigh** R
-package using a real [10x Xenium Fresh Frozen Mouse Brain Tiny Subset
-Dataset](https://www.10xgenomics.com/datasets/fresh-frozen-mouse-brain-for-xenium-explorer-demo-1-standard).
+**SpNeigh** is an R package that introduces a **boundary-aware and
+region-informed framework** for spatial neighborhood analysis and
+spatial differential expression modeling. Key features include:
 
-We show how to:
+- Boundary detection and neighborhood ring construction  
+- Spatial weighting using distances to centroids or boundaries  
+- Spline-based modeling of gene expression along spatial gradients  
+- A spatial enrichment index (SEI) to quantify boundary- or
+  region-enriched genes
 
-- Identify spatial boundaries and neighboring ring regions
-- Explore spatial interaction patterns between clusters
-- Perform differential expression analysis between two cell populations
-- Compute spatial weights from boundary or centroid proximity
-- Perform spatial differential expression analysis along spatial
-  gradients
-- Perform spatial enrichment analysis along spatial gradients
+Unlike existing Bioconductor tools such as **spatialDE**, which
+emphasize global spatial variability, SpNeigh enables **local,
+interpretable**, and **geometry-aware** modeling of spatial expression
+patterns.
 
-This workflow highlights the analytical flexibility and biological
-insights enabled by **SpNeigh**.
+SpNeigh supports inputs from both **SpatialExperiment** and **Seurat**
+objects for coordinate extraction and visualization, and emphasizes
+transparent modeling using user-supplied matrices and weights—ensuring
+reproducibility and compatibility with Bioconductor workflows.
+
+By integrating spatial geometry with transcriptomic data, SpNeigh
+reveals biologically meaningful patterns such as **intermediate cell
+states**, **microenvironmental differences**, and **spatial gene
+expression gradients**, which are critical for understanding
+development, tissue function, and disease progression.
+
+## Overview of this vignette
+
+This vignette demonstrates the key functionalities of the **SpNeigh**
+package using a real  
+[10x Xenium Fresh Frozen Mouse Brain Tiny Subset
+dataset](https://www.10xgenomics.com/datasets/fresh-frozen-mouse-brain-for-xenium-explorer-demo-1-standard).
+
+Specifically, we show how to:
+
+- Identify spatial boundaries and construct neighboring ring regions  
+- Explore spatial interaction patterns between cell clusters  
+- Perform differential expression analysis between spatially defined
+  cell populations  
+- Compute spatial weights based on boundary or centroid proximity  
+- Model spatial expression gradients using spline-based differential
+  expression  
+- Quantify spatial enrichment along spatial gradients
+
+This workflow highlights the analytical flexibility of **SpNeigh** and
+illustrates how neighborhood-aware modeling can reveal spatial gene
+expression patterns that are not readily captured by existing
+approaches.
 
 ## Installation
 
@@ -43,12 +70,16 @@ The **SpNeigh** package can be installed from GitHub by using:
 devtools::install_github("jinming-cheng/SpNeigh")
 ```
 
-## Load packages and data
+## Load packages
 
 ``` r
 library(SpNeigh)
 library(ggplot2)
 ```
+
+## Load data
+
+### Input: Coordinate data frame and Normalized expression matrix
 
 Coordinates of mouse brain dataset
 
@@ -107,7 +138,149 @@ new_cell_types <- c(
 In this vignette, we focus on cluster-level rather than cell type–level
 analyses.
 
+### Alternative input: SpatialExperiment object
+
+Coordinates of cells in clusters 0 and 2
+
+``` r
+coords_sub <- subset(coords, cluster %in% c("0", "2"))
+coords_sub <- as.matrix(coords_sub[, c("x", "y")])
+```
+
+metadata of cells in clusters 0 and 2
+
+``` r
+metadata_sub <- subset(coords[, c("cell", "cluster")], cluster %in% c("0", "2"))
+```
+
+Create SpatialExperiment
+
+``` r
+spe <- SpatialExperiment::SpatialExperiment(
+    assay = list("logcounts" = logNorm_expr),
+    colData = metadata_sub,
+    spatialCoords = coords_sub
+)
+spe
+#> class: SpatialExperiment 
+#> dim: 248 11617 
+#> metadata(0):
+#> assays(1): logcounts
+#> rownames(248): 2010300C02Rik Acsbg1 ... Zfp536 Zfpm2
+#> rowData names(0):
+#> colnames(11617): 3 8 ... 36595 36597
+#> colData names(3): cell cluster sample_id
+#> reducedDimNames(0):
+#> mainExpName: NULL
+#> altExpNames(0):
+#> spatialCoords names(2) : x y
+#> imgData names(0):
+```
+
+Extract coordinates from SpatialExperiment object
+
+``` r
+spe_coords <- ExtractCoords(spe)
+```
+
+Extract log-normalized expression matrix from SpatialExperiment object
+
+``` r
+spe_logcounts <- SingleCellExperiment::logcounts(spe)
+```
+
+### Alternative input: Seurat object
+
+Load Seurat pacakge
+
+``` r
+library(Seurat)
+#> Loading required package: SeuratObject
+#> Loading required package: sp
+#> 'SeuratObject' was built with package 'Matrix' 1.7.1 but the current
+#> version is 1.7.4; it is recomended that you reinstall 'SeuratObject' as
+#> the ABI for 'Matrix' may have changed
+#> 
+#> Attaching package: 'SeuratObject'
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, t
+```
+
+Create Seurat object (Note: a normalized expression matrix is used here
+for tutorial purposes only. In practice, use a raw count matrix.)
+
+``` r
+seu_sp <- CreateSeuratObject(
+    assay = "Spatial",
+    counts = logNorm_expr,
+    meta.data = metadata_sub
+)
+seu_sp
+#> An object of class Seurat 
+#> 248 features across 11617 samples within 1 assay 
+#> Active assay: Spatial (248 features, 0 variable features)
+#>  1 layer present: counts
+```
+
+Insert normalized data into the `data` layer (Seurat v5)
+
+``` r
+LayerData(seu_sp, assay = "Spatial", layer = "data") <- logNorm_expr
+```
+
+Add FOV
+
+``` r
+cents <- CreateCentroids(coords_sub[, c("x", "y")])
+
+fov <- CreateFOV(
+    coords = list("centroids" = cents),
+    type = c("centroids"),
+    assay = "Spatial"
+)
+
+seu_sp[["fov"]] <- fov
+```
+
+Add `seurat_clusters` to the metadata
+
+``` r
+seu_sp$seurat_clusters <- seu_sp$cluster
+```
+
+Extract coordinates from Seurat object
+
+``` r
+seu_sp_coords <- ExtractCoords(seu_sp)
+```
+
+Extract log-normalized expression matrix from Seurat object
+
+``` r
+seu_sp_log_expr <- GetAssayData(seu_sp)
+```
+
 ## Neighborhood analysis for cluster 2 cells
+
+### Quick look at the boundaries of one cluster
+
+Quick look at the boundaries of cluster 2 using default parameter
+settings. The input is a SpatialExperiment object.
+
+``` r
+PlotBoundary(spe, one_cluster = "2")
+```
+
+![](SpNeigh_files/figure-html/PlotBoundary_spe-1.png)
+
+Similarly, we can use a Seurat object as input and adjust parameters
+
+``` r
+PlotBoundary(seu_sp, one_cluster = "2", eps = 120)
+```
+
+![](SpNeigh_files/figure-html/PlotBoundary_seu-1.png)
 
 ### Detect spatial boundaries
 
@@ -472,7 +645,7 @@ PlotWeights(data = coords, weights = weights_bon, point_size = 0.8) +
     labs(title = "Boundary weights")
 ```
 
-![](SpNeigh_files/figure-html/unnamed-chunk-23-1.png)
+![](SpNeigh_files/figure-html/unnamed-chunk-35-1.png)
 
 ### Perform spatial differential analysis along boundary weights
 
@@ -609,53 +782,86 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] ggplot2_4.0.1    SpNeigh_0.99.0   BiocStyle_2.34.0
+#> [1] Seurat_5.4.0       SeuratObject_5.3.0 sp_2.2-0           ggplot2_4.0.1     
+#> [5] SpNeigh_0.99.1     BiocStyle_2.34.0  
 #> 
 #> loaded via a namespace (and not attached):
-#>   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.4        
-#>   [4] spatstat.utils_3.2-0   farver_2.1.2           rmarkdown_2.30        
-#>   [7] fs_1.6.6               ragg_1.5.0             vctrs_0.6.5           
-#>  [10] ROCR_1.0-11            spatstat.explore_3.6-0 htmltools_0.5.9       
-#>  [13] curl_7.0.0             sass_0.4.10            sctransform_0.4.2     
-#>  [16] parallelly_1.46.0      KernSmooth_2.23-26     bslib_0.9.0           
-#>  [19] htmlwidgets_1.6.4      desc_1.4.3             ica_1.0-3             
-#>  [22] plyr_1.8.9             plotly_4.11.0          zoo_1.8-15            
-#>  [25] cachem_1.1.0           igraph_2.2.1           mime_0.13             
-#>  [28] lifecycle_1.0.4        pkgconfig_2.0.3        Matrix_1.7-4          
-#>  [31] R6_2.6.1               fastmap_1.2.0          fitdistrplus_1.2-4    
-#>  [34] future_1.68.0          shiny_1.12.1           digest_0.6.39         
-#>  [37] patchwork_1.3.2        Seurat_5.4.0           tensor_1.5.1          
-#>  [40] RSpectra_0.16-2        irlba_2.3.5.1          textshaping_1.0.4     
-#>  [43] labeling_0.4.3         progressr_0.18.0       spatstat.sparse_3.1-0 
-#>  [46] httr_1.4.7             polyclip_1.10-7        abind_1.4-8           
-#>  [49] compiler_4.4.2         proxy_0.4-28           withr_3.0.2           
-#>  [52] S7_0.2.1               DBI_1.2.3              fastDummies_1.7.5     
-#>  [55] MASS_7.3-65            concaveman_1.2.0       classInt_0.4-11       
-#>  [58] tools_4.4.2            units_1.0-0            lmtest_0.9-40         
-#>  [61] otel_0.2.0             httpuv_1.6.16          future.apply_1.20.1   
-#>  [64] goftest_1.2-3          glue_1.8.0             dbscan_1.2.4          
-#>  [67] nlme_3.1-168           promises_1.5.0         grid_4.4.2            
-#>  [70] sf_1.0-23              Rtsne_0.17             cluster_2.1.8.1       
-#>  [73] reshape2_1.4.5         generics_0.1.4         gtable_0.3.6          
-#>  [76] spatstat.data_3.1-9    class_7.3-23           tidyr_1.3.2           
-#>  [79] data.table_1.17.8      sp_2.2-0               spatstat.geom_3.6-1   
-#>  [82] RcppAnnoy_0.0.22       ggrepel_0.9.6          RANN_2.6.2            
-#>  [85] pillar_1.11.1          stringr_1.6.0          limma_3.62.2          
-#>  [88] spam_2.11-1            RcppHNSW_0.6.0         later_1.4.4           
-#>  [91] splines_4.4.2          dplyr_1.1.4            lattice_0.22-7        
-#>  [94] survival_3.8-3         FNN_1.1.4.1            deldir_2.0-4          
-#>  [97] tidyselect_1.2.1       miniUI_0.1.2           pbapply_1.7-4         
-#> [100] knitr_1.51             gridExtra_2.3          V8_8.0.1              
-#> [103] bookdown_0.46          scattermore_1.2        xfun_0.55             
-#> [106] statmod_1.5.1          matrixStats_1.5.0      stringi_1.8.7         
-#> [109] lazyeval_0.2.2         yaml_2.3.12            evaluate_1.0.5        
-#> [112] codetools_0.2-20       tibble_3.3.0           BiocManager_1.30.27   
-#> [115] cli_3.6.5              uwot_0.2.4             xtable_1.8-4          
-#> [118] reticulate_1.44.1      systemfonts_1.3.1      jquerylib_0.1.4       
-#> [121] Rcpp_1.1.0             globals_0.18.0         spatstat.random_3.4-3 
-#> [124] png_0.1-8              spatstat.univar_3.1-5  parallel_4.4.2        
-#> [127] pkgdown_2.2.0          dotCall64_1.2          listenv_0.10.0        
-#> [130] viridisLite_0.4.2      scales_1.4.0           e1071_1.7-17          
-#> [133] ggridges_0.5.7         SeuratObject_5.3.0     purrr_1.2.0           
-#> [136] rlang_1.1.6            cowplot_1.2.0
+#>   [1] RcppAnnoy_0.0.22            splines_4.4.2              
+#>   [3] later_1.4.4                 tibble_3.3.0               
+#>   [5] polyclip_1.10-7             fastDummies_1.7.5          
+#>   [7] lifecycle_1.0.4             sf_1.0-23                  
+#>   [9] globals_0.18.0              lattice_0.22-7             
+#>  [11] MASS_7.3-65                 magrittr_2.0.4             
+#>  [13] limma_3.62.2                plotly_4.11.0              
+#>  [15] sass_0.4.10                 rmarkdown_2.30             
+#>  [17] jquerylib_0.1.4             yaml_2.3.12                
+#>  [19] httpuv_1.6.16               otel_0.2.0                 
+#>  [21] sctransform_0.4.2           spam_2.11-1                
+#>  [23] spatstat.sparse_3.1-0       reticulate_1.44.1          
+#>  [25] cowplot_1.2.0               pbapply_1.7-4              
+#>  [27] DBI_1.2.3                   RColorBrewer_1.1-3         
+#>  [29] abind_1.4-8                 zlibbioc_1.52.0            
+#>  [31] Rtsne_0.17                  GenomicRanges_1.58.0       
+#>  [33] purrr_1.2.0                 BiocGenerics_0.52.0        
+#>  [35] GenomeInfoDbData_1.2.13     IRanges_2.40.1             
+#>  [37] S4Vectors_0.44.0            ggrepel_0.9.6              
+#>  [39] irlba_2.3.5.1               listenv_0.10.0             
+#>  [41] spatstat.utils_3.2-0        units_1.0-0                
+#>  [43] goftest_1.2-3               RSpectra_0.16-2            
+#>  [45] spatstat.random_3.4-3       fitdistrplus_1.2-4         
+#>  [47] parallelly_1.46.0           pkgdown_2.2.0              
+#>  [49] codetools_0.2-20            DelayedArray_0.32.0        
+#>  [51] tidyselect_1.2.1            UCSC.utils_1.2.0           
+#>  [53] farver_2.1.2                matrixStats_1.5.0          
+#>  [55] stats4_4.4.2                spatstat.explore_3.6-0     
+#>  [57] jsonlite_2.0.0              e1071_1.7-17               
+#>  [59] progressr_0.18.0            ggridges_0.5.7             
+#>  [61] survival_3.8-3              systemfonts_1.3.1          
+#>  [63] dbscan_1.2.4                tools_4.4.2                
+#>  [65] ragg_1.5.0                  ica_1.0-3                  
+#>  [67] Rcpp_1.1.0                  glue_1.8.0                 
+#>  [69] gridExtra_2.3               SparseArray_1.6.2          
+#>  [71] xfun_0.55                   MatrixGenerics_1.18.1      
+#>  [73] GenomeInfoDb_1.42.3         dplyr_1.1.4                
+#>  [75] withr_3.0.2                 BiocManager_1.30.27        
+#>  [77] fastmap_1.2.0               digest_0.6.39              
+#>  [79] R6_2.6.1                    mime_0.13                  
+#>  [81] textshaping_1.0.4           scattermore_1.2            
+#>  [83] tensor_1.5.1                spatstat.data_3.1-9        
+#>  [85] tidyr_1.3.2                 generics_0.1.4             
+#>  [87] data.table_1.18.0           FNN_1.1.4.1                
+#>  [89] class_7.3-23                httr_1.4.7                 
+#>  [91] htmlwidgets_1.6.4           S4Arrays_1.6.0             
+#>  [93] uwot_0.2.4                  pkgconfig_2.0.3            
+#>  [95] gtable_0.3.6                lmtest_0.9-40              
+#>  [97] S7_0.2.1                    SingleCellExperiment_1.28.1
+#>  [99] XVector_0.46.0              htmltools_0.5.9            
+#> [101] dotCall64_1.2               bookdown_0.46              
+#> [103] scales_1.4.0                Biobase_2.66.0             
+#> [105] png_0.1-8                   SpatialExperiment_1.16.0   
+#> [107] spatstat.univar_3.1-5       knitr_1.51                 
+#> [109] reshape2_1.4.5              rjson_0.2.23               
+#> [111] nlme_3.1-168                curl_7.0.0                 
+#> [113] proxy_0.4-28                cachem_1.1.0               
+#> [115] zoo_1.8-15                  stringr_1.6.0              
+#> [117] KernSmooth_2.23-26          parallel_4.4.2             
+#> [119] miniUI_0.1.2                concaveman_1.2.0           
+#> [121] desc_1.4.3                  pillar_1.11.1              
+#> [123] grid_4.4.2                  vctrs_0.6.5                
+#> [125] RANN_2.6.2                  promises_1.5.0             
+#> [127] xtable_1.8-4                cluster_2.1.8.1            
+#> [129] evaluate_1.0.5              magick_2.9.0               
+#> [131] cli_3.6.5                   compiler_4.4.2             
+#> [133] rlang_1.1.6                 crayon_1.5.3               
+#> [135] future.apply_1.20.1         labeling_0.4.3             
+#> [137] classInt_0.4-11             plyr_1.8.9                 
+#> [139] fs_1.6.6                    stringi_1.8.7              
+#> [141] viridisLite_0.4.2           deldir_2.0-4               
+#> [143] lazyeval_0.2.2              spatstat.geom_3.6-1        
+#> [145] V8_8.0.1                    Matrix_1.7-4               
+#> [147] RcppHNSW_0.6.0              patchwork_1.3.2            
+#> [149] future_1.68.0               statmod_1.5.1              
+#> [151] shiny_1.12.1                SummarizedExperiment_1.36.0
+#> [153] ROCR_1.0-11                 igraph_2.2.1               
+#> [155] bslib_0.9.0
 ```

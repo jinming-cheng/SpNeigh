@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">SpNeigh</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,7 @@
 Cheng</h4>
             <address class="author_afil">
       Centre for Quantitative Medicine, Duke-NUS Medical School,
-Singapore, 169857, Singapore<br><h4 data-toc-skip class="date">22 December, 2025</h4>
+Singapore, 169857, Singapore<br><h4 data-toc-skip class="date">27 December, 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jinming-cheng/SpNeigh/blob/main/vignettes/SpNeigh.Rmd"><code>vignettes/SpNeigh.Rmd</code></a></small>
       <div class="d-none name"><code>SpNeigh.Rmd</code></div>
@@ -68,37 +68,77 @@ Singapore, 169857, Singapore<br><h4 data-toc-skip class="date">22 December, 2025
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The <strong>SpNeigh</strong> package provides a flexible and
-interpretable framework for analyzing spatial neighborhoods in
-high-resolution spatial transcriptomics data. Designed with support for
-technologies such as 10x Xenium, Vizgen MERFISH, and 10x Visium HD, The
-<strong>SpNeigh</strong> facilitates a range of region-aware and
-distance-aware analyses. Key features include boundary detection,
-spatial weight calculation based on proximity to structural landmarks
-(e.g., region centroid or boundary), spatially-informed differential
-expression testing using spline-based modeling, and visualization of
-local cellular interactions.</p>
-<p>By integrating spatial geometry with transcriptomic profiles,
-<strong>SpNeigh</strong> helps uncover biologically meaningful spatial
-patterns, such as boundary-enriched genes, spatial gradients, and
-intercellular interactions, enabling deeper insights into tissue
-organization and cellular communication.</p>
-<p>This vignette demonstrates the key functionalities of the
-<strong>SpNeigh</strong> R package using a real <a href="https://www.10xgenomics.com/datasets/fresh-frozen-mouse-brain-for-xenium-explorer-demo-1-standard" class="external-link">10x
-Xenium Fresh Frozen Mouse Brain Tiny Subset Dataset</a>.</p>
-<p>We show how to:</p>
+<p>Recent spatial transcriptomics technologies such as <strong>10x
+Xenium</strong>, <strong>MERFISH</strong>, and <strong>Visium
+HD</strong> enable high-resolution profiling of gene expression while
+preserving tissue architecture. These platforms have opened new avenues
+for studying tissue organization, cell–cell interactions, and spatial
+gene regulation.</p>
+<p>Most existing methods focus on identifying globally spatially
+variable genes or enhancing spatial visualization, with limited support
+for modeling <strong>local spatial context</strong>, such as region
+boundaries, cell neighborhoods, or gradients across tissue
+structures.</p>
+<p><strong>SpNeigh</strong> is an R package that introduces a
+<strong>boundary-aware and region-informed framework</strong> for
+spatial neighborhood analysis and spatial differential expression
+modeling. Key features include:</p>
 <ul>
-<li>Identify spatial boundaries and neighboring ring regions</li>
-<li>Explore spatial interaction patterns between clusters</li>
-<li>Perform differential expression analysis between two cell
-populations</li>
-<li>Compute spatial weights from boundary or centroid proximity</li>
-<li>Perform spatial differential expression analysis along spatial
-gradients</li>
-<li>Perform spatial enrichment analysis along spatial gradients</li>
+<li>Boundary detection and neighborhood ring construction<br>
+</li>
+<li>Spatial weighting using distances to centroids or boundaries<br>
+</li>
+<li>Spline-based modeling of gene expression along spatial
+gradients<br>
+</li>
+<li>A spatial enrichment index (SEI) to quantify boundary- or
+region-enriched genes</li>
 </ul>
-<p>This workflow highlights the analytical flexibility and biological
-insights enabled by <strong>SpNeigh</strong>.</p>
+<p>Unlike existing Bioconductor tools such as
+<strong>spatialDE</strong>, which emphasize global spatial variability,
+SpNeigh enables <strong>local, interpretable</strong>, and
+<strong>geometry-aware</strong> modeling of spatial expression
+patterns.</p>
+<p>SpNeigh supports inputs from both <strong>SpatialExperiment</strong>
+and <strong>Seurat</strong> objects for coordinate extraction and
+visualization, and emphasizes transparent modeling using user-supplied
+matrices and weights—ensuring reproducibility and compatibility with
+Bioconductor workflows.</p>
+<p>By integrating spatial geometry with transcriptomic data, SpNeigh
+reveals biologically meaningful patterns such as <strong>intermediate
+cell states</strong>, <strong>microenvironmental differences</strong>,
+and <strong>spatial gene expression gradients</strong>, which are
+critical for understanding development, tissue function, and disease
+progression.</p>
+</div>
+<div class="section level2">
+<h2 id="overview-of-this-vignette">Overview of this vignette<a class="anchor" aria-label="anchor" href="#overview-of-this-vignette"></a>
+</h2>
+<p>This vignette demonstrates the key functionalities of the
+<strong>SpNeigh</strong> package using a real<br><a href="https://www.10xgenomics.com/datasets/fresh-frozen-mouse-brain-for-xenium-explorer-demo-1-standard" class="external-link">10x
+Xenium Fresh Frozen Mouse Brain Tiny Subset dataset</a>.</p>
+<p>Specifically, we show how to:</p>
+<ul>
+<li>Identify spatial boundaries and construct neighboring ring
+regions<br>
+</li>
+<li>Explore spatial interaction patterns between cell clusters<br>
+</li>
+<li>Perform differential expression analysis between spatially defined
+cell populations<br>
+</li>
+<li>Compute spatial weights based on boundary or centroid
+proximity<br>
+</li>
+<li>Model spatial expression gradients using spline-based differential
+expression<br>
+</li>
+<li>Quantify spatial enrichment along spatial gradients</li>
+</ul>
+<p>This workflow highlights the analytical flexibility of
+<strong>SpNeigh</strong> and illustrates how neighborhood-aware modeling
+can reveal spatial gene expression patterns that are not readily
+captured by existing approaches.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -111,11 +151,18 @@ using:</p>
 <!-- %                                                 % -->
 </div>
 <div class="section level2">
-<h2 id="load-packages-and-data">Load packages and data<a class="anchor" aria-label="anchor" href="#load-packages-and-data"></a>
+<h2 id="load-packages">Load packages<a class="anchor" aria-label="anchor" href="#load-packages"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jinming-cheng/SpNeigh">SpNeigh</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="load-data">Load data<a class="anchor" aria-label="anchor" href="#load-data"></a>
+</h2>
+<div class="section level3">
+<h3 id="input-coordinate-data-frame-and-normalized-expression-matrix">Input: Coordinate data frame and Normalized expression matrix<a class="anchor" aria-label="anchor" href="#input-coordinate-data-frame-and-normalized-expression-matrix"></a>
+</h3>
 <p>Coordinates of mouse brain dataset</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"MouseBrainCoords.rds"</span>,</span>
@@ -166,16 +213,133 @@ type–level analyses.</p>
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
 <!-- %                                                 % -->
 </div>
+<div class="section level3">
+<h3 id="alternative-input-spatialexperiment-object">Alternative input: SpatialExperiment object<a class="anchor" aria-label="anchor" href="#alternative-input-spatialexperiment-object"></a>
+</h3>
+<p>Coordinates of cells in clusters 0 and 2</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">coords_sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">coords</span>, <span class="va">cluster</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0"</span>, <span class="st">"2"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">coords_sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">coords_sub</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<p>metadata of cells in clusters 0 and 2</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">metadata_sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">coords</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cell"</span>, <span class="st">"cluster"</span><span class="op">)</span><span class="op">]</span>, <span class="va">cluster</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0"</span>, <span class="st">"2"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Create SpatialExperiment</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu">SpatialExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SpatialExperiment/man/SpatialExperiment.html" class="external-link">SpatialExperiment</a></span><span class="op">(</span></span>
+<span>    assay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"logcounts"</span> <span class="op">=</span> <span class="va">logNorm_expr</span><span class="op">)</span>,</span>
+<span>    colData <span class="op">=</span> <span class="va">metadata_sub</span>,</span>
+<span>    spatialCoords <span class="op">=</span> <span class="va">coords_sub</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">spe</span></span>
+<span><span class="co">#&gt; class: SpatialExperiment </span></span>
+<span><span class="co">#&gt; dim: 248 11617 </span></span>
+<span><span class="co">#&gt; metadata(0):</span></span>
+<span><span class="co">#&gt; assays(1): logcounts</span></span>
+<span><span class="co">#&gt; rownames(248): 2010300C02Rik Acsbg1 ... Zfp536 Zfpm2</span></span>
+<span><span class="co">#&gt; rowData names(0):</span></span>
+<span><span class="co">#&gt; colnames(11617): 3 8 ... 36595 36597</span></span>
+<span><span class="co">#&gt; colData names(3): cell cluster sample_id</span></span>
+<span><span class="co">#&gt; reducedDimNames(0):</span></span>
+<span><span class="co">#&gt; mainExpName: NULL</span></span>
+<span><span class="co">#&gt; altExpNames(0):</span></span>
+<span><span class="co">#&gt; spatialCoords names(2) : x y</span></span>
+<span><span class="co">#&gt; imgData names(0):</span></span></code></pre></div>
+<p>Extract coordinates from SpatialExperiment object</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">spe_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ExtractCoords.html">ExtractCoords</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span></span></code></pre></div>
+<p>Extract log-normalized expression matrix from SpatialExperiment
+object</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">spe_logcounts</span> <span class="op">&lt;-</span> <span class="fu">SingleCellExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span></span></code></pre></div>
+<!-- %                                                 % -->
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<!-- %                                                 % -->
+</div>
+<div class="section level3">
+<h3 id="alternative-input-seurat-object">Alternative input: Seurat object<a class="anchor" aria-label="anchor" href="#alternative-input-seurat-object"></a>
+</h3>
+<p>Load Seurat pacakge</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Loading required package: SeuratObject</span></span>
+<span><span class="co">#&gt; Loading required package: sp</span></span>
+<span><span class="co">#&gt; 'SeuratObject' was built with package 'Matrix' 1.7.1 but the current</span></span>
+<span><span class="co">#&gt; version is 1.7.4; it is recomended that you reinstall 'SeuratObject' as</span></span>
+<span><span class="co">#&gt; the ABI for 'Matrix' may have changed</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'SeuratObject'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     intersect, t</span></span></code></pre></div>
+<p>Create Seurat object (Note: a normalized expression matrix is used
+here for tutorial purposes only. In practice, use a raw count
+matrix.)</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">seu_sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span></span>
+<span>    assay <span class="op">=</span> <span class="st">"Spatial"</span>,</span>
+<span>    counts <span class="op">=</span> <span class="va">logNorm_expr</span>,</span>
+<span>    meta.data <span class="op">=</span> <span class="va">metadata_sub</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">seu_sp</span></span>
+<span><span class="co">#&gt; An object of class Seurat </span></span>
+<span><span class="co">#&gt; 248 features across 11617 samples within 1 assay </span></span>
+<span><span class="co">#&gt; Active assay: Spatial (248 features, 0 variable features)</span></span>
+<span><span class="co">#&gt;  1 layer present: counts</span></span></code></pre></div>
+<p>Insert normalized data into the <code>data</code> layer (Seurat
+v5)</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Layers.html" class="external-link">LayerData</a></span><span class="op">(</span><span class="va">seu_sp</span>, assay <span class="op">=</span> <span class="st">"Spatial"</span>, layer <span class="op">=</span> <span class="st">"data"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">logNorm_expr</span></span></code></pre></div>
+<p>Add FOV</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cents</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/CreateCentroids.html" class="external-link">CreateCentroids</a></span><span class="op">(</span><span class="va">coords_sub</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/CreateFOV.html" class="external-link">CreateFOV</a></span><span class="op">(</span></span>
+<span>    coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"centroids"</span> <span class="op">=</span> <span class="va">cents</span><span class="op">)</span>,</span>
+<span>    type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"centroids"</span><span class="op">)</span>,</span>
+<span>    assay <span class="op">=</span> <span class="st">"Spatial"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">seu_sp</span><span class="op">[[</span><span class="st">"fov"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">fov</span></span></code></pre></div>
+<p>Add <code>seurat_clusters</code> to the metadata</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">seu_sp</span><span class="op">$</span><span class="va">seurat_clusters</span> <span class="op">&lt;-</span> <span class="va">seu_sp</span><span class="op">$</span><span class="va">cluster</span></span></code></pre></div>
+<p>Extract coordinates from Seurat object</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">seu_sp_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ExtractCoords.html">ExtractCoords</a></span><span class="op">(</span><span class="va">seu_sp</span><span class="op">)</span></span></code></pre></div>
+<p>Extract log-normalized expression matrix from Seurat object</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">seu_sp_log_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/AssayData.html" class="external-link">GetAssayData</a></span><span class="op">(</span><span class="va">seu_sp</span><span class="op">)</span></span></code></pre></div>
+<!-- %                                                 % -->
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<!-- %                                                 % -->
+</div>
+</div>
 <div class="section level2">
 <h2 id="neighborhood-analysis-for-cluster-2-cells">Neighborhood analysis for cluster 2 cells<a class="anchor" aria-label="anchor" href="#neighborhood-analysis-for-cluster-2-cells"></a>
 </h2>
+<div class="section level3">
+<h3 id="quick-look-at-the-boundaries-of-one-cluster">Quick look at the boundaries of one cluster<a class="anchor" aria-label="anchor" href="#quick-look-at-the-boundaries-of-one-cluster"></a>
+</h3>
+<p>Quick look at the boundaries of cluster 2 using default parameter
+settings. The input is a SpatialExperiment object.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotBoundary.html">PlotBoundary</a></span><span class="op">(</span><span class="va">spe</span>, one_cluster <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="SpNeigh_files/figure-html/PlotBoundary_spe-1.png" class="r-plt" alt="" width="100%"></p>
+<p>Similarly, we can use a Seurat object as input and adjust
+parameters</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotBoundary.html">PlotBoundary</a></span><span class="op">(</span><span class="va">seu_sp</span>, one_cluster <span class="op">=</span> <span class="st">"2"</span>, eps <span class="op">=</span> <span class="fl">120</span><span class="op">)</span></span></code></pre></div>
+<p><img src="SpNeigh_files/figure-html/PlotBoundary_seu-1.png" class="r-plt" alt="" width="100%"></p>
+</div>
 <div class="section level3">
 <h3 id="detect-spatial-boundaries">Detect spatial boundaries<a class="anchor" aria-label="anchor" href="#detect-spatial-boundaries"></a>
 </h3>
 <p>Extract boundaries of cluster 2. Adjust the <code>eps</code> and
 <code>minPt</code>s parameters to refine the number of subregions
 detected by the default dbscan clustering method.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bon_points_c2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetBoundary.html">GetBoundary</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">coords</span>,</span>
 <span>    one_cluster <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -187,15 +351,15 @@ detected by the default dbscan clustering method.</p>
 <span><span class="co">#&gt;   1   2 </span></span>
 <span><span class="co">#&gt; 572 132</span></span></code></pre></div>
 <p>Add boundaries of cluster 2 to the spatial plot</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotBoundary.html">PlotBoundary</a></span><span class="op">(</span><span class="va">coords</span>, boundary <span class="op">=</span> <span class="va">bon_points_c2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotWithBoundary_C2-1.png" class="r-plt" alt="" width="100%"></p>
 <p>Alternatively, add boundaries of cluster 2 using AddBoundary()
 function</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># PlotBoundary(coords) + AddBoundary(boundary = bon_points_c2)</span></span></code></pre></div>
 <p>Plot boundary regions</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bon_polys_c2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BuildBoundaryPoly.html">BuildBoundaryPoly</a></span><span class="op">(</span><span class="va">bon_points_c2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/PlotRegion.html">PlotRegion</a></span><span class="op">(</span><span class="va">bon_polys_c2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotRegion_C2-1.png" class="r-plt" alt="" width="100%"></p>
@@ -207,10 +371,10 @@ function</p>
 polygons from their corresponding outer buffered polygons. The
 <code>outer_boundary</code> is automatically computed when it is not
 supplied.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ring_regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetRingRegion.html">GetRingRegion</a></span><span class="op">(</span>boundary <span class="op">=</span> <span class="va">bon_points_c2</span><span class="op">)</span></span></code></pre></div>
 <p>Plot ring regions</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotRegion.html">PlotRegion</a></span><span class="op">(</span><span class="va">ring_regions</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotRing_C2-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
@@ -220,7 +384,7 @@ supplied.</p>
 <p>Get cells inside rings for cluster 2. (<code><a href="../reference/GetCellsInside.html">GetCellsInside()</a></code>
 takes a few seconds to run on this example, but may require several
 minutes or longer for larger datasets.)</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells_ring</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetCellsInside.html">GetCellsInside</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, boundary <span class="op">=</span> <span class="va">ring_regions</span><span class="op">)</span></span>
 <span><span class="va">cells_ring</span></span>
 <span><span class="co">#&gt; Simple feature collection with 4362 features and 3 fields</span></span>
@@ -241,22 +405,22 @@ minutes or longer for larger datasets.)</p>
 <span><span class="co">#&gt; 29   29       4         1 POINT (2197.507 2524.511)</span></span>
 <span><span class="co">#&gt; 30   30       3         1 POINT (2209.931 2542.314)</span></span></code></pre></div>
 <p>Plot cells inside rings</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotCellsInside.html">PlotCellsInside</a></span><span class="op">(</span><span class="va">cells_ring</span>, point_size <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotCellsInsideRing_C2-1.png" class="r-plt" alt="" width="100%"></p>
 <p>Obtain statistics of cells inside rings for cluster 2</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stats_ring</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/StatsCellsInside.html">StatsCellsInside</a></span><span class="op">(</span><span class="va">cells_ring</span><span class="op">)</span></span></code></pre></div>
 <p>Plot proportion of cells in different clusters for each sub region
 using bar plot.
 <!-- The `stat_column` is used to plot "proportion" or "count". --></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotStatsBar.html">PlotStatsBar</a></span><span class="op">(</span><span class="va">stats_ring</span>, stat_column <span class="op">=</span> <span class="st">"proportion"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotStatsBar_Proportion_C2_Ring-1.png" class="r-plt" alt="" width="100%"></p>
 <p>Plot proportion of cells in different clusters for each sub region
 using donut chart. If <code>plot_donut = FALSE</code>, pie chart is
 used.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotStatsPie.html">PlotStatsPie</a></span><span class="op">(</span><span class="va">stats_ring</span>, plot_donut <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotStats_Donut_C2_Ring-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
@@ -265,7 +429,7 @@ used.</p>
 </h3>
 <p>Compute neighborhood interaction matrix using K-nearest neighbors for
 cells inside rings</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interaction_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputeSpatialInteractionMatrix.html">ComputeSpatialInteractionMatrix</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">coords</span>, <span class="va">cell</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">cells_ring</span><span class="op">$</span><span class="va">cell</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -286,15 +450,15 @@ cells inside rings</p>
 <p>Heatmap of a row-scaled interaction matrix for cells inside rings for
 cluster 2. The heatmap reveals that clusters 2, 3, and 4 are spatially
 adjacent to one another.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotInteractionMatrix.html">PlotInteractionMatrix</a></span><span class="op">(</span><span class="va">interaction_matrix</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/Heatmap_InteractionMatrix_C2_Ring-1.png" class="r-plt" alt="" width="100%"></p>
 <p>The plot of cells inside rings split by clusters further confirms the
 co-occurrence of clusters 2, 3, 4 in ring region 1.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotCellsInside.html">PlotCellsInside</a></span><span class="op">(</span><span class="va">cells_ring</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cluster</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">RotatedAxis</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/SeuratTheme.html" class="external-link">RotatedAxis</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="../reference/AddBoundaryPoly.html">AddBoundaryPoly</a></span><span class="op">(</span><span class="va">ring_regions</span>, linewidth_boundary <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotCellsInside_SplitByCluster_C2_Ring-1.png" class="r-plt" alt="" width="100%"></p>
 <!-- %                                                 % -->
@@ -310,7 +474,7 @@ co-occurrence of clusters 2, 3, 4 in ring region 1.</p>
 on the DE analysis between cluster 2 cells inside boundary of sub region
 1 and cells in the outside neighboring ring region 1.</p>
 <p>Get cells inside the boundaries of cluster 2</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells_inside</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetCellsInside.html">GetCellsInside</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, boundary <span class="op">=</span> <span class="va">bon_points_c2</span><span class="op">)</span></span>
 <span><span class="va">cells_inside</span></span>
 <span><span class="co">#&gt; Simple feature collection with 5073 features and 3 fields</span></span>
@@ -331,13 +495,13 @@ on the DE analysis between cluster 2 cells inside boundary of sub region
 <span><span class="co">#&gt; 54   54       2         1 POINT (2392.535 2555.696)</span></span>
 <span><span class="co">#&gt; 55   55       2         1 POINT (2407.538 2545.443)</span></span></code></pre></div>
 <p>Obtain cluster 2 cells inside and outside boundary of sub region</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells_in</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">cells_inside</span>, <span class="va">region_id</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">cluster</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span><span class="op">[[</span><span class="st">"cell"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">cells_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">cells_ring</span>, <span class="va">region_id</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">cluster</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span><span class="op">[[</span><span class="st">"cell"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <p>Perform DE analysis between cells inside boundary and outside
 boundary using the <code>limma</code> framewrok (<code>lmFit</code> +
 <code>eBayes</code>)</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RunLimmaDE.html">RunLimmaDE</a></span><span class="op">(</span></span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span>,</span>
 <span>    min.pct <span class="op">=</span> <span class="fl">0.25</span>,</span>
@@ -347,7 +511,7 @@ boundary using the <code>limma</code> framewrok (<code>lmFit</code> +
 <p>Top DE genes between cells outside boundary and cells inside
 boundary. The DE genes are ordered by the abstract value of
 <code>logFC</code> by default.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tab</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gene"</span>, <span class="st">"logFC"</span>, <span class="st">"adj.P.Val"</span>, <span class="st">"pct.reference"</span>, <span class="st">"pct.target"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            gene    logFC     adj.P.Val pct.reference pct.target</span></span>
 <span><span class="co">#&gt; Slc17a7 Slc17a7 2.719412 1.624032e-145     0.3228372  0.7555911</span></span>
@@ -357,13 +521,13 @@ boundary. The DE genes are ordered by the abstract value of
 <span><span class="co">#&gt; Igfbp4   Igfbp4 1.608183  8.429609e-96     0.1437659  0.4952077</span></span>
 <span><span class="co">#&gt; Nrn1       Nrn1 1.590518  4.942213e-65     0.2722646  0.5926518</span></span></code></pre></div>
 <p>Set a random seed to make PlotExpression results reproducible</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></code></pre></div>
 <p>Expression of top DE genes in cluster 2 cells outside boundary. The
 cells are plotted randomly using the given seed when
 <code>shuffle = TRUE</code>. If <code>shuffle = FALSE</code>, cells with
 higher expression values are plotted last (on the top).</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotExpression.html">PlotExpression</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">coords</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">logNorm_expr</span><span class="op">)</span>, <span class="op">]</span>,</span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span>,</span>
@@ -378,7 +542,7 @@ higher expression values are plotted last (on the top).</p>
 <p>Expression of <em>Slc17a7</em> for cluster 2 cells inside and outside
 boundary of sub region 1. Cluster 2 cells outside the boundary show much
 higher expression of Slc17a7.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotExpression.html">PlotExpression</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">coords</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">logNorm_expr</span><span class="op">)</span>, <span class="op">]</span>,</span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span>,</span>
@@ -395,7 +559,7 @@ Oligodendrocytes (cluster 2 cells). <em>Sox10</em> is expressed in both
 cluster 2 cells inside and outside the boundary. This suggests that
 cluster 2 cells located near the boundary may represent intermediate
 cell states.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotExpression.html">PlotExpression</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">coords</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">logNorm_expr</span><span class="op">)</span>, <span class="op">]</span>,</span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span>,</span>
@@ -419,18 +583,18 @@ cell states.</p>
 <h3 id="detect-spatial-boundaries-1">Detect spatial boundaries<a class="anchor" aria-label="anchor" href="#detect-spatial-boundaries-1"></a>
 </h3>
 <p>Obtain cells in cluster 0</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells_c0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">coords</span>, <span class="va">cluster</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">[</span>, <span class="st">"cell"</span><span class="op">]</span></span></code></pre></div>
 <p>Plot cluster 0 cells without boundary</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotBoundary.html">PlotBoundary</a></span><span class="op">(</span><span class="va">coords</span><span class="op">[</span><span class="va">cells_c0</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/Plot_NoBoundary_C0-1.png" class="r-plt" alt="" width="100%"></p>
 <p>Get boundaries of cluster 0</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bon_points_c0</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetBoundary.html">GetBoundary</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, one_cluster <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">bon_polys_c0</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BuildBoundaryPoly.html">BuildBoundaryPoly</a></span><span class="op">(</span><span class="va">bon_points_c0</span><span class="op">)</span></span></code></pre></div>
 <p>Plot boundary edges for cluster 0</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotEdge.html">PlotEdge</a></span><span class="op">(</span>boundary_poly <span class="op">=</span> <span class="va">bon_polys_c0</span>, linewidth_boundary <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotBoundary_C0-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
@@ -438,7 +602,7 @@ cell states.</p>
 <h3 id="compute-and-plot-spatial-weights">Compute and plot spatial weights<a class="anchor" aria-label="anchor" href="#compute-and-plot-spatial-weights"></a>
 </h3>
 <p>Compute spatial weights based on the distance to boundaries</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">weights_bon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputeBoundaryWeights.html">ComputeBoundaryWeights</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">coords</span>,</span>
 <span>    cell_ids <span class="op">=</span> <span class="va">cells_c0</span>,</span>
@@ -446,26 +610,26 @@ cell states.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Spatial weights are a named vector, where names correspond to cell
 IDs</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">weights_bon</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span>
 <span><span class="co">#&gt;        39        42        75 </span></span>
 <span><span class="co">#&gt; 0.7016421 0.6955660 0.6805249</span></span></code></pre></div>
 <p>Alternatively, compute spatial weights based on the distance to
 centroids</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">weights_cen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputeCentroidWeights.html">ComputeCentroidWeights</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, cell_ids <span class="op">=</span> <span class="va">cells_c0</span><span class="op">)</span></span></code></pre></div>
 <p>Plot boundary weights</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotWeights.html">PlotWeights</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, weights <span class="op">=</span> <span class="va">weights_bon</span>, point_size <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Boundary weights"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="SpNeigh_files/figure-html/unnamed-chunk-23-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="SpNeigh_files/figure-html/unnamed-chunk-35-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 id="perform-spatial-differential-analysis-along-boundary-weights">Perform spatial differential analysis along boundary weights<a class="anchor" aria-label="anchor" href="#perform-spatial-differential-analysis-along-boundary-weights"></a>
 </h3>
 <p>Run spatial DE analysis for cluster 0 cells along boundary weights
 using splines</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tab_sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RunSpatialDE.html">RunSpatialDE</a></span><span class="op">(</span></span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span><span class="op">[</span>, <span class="va">cells_c0</span><span class="op">]</span>,</span>
 <span>    spatial_distance <span class="op">=</span> <span class="va">weights_bon</span>,</span>
@@ -475,7 +639,7 @@ using splines</p>
 (<code>Z1</code>) captures the main expression trend along the spatial
 distance. A positive value indicates increasing expression with
 distance, while a negative value indicates decreasing expression.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tab_sp</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                Z1        Z2        Z3  AveExpr         F P.Value adj.P.Val</span></span>
 <span><span class="co">#&gt; Aldh1a2  90.19564 -72.83701  18.56803 1.642933 1156.7476       0         0</span></span>
@@ -492,7 +656,7 @@ distance, while a negative value indicates decreasing expression.</p>
 <span><span class="co">#&gt; Fmod       Fmod Positive</span></span>
 <span><span class="co">#&gt; Gjb2       Gjb2 Positive</span></span></code></pre></div>
 <p>Expression of top DE genes along boundary weights</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotExpression.html">PlotExpression</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">coords</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">logNorm_expr</span><span class="op">)</span>, <span class="op">]</span>,</span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span>,</span>
@@ -507,7 +671,7 @@ distance, while a negative value indicates decreasing expression.</p>
 <p>Plot scaled average expression along boundary weight bins for top 10
 spatial DE genes. The scaled average expression ranges from 0 to 1 by
 using min-max normalization method.</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotSpatialExpression.html">PlotSpatialExpression</a></span><span class="op">(</span></span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span><span class="op">[</span>, <span class="va">cells_c0</span><span class="op">]</span>,</span>
 <span>    spatial_distance <span class="op">=</span> <span class="va">weights_bon</span>,</span>
@@ -525,7 +689,7 @@ using min-max normalization method.</p>
 boundary weights. The SEI reflects the extent to which gene expression
 is enriched in spatially weighted regions. The result is sorted in
 descending order by <code>normalized_SEI</code>.</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">SEI_bon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputeSpatialEnrichmentIndex.html">ComputeSpatialEnrichmentIndex</a></span><span class="op">(</span></span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span><span class="op">[</span>, <span class="va">cells_c0</span><span class="op">]</span>,</span>
 <span>    weights <span class="op">=</span> <span class="va">weights_bon</span></span>
@@ -539,7 +703,7 @@ descending order by <code>normalized_SEI</code>.</p>
 <span><span class="co">#&gt; 5  Col1a1 1.842083  1.675953       1.099125</span></span>
 <span><span class="co">#&gt; 6  Cyp1b1 1.495145  1.365958       1.094575</span></span></code></pre></div>
 <p>Expression of top genes enriched near boundaries</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotExpression.html">PlotExpression</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">coords</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">logNorm_expr</span><span class="op">)</span>, <span class="op">]</span>,</span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span>,</span>
@@ -557,7 +721,7 @@ descending order by <code>normalized_SEI</code>.</p>
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.4.2 (2024-10-31)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
@@ -582,55 +746,88 @@ descending order by <code>normalized_SEI</code>.</p>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] ggplot2_4.0.1    SpNeigh_0.99.0   BiocStyle_2.34.0</span></span>
+<span><span class="co">#&gt; [1] Seurat_5.4.0       SeuratObject_5.3.0 sp_2.2-0           ggplot2_4.0.1     </span></span>
+<span><span class="co">#&gt; [5] SpNeigh_0.99.1     BiocStyle_2.34.0  </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.4        </span></span>
-<span><span class="co">#&gt;   [4] spatstat.utils_3.2-0   farver_2.1.2           rmarkdown_2.30        </span></span>
-<span><span class="co">#&gt;   [7] fs_1.6.6               ragg_1.5.0             vctrs_0.6.5           </span></span>
-<span><span class="co">#&gt;  [10] ROCR_1.0-11            spatstat.explore_3.6-0 htmltools_0.5.9       </span></span>
-<span><span class="co">#&gt;  [13] curl_7.0.0             sass_0.4.10            sctransform_0.4.2     </span></span>
-<span><span class="co">#&gt;  [16] parallelly_1.46.0      KernSmooth_2.23-26     bslib_0.9.0           </span></span>
-<span><span class="co">#&gt;  [19] htmlwidgets_1.6.4      desc_1.4.3             ica_1.0-3             </span></span>
-<span><span class="co">#&gt;  [22] plyr_1.8.9             plotly_4.11.0          zoo_1.8-15            </span></span>
-<span><span class="co">#&gt;  [25] cachem_1.1.0           igraph_2.2.1           mime_0.13             </span></span>
-<span><span class="co">#&gt;  [28] lifecycle_1.0.4        pkgconfig_2.0.3        Matrix_1.7-4          </span></span>
-<span><span class="co">#&gt;  [31] R6_2.6.1               fastmap_1.2.0          fitdistrplus_1.2-4    </span></span>
-<span><span class="co">#&gt;  [34] future_1.68.0          shiny_1.12.1           digest_0.6.39         </span></span>
-<span><span class="co">#&gt;  [37] patchwork_1.3.2        Seurat_5.4.0           tensor_1.5.1          </span></span>
-<span><span class="co">#&gt;  [40] RSpectra_0.16-2        irlba_2.3.5.1          textshaping_1.0.4     </span></span>
-<span><span class="co">#&gt;  [43] labeling_0.4.3         progressr_0.18.0       spatstat.sparse_3.1-0 </span></span>
-<span><span class="co">#&gt;  [46] httr_1.4.7             polyclip_1.10-7        abind_1.4-8           </span></span>
-<span><span class="co">#&gt;  [49] compiler_4.4.2         proxy_0.4-28           withr_3.0.2           </span></span>
-<span><span class="co">#&gt;  [52] S7_0.2.1               DBI_1.2.3              fastDummies_1.7.5     </span></span>
-<span><span class="co">#&gt;  [55] MASS_7.3-65            concaveman_1.2.0       classInt_0.4-11       </span></span>
-<span><span class="co">#&gt;  [58] tools_4.4.2            units_1.0-0            lmtest_0.9-40         </span></span>
-<span><span class="co">#&gt;  [61] otel_0.2.0             httpuv_1.6.16          future.apply_1.20.1   </span></span>
-<span><span class="co">#&gt;  [64] goftest_1.2-3          glue_1.8.0             dbscan_1.2.4          </span></span>
-<span><span class="co">#&gt;  [67] nlme_3.1-168           promises_1.5.0         grid_4.4.2            </span></span>
-<span><span class="co">#&gt;  [70] sf_1.0-23              Rtsne_0.17             cluster_2.1.8.1       </span></span>
-<span><span class="co">#&gt;  [73] reshape2_1.4.5         generics_0.1.4         gtable_0.3.6          </span></span>
-<span><span class="co">#&gt;  [76] spatstat.data_3.1-9    class_7.3-23           tidyr_1.3.2           </span></span>
-<span><span class="co">#&gt;  [79] data.table_1.17.8      sp_2.2-0               spatstat.geom_3.6-1   </span></span>
-<span><span class="co">#&gt;  [82] RcppAnnoy_0.0.22       ggrepel_0.9.6          RANN_2.6.2            </span></span>
-<span><span class="co">#&gt;  [85] pillar_1.11.1          stringr_1.6.0          limma_3.62.2          </span></span>
-<span><span class="co">#&gt;  [88] spam_2.11-1            RcppHNSW_0.6.0         later_1.4.4           </span></span>
-<span><span class="co">#&gt;  [91] splines_4.4.2          dplyr_1.1.4            lattice_0.22-7        </span></span>
-<span><span class="co">#&gt;  [94] survival_3.8-3         FNN_1.1.4.1            deldir_2.0-4          </span></span>
-<span><span class="co">#&gt;  [97] tidyselect_1.2.1       miniUI_0.1.2           pbapply_1.7-4         </span></span>
-<span><span class="co">#&gt; [100] knitr_1.51             gridExtra_2.3          V8_8.0.1              </span></span>
-<span><span class="co">#&gt; [103] bookdown_0.46          scattermore_1.2        xfun_0.55             </span></span>
-<span><span class="co">#&gt; [106] statmod_1.5.1          matrixStats_1.5.0      stringi_1.8.7         </span></span>
-<span><span class="co">#&gt; [109] lazyeval_0.2.2         yaml_2.3.12            evaluate_1.0.5        </span></span>
-<span><span class="co">#&gt; [112] codetools_0.2-20       tibble_3.3.0           BiocManager_1.30.27   </span></span>
-<span><span class="co">#&gt; [115] cli_3.6.5              uwot_0.2.4             xtable_1.8-4          </span></span>
-<span><span class="co">#&gt; [118] reticulate_1.44.1      systemfonts_1.3.1      jquerylib_0.1.4       </span></span>
-<span><span class="co">#&gt; [121] Rcpp_1.1.0             globals_0.18.0         spatstat.random_3.4-3 </span></span>
-<span><span class="co">#&gt; [124] png_0.1-8              spatstat.univar_3.1-5  parallel_4.4.2        </span></span>
-<span><span class="co">#&gt; [127] pkgdown_2.2.0          dotCall64_1.2          listenv_0.10.0        </span></span>
-<span><span class="co">#&gt; [130] viridisLite_0.4.2      scales_1.4.0           e1071_1.7-17          </span></span>
-<span><span class="co">#&gt; [133] ggridges_0.5.7         SeuratObject_5.3.0     purrr_1.2.0           </span></span>
-<span><span class="co">#&gt; [136] rlang_1.1.6            cowplot_1.2.0</span></span></code></pre></div>
+<span><span class="co">#&gt;   [1] RcppAnnoy_0.0.22            splines_4.4.2              </span></span>
+<span><span class="co">#&gt;   [3] later_1.4.4                 tibble_3.3.0               </span></span>
+<span><span class="co">#&gt;   [5] polyclip_1.10-7             fastDummies_1.7.5          </span></span>
+<span><span class="co">#&gt;   [7] lifecycle_1.0.4             sf_1.0-23                  </span></span>
+<span><span class="co">#&gt;   [9] globals_0.18.0              lattice_0.22-7             </span></span>
+<span><span class="co">#&gt;  [11] MASS_7.3-65                 magrittr_2.0.4             </span></span>
+<span><span class="co">#&gt;  [13] limma_3.62.2                plotly_4.11.0              </span></span>
+<span><span class="co">#&gt;  [15] sass_0.4.10                 rmarkdown_2.30             </span></span>
+<span><span class="co">#&gt;  [17] jquerylib_0.1.4             yaml_2.3.12                </span></span>
+<span><span class="co">#&gt;  [19] httpuv_1.6.16               otel_0.2.0                 </span></span>
+<span><span class="co">#&gt;  [21] sctransform_0.4.2           spam_2.11-1                </span></span>
+<span><span class="co">#&gt;  [23] spatstat.sparse_3.1-0       reticulate_1.44.1          </span></span>
+<span><span class="co">#&gt;  [25] cowplot_1.2.0               pbapply_1.7-4              </span></span>
+<span><span class="co">#&gt;  [27] DBI_1.2.3                   RColorBrewer_1.1-3         </span></span>
+<span><span class="co">#&gt;  [29] abind_1.4-8                 zlibbioc_1.52.0            </span></span>
+<span><span class="co">#&gt;  [31] Rtsne_0.17                  GenomicRanges_1.58.0       </span></span>
+<span><span class="co">#&gt;  [33] purrr_1.2.0                 BiocGenerics_0.52.0        </span></span>
+<span><span class="co">#&gt;  [35] GenomeInfoDbData_1.2.13     IRanges_2.40.1             </span></span>
+<span><span class="co">#&gt;  [37] S4Vectors_0.44.0            ggrepel_0.9.6              </span></span>
+<span><span class="co">#&gt;  [39] irlba_2.3.5.1               listenv_0.10.0             </span></span>
+<span><span class="co">#&gt;  [41] spatstat.utils_3.2-0        units_1.0-0                </span></span>
+<span><span class="co">#&gt;  [43] goftest_1.2-3               RSpectra_0.16-2            </span></span>
+<span><span class="co">#&gt;  [45] spatstat.random_3.4-3       fitdistrplus_1.2-4         </span></span>
+<span><span class="co">#&gt;  [47] parallelly_1.46.0           pkgdown_2.2.0              </span></span>
+<span><span class="co">#&gt;  [49] codetools_0.2-20            DelayedArray_0.32.0        </span></span>
+<span><span class="co">#&gt;  [51] tidyselect_1.2.1            UCSC.utils_1.2.0           </span></span>
+<span><span class="co">#&gt;  [53] farver_2.1.2                matrixStats_1.5.0          </span></span>
+<span><span class="co">#&gt;  [55] stats4_4.4.2                spatstat.explore_3.6-0     </span></span>
+<span><span class="co">#&gt;  [57] jsonlite_2.0.0              e1071_1.7-17               </span></span>
+<span><span class="co">#&gt;  [59] progressr_0.18.0            ggridges_0.5.7             </span></span>
+<span><span class="co">#&gt;  [61] survival_3.8-3              systemfonts_1.3.1          </span></span>
+<span><span class="co">#&gt;  [63] dbscan_1.2.4                tools_4.4.2                </span></span>
+<span><span class="co">#&gt;  [65] ragg_1.5.0                  ica_1.0-3                  </span></span>
+<span><span class="co">#&gt;  [67] Rcpp_1.1.0                  glue_1.8.0                 </span></span>
+<span><span class="co">#&gt;  [69] gridExtra_2.3               SparseArray_1.6.2          </span></span>
+<span><span class="co">#&gt;  [71] xfun_0.55                   MatrixGenerics_1.18.1      </span></span>
+<span><span class="co">#&gt;  [73] GenomeInfoDb_1.42.3         dplyr_1.1.4                </span></span>
+<span><span class="co">#&gt;  [75] withr_3.0.2                 BiocManager_1.30.27        </span></span>
+<span><span class="co">#&gt;  [77] fastmap_1.2.0               digest_0.6.39              </span></span>
+<span><span class="co">#&gt;  [79] R6_2.6.1                    mime_0.13                  </span></span>
+<span><span class="co">#&gt;  [81] textshaping_1.0.4           scattermore_1.2            </span></span>
+<span><span class="co">#&gt;  [83] tensor_1.5.1                spatstat.data_3.1-9        </span></span>
+<span><span class="co">#&gt;  [85] tidyr_1.3.2                 generics_0.1.4             </span></span>
+<span><span class="co">#&gt;  [87] data.table_1.18.0           FNN_1.1.4.1                </span></span>
+<span><span class="co">#&gt;  [89] class_7.3-23                httr_1.4.7                 </span></span>
+<span><span class="co">#&gt;  [91] htmlwidgets_1.6.4           S4Arrays_1.6.0             </span></span>
+<span><span class="co">#&gt;  [93] uwot_0.2.4                  pkgconfig_2.0.3            </span></span>
+<span><span class="co">#&gt;  [95] gtable_0.3.6                lmtest_0.9-40              </span></span>
+<span><span class="co">#&gt;  [97] S7_0.2.1                    SingleCellExperiment_1.28.1</span></span>
+<span><span class="co">#&gt;  [99] XVector_0.46.0              htmltools_0.5.9            </span></span>
+<span><span class="co">#&gt; [101] dotCall64_1.2               bookdown_0.46              </span></span>
+<span><span class="co">#&gt; [103] scales_1.4.0                Biobase_2.66.0             </span></span>
+<span><span class="co">#&gt; [105] png_0.1-8                   SpatialExperiment_1.16.0   </span></span>
+<span><span class="co">#&gt; [107] spatstat.univar_3.1-5       knitr_1.51                 </span></span>
+<span><span class="co">#&gt; [109] reshape2_1.4.5              rjson_0.2.23               </span></span>
+<span><span class="co">#&gt; [111] nlme_3.1-168                curl_7.0.0                 </span></span>
+<span><span class="co">#&gt; [113] proxy_0.4-28                cachem_1.1.0               </span></span>
+<span><span class="co">#&gt; [115] zoo_1.8-15                  stringr_1.6.0              </span></span>
+<span><span class="co">#&gt; [117] KernSmooth_2.23-26          parallel_4.4.2             </span></span>
+<span><span class="co">#&gt; [119] miniUI_0.1.2                concaveman_1.2.0           </span></span>
+<span><span class="co">#&gt; [121] desc_1.4.3                  pillar_1.11.1              </span></span>
+<span><span class="co">#&gt; [123] grid_4.4.2                  vctrs_0.6.5                </span></span>
+<span><span class="co">#&gt; [125] RANN_2.6.2                  promises_1.5.0             </span></span>
+<span><span class="co">#&gt; [127] xtable_1.8-4                cluster_2.1.8.1            </span></span>
+<span><span class="co">#&gt; [129] evaluate_1.0.5              magick_2.9.0               </span></span>
+<span><span class="co">#&gt; [131] cli_3.6.5                   compiler_4.4.2             </span></span>
+<span><span class="co">#&gt; [133] rlang_1.1.6                 crayon_1.5.3               </span></span>
+<span><span class="co">#&gt; [135] future.apply_1.20.1         labeling_0.4.3             </span></span>
+<span><span class="co">#&gt; [137] classInt_0.4-11             plyr_1.8.9                 </span></span>
+<span><span class="co">#&gt; [139] fs_1.6.6                    stringi_1.8.7              </span></span>
+<span><span class="co">#&gt; [141] viridisLite_0.4.2           deldir_2.0-4               </span></span>
+<span><span class="co">#&gt; [143] lazyeval_0.2.2              spatstat.geom_3.6-1        </span></span>
+<span><span class="co">#&gt; [145] V8_8.0.1                    Matrix_1.7-4               </span></span>
+<span><span class="co">#&gt; [147] RcppHNSW_0.6.0              patchwork_1.3.2            </span></span>
+<span><span class="co">#&gt; [149] future_1.68.0               statmod_1.5.1              </span></span>
+<span><span class="co">#&gt; [151] shiny_1.12.1                SummarizedExperiment_1.36.0</span></span>
+<span><span class="co">#&gt; [153] ROCR_1.0-11                 igraph_2.2.1               </span></span>
+<span><span class="co">#&gt; [155] bslib_0.9.0</span></span></code></pre></div>
 <div style="page-break-after: always;"></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

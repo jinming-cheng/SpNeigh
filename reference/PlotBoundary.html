@@ -19,7 +19,7 @@ as polygons to visualize spatial subregions."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">SpNeigh</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,7 @@ as polygons to visualize spatial subregions.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">PlotBoundary</span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cluster_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  one_cluster <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  boundary <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  colors <span class="op">=</span> <span class="va">my_colors_15</span>,</span>
@@ -81,10 +82,16 @@ as polygons to visualize spatial subregions.</p>
 
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>A Seurat object or a data frame with
-columns: <code>x</code>, <code>y</code>, <code>cell</code>, and <code>cluster</code>.
-If a Seurat object is provided, the <code>seurat_clusters</code>
-metadata column will be used as the <code>cluster</code>.</p></dd>
+<dd><p>A <code>Seurat</code> object, a <code>SpatialExperiment</code> object,
+or a data frame containing spatial coordinates.</p></dd>
+
+
+<dt id="arg-cluster-col">cluster_col<a class="anchor" aria-label="anchor" href="#arg-cluster-col"></a></dt>
+<dd><p>Character scalar specifying the metadata column name
+containing cluster assignments. If <code>NULL</code>, a default is used
+depending on the input object type:</p><ul><li><p><code>"seurat_clusters"</code> for <code>Seurat</code> objects</p></li>
+<li><p><code>"cluster"</code> for <code>SpatialExperiment</code> objects</p></li>
+</ul></dd>
 
 
 <dt id="arg-one-cluster">one_cluster<a class="anchor" aria-label="anchor" href="#arg-one-cluster"></a></dt>
@@ -188,6 +195,50 @@ with optional boundary overlays.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">PlotBoundary</span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, boundary <span class="op">=</span> <span class="va">boundary_points</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="PlotBoundary-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># PlotBoundary for a SpatialExperiment object</span></span></span>
+<span class="r-in"><span><span class="va">logNorm_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"LogNormExpr.rds"</span>,</span></span>
+<span class="r-in"><span>    package <span class="op">=</span> <span class="st">"SpNeigh"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">coords_sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">coords</span>, <span class="va">cluster</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0"</span>, <span class="st">"2"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">coords_sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">coords_sub</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">metadata_sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">coords</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cell"</span>, <span class="st">"cluster"</span><span class="op">)</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>    <span class="va">cluster</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0"</span>, <span class="st">"2"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu">SpatialExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SpatialExperiment/man/SpatialExperiment.html" class="external-link">SpatialExperiment</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    assay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"logcounts"</span> <span class="op">=</span> <span class="va">logNorm_expr</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    colData <span class="op">=</span> <span class="va">metadata_sub</span>,</span></span>
+<span class="r-in"><span>    spatialCoords <span class="op">=</span> <span class="va">coords_sub</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">PlotBoundary</span><span class="op">(</span>data <span class="op">=</span> <span class="va">spe</span>, one_cluster <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="PlotBoundary-4.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># PlotBoundary for a Seurat object</span></span></span>
+<span class="r-in"><span><span class="va">seu_sp</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    assay <span class="op">=</span> <span class="st">"Spatial"</span>,</span></span>
+<span class="r-in"><span>    counts <span class="op">=</span> <span class="va">logNorm_expr</span>,</span></span>
+<span class="r-in"><span>    meta.data <span class="op">=</span> <span class="va">metadata_sub</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">SeuratObject</span><span class="fu">::</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Layers.html" class="external-link">LayerData</a></span><span class="op">(</span><span class="va">seu_sp</span>,</span></span>
+<span class="r-in"><span>    assay <span class="op">=</span> <span class="st">"Spatial"</span>,</span></span>
+<span class="r-in"><span>    layer <span class="op">=</span> <span class="st">"data"</span></span></span>
+<span class="r-in"><span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">logNorm_expr</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">cents</span> <span class="op">&lt;-</span> <span class="fu">SeuratObject</span><span class="fu">::</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/CreateCentroids.html" class="external-link">CreateCentroids</a></span><span class="op">(</span><span class="va">coords_sub</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fov</span> <span class="op">&lt;-</span> <span class="fu">SeuratObject</span><span class="fu">::</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/CreateFOV.html" class="external-link">CreateFOV</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"centroids"</span> <span class="op">=</span> <span class="va">cents</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"centroids"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    assay <span class="op">=</span> <span class="st">"Spatial"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">seu_sp</span><span class="op">[[</span><span class="st">"fov"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">fov</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">seu_sp</span><span class="op">$</span><span class="va">seurat_clusters</span> <span class="op">&lt;-</span> <span class="va">seu_sp</span><span class="op">$</span><span class="va">cluster</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">PlotBoundary</span><span class="op">(</span>data <span class="op">=</span> <span class="va">seu_sp</span>, one_cluster <span class="op">=</span> <span class="fl">2</span>, eps <span class="op">=</span> <span class="fl">120</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="PlotBoundary-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

@@ -19,7 +19,7 @@ filter to ensure boundary smoothness."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">SpNeigh</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,7 @@ filter to ensure boundary smoothness.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">GetBoundary</span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cluster_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  one_cluster <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  k <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  distance_cutoff <span class="op">=</span> <span class="fl">30</span>,</span>
@@ -76,10 +77,16 @@ filter to ensure boundary smoothness.</p>
 
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>A Seurat object or a data frame with
-columns: <code>x</code>, <code>y</code>, <code>cell</code>, and <code>cluster</code>.
-If a Seurat object is provided, the <code>seurat_clusters</code>
-metadata column will be used as the <code>cluster</code>.</p></dd>
+<dd><p>A <code>Seurat</code> object, a <code>SpatialExperiment</code> object,
+or a data frame containing spatial coordinates.</p></dd>
+
+
+<dt id="arg-cluster-col">cluster_col<a class="anchor" aria-label="anchor" href="#arg-cluster-col"></a></dt>
+<dd><p>Character scalar specifying the metadata column name
+containing cluster assignments. If <code>NULL</code>, a default is used
+depending on the input object type:</p><ul><li><p><code>"seurat_clusters"</code> for <code>Seurat</code> objects</p></li>
+<li><p><code>"cluster"</code> for <code>SpatialExperiment</code> objects</p></li>
+</ul></dd>
 
 
 <dt id="arg-one-cluster">one_cluster<a class="anchor" aria-label="anchor" href="#arg-one-cluster"></a></dt>

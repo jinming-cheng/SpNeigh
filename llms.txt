@@ -1,12 +1,13 @@
-# SpNeigh
+# SpNeigh ![](reference/figures/SpNeigh_logo.png)
 
 SpNeigh provides methods for neighborhood-aware analysis of spatial
 transcriptomics data. It supports boundary detection, spatial weighting
 (centroid- and boundary-based), spatially informed differential
 expression using spline-based models, and spatial enrichment analysis
 via the Spatial Enrichment Index (SEI). Designed for compatibility with
-Seurat objects and spatial data frames, SpNeigh enables interpretable,
-publication-ready analysis of spatial gene expression patterns.
+Seurat objects, SpatialExperiment objects and spatial data frames,
+SpNeigh enables interpretable, publication-ready analysis of spatial
+gene expression patterns.
 
 Quick start guide can be found
 [here](https://jinming-cheng.github.io/SpNeigh/articles/SpNeigh.html).

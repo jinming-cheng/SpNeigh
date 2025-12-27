@@ -22,8 +22,8 @@ ComputeCentroidWeights(
 
 - data:
 
-  A data frame or Seurat object containing spatial coordinates. Must
-  include columns: `cell`, `x`, and `y`.
+  A data frame, Seurat object or SpatialExperiment object containing
+  spatial coordinates. Must include columns: `cell`, `x`, and `y`.
 
 - cell_ids:
 

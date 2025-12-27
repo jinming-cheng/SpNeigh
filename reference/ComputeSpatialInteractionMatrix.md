@@ -9,16 +9,25 @@ clusters around each focal cluster.
 ## Usage
 
 ``` r
-ComputeSpatialInteractionMatrix(data = NULL, k = 10)
+ComputeSpatialInteractionMatrix(data = NULL, cluster_col = NULL, k = 10)
 ```
 
 ## Arguments
 
 - data:
 
-  A Seurat object or a data frame with columns: `x`, `y`, `cell`, and
-  `cluster`. If a Seurat object is provided, the `seurat_clusters`
-  metadata column will be used as the `cluster`.
+  A `Seurat` object, a `SpatialExperiment` object, or a data frame
+  containing spatial coordinates.
+
+- cluster_col:
+
+  Character scalar specifying the metadata column name containing
+  cluster assignments. If `NULL`, a default is used depending on the
+  input object type:
+
+  - `"seurat_clusters"` for `Seurat` objects
+
+  - `"cluster"` for `SpatialExperiment` objects
 
 - k:
 

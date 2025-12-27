@@ -14,6 +14,7 @@ PlotExpression(
   exp_mat = NULL,
   genes = NULL,
   sub_plot = FALSE,
+  cluster_col = NULL,
   one_cluster = NULL,
   sub_cells = NULL,
   split_by = NULL,
@@ -30,16 +31,25 @@ PlotExpression(
 
 - data:
 
-  A Seurat object or a data frame with columns: `x`, `y`, `cell`, and
-  `cluster`. If a Seurat object is provided, the `seurat_clusters`
-  metadata column will be used as the `cluster`.
+  A `Seurat` object, a `SpatialExperiment` object, or a data frame
+  containing spatial coordinates.
 
 - exp_mat:
 
-  A gene expression matrix (genes x cells) of class `matrix` or
-  `dgCMatrix`. If `data` is a Seurat object, the matrix will be
-  extracted automatically using
-  [`Seurat::GetAssayData()`](https://satijalab.github.io/seurat-object/reference/AssayData.html).
+  A numeric gene expression matrix with genes as rows and cells as
+  columns. Must be of class `matrix` or `dgCMatrix`.
+
+  If `data` is a `Seurat` object, `exp_mat` can be omitted and will be
+  automatically extracted using
+  [`Seurat::GetAssayData()`](https://satijalab.github.io/seurat-object/reference/AssayData.html)
+  from the active assay.
+
+  If `data` is a `SpatialExperiment` object, `exp_mat` can be omitted
+  and will be automatically extracted from
+  [`SingleCellExperiment::logcounts()`](https://rdrr.io/pkg/SingleCellExperiment/man/assays.html).
+
+  The column names of `exp_mat` must match the cell identifiers used in
+  downstream analyses.
 
 - genes:
 
@@ -50,6 +60,16 @@ PlotExpression(
 
   Logical. If `TRUE`, only a subset of cells is plotted (based on
   `one_cluster` or `sub_cells`). Default is `FALSE`.
+
+- cluster_col:
+
+  Character scalar specifying the metadata column name containing
+  cluster assignments. If `NULL`, a default is used depending on the
+  input object type:
+
+  - `"seurat_clusters"` for `Seurat` objects
+
+  - `"cluster"` for `SpatialExperiment` objects
 
 - one_cluster:
 
