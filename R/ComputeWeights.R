@@ -6,7 +6,8 @@
 #' Supports multiple decay methods and optional distance scaling.
 #'
 #' @importFrom methods is
-#' @param data A data frame or Seurat object containing spatial coordinates.
+#' @param data A data frame, Seurat object or SpatialExperiment object
+#'             containing spatial coordinates.
 #'             Must include columns: `cell`, `x`, and `y`.
 #' @param cell_ids A character vector of cell IDs to use for weight computation.
 #' @param scale Logical. Whether to scale distances to the range \[0, 1\]

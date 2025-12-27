@@ -12,7 +12,8 @@ PlotWeights(
 )
 }
 \arguments{
-\item{data}{A data frame or Seurat object containing spatial coordinates.
+\item{data}{A data frame, Seurat object or SpatialExperiment object
+containing spatial coordinates.
 Must include columns: \code{cell}, \code{x}, and \code{y}.}
 
 \item{weights}{A named numeric vector of spatial weights,

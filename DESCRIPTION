@@ -13,9 +13,9 @@ Description: SpNeigh provides methods for neighborhood-aware analysis of spatial
     spatial weighting (centroid- and boundary-based), 
     spatially informed differential expression using spline-based models, 
     and spatial enrichment analysis via the Spatial Enrichment Index (SEI). 
-    Designed for compatibility with Seurat objects and spatial data frames, 
-    SpNeigh enables interpretable, publication-ready analysis of 
-    spatial gene expression patterns.
+    Designed for compatibility with Seurat objects, SpatialExperiment objects
+    and spatial data frames, SpNeigh enables interpretable, 
+    publication-ready analysis of spatial gene expression patterns.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
