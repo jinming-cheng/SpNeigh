@@ -6,6 +6,7 @@
 \usage{
 PlotBoundary(
   data = NULL,
+  cluster_col = NULL,
   one_cluster = NULL,
   boundary = NULL,
   colors = my_colors_15,
@@ -22,10 +23,16 @@ PlotBoundary(
 )
 }
 \arguments{
-\item{data}{A Seurat object or a data frame with
-columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.
-If a Seurat object is provided, the \code{seurat_clusters}
-metadata column will be used as the \code{cluster}.}
+\item{data}{A \code{Seurat} object, a \code{SpatialExperiment} object,
+or a data frame containing spatial coordinates.}
+
+\item{cluster_col}{Character scalar specifying the metadata column name
+containing cluster assignments. If \code{NULL}, a default is used
+depending on the input object type:
+\itemize{
+\item \code{"seurat_clusters"} for \code{Seurat} objects
+\item \code{"cluster"} for \code{SpatialExperiment} objects
+}}
 
 \item{one_cluster}{The cluster ID to plot and optionally compute its
 boundary. Required if \code{sub_plot = TRUE} and \code{boundary}

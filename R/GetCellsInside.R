@@ -37,9 +37,9 @@
 #' cells_ring <- GetCellsInside(data = coords, boundary = ring_regions)
 #' cells_ring
 #'
-GetCellsInside <- function(data = NULL, boundary = NULL) {
+GetCellsInside <- function(data = NULL, cluster_col = NULL, boundary = NULL) {
     # Extract coordinate data
-    sp_coords <- ExtractCoords(data = data)
+    sp_coords <- ExtractCoords(data = data, cluster_col = cluster_col)
 
     # Convert to sf point geometry
     spatial_points <- sf::st_as_sf(sp_coords, coords = c("x", "y"), crs = NA)

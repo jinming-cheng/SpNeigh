@@ -11,10 +11,20 @@
 #' @inheritParams PlotBoundary
 #' @importFrom methods is
 #' @importFrom rlang .data
-#' @param exp_mat A gene expression matrix (genes x cells) of class
-#'                `matrix` or `dgCMatrix`. If `data` is a Seurat object,
-#'                the matrix will be extracted automatically
-#'                using `Seurat::GetAssayData()`.
+#' @param exp_mat A numeric gene expression matrix with genes as rows
+#'   and cells as columns. Must be of class \code{matrix} or
+#'   \code{dgCMatrix}.
+#'
+#'   If \code{data} is a \code{Seurat} object, \code{exp_mat} can be
+#'   omitted and will be automatically extracted using
+#'   \code{Seurat::GetAssayData()} from the active assay.
+#'
+#'   If \code{data} is a \code{SpatialExperiment} object, \code{exp_mat}
+#'   can be omitted and will be automatically extracted from
+#'   \code{SingleCellExperiment::logcounts()}.
+#'
+#'   The column names of \code{exp_mat} must match the cell identifiers
+#'   used in downstream analyses.
 #' @param genes Character vector specifying gene names to be plotted.
 #'              Must match row names in `exp_mat`.
 #' @param sub_plot Logical. If `TRUE`, only a subset of cells is plotted
@@ -71,6 +81,7 @@ PlotExpression <- function(
     exp_mat = NULL,
     genes = NULL,
     sub_plot = FALSE,
+    cluster_col = NULL,
     one_cluster = NULL,
     sub_cells = NULL,
     split_by = NULL,
@@ -80,16 +91,21 @@ PlotExpression <- function(
     angle_x_label = 0,
     shuffle = FALSE,
     theme_ggplot = my_theme_ggplot()) {
-    # Automatically extract expression matrix from Seurat object
+    ## ---- Seurat ----
     if (is(data, "Seurat")) {
         exp_mat <- Seurat::GetAssayData(data)
-    } else {
-        if (!inherits(exp_mat, c("dgCMatrix", "matrix"))) {
-            stop(
-                "`exp_mat` must be a numeric matrix",
-                " or dgCMatrix (genes x cells)."
-            )
-        }
+    }
+
+    ## ---- SpatialExperiment ----
+    if (is(data, "SpatialExperiment")) {
+        exp_mat <- SingleCellExperiment::logcounts(data)
+    }
+
+    if (!inherits(exp_mat, c("dgCMatrix", "matrix"))) {
+        stop(
+            "`exp_mat` must be a numeric matrix",
+            " or dgCMatrix (genes x cells)."
+        )
     }
 
     # Validate genes
@@ -98,7 +114,7 @@ PlotExpression <- function(
     }
 
     # Extract coordinates and metadata
-    sp_coords <- ExtractCoords(data = data)
+    sp_coords <- ExtractCoords(data = data, cluster_col = cluster_col)
 
     # Check that cell names match and are in the same order
     if (!identical(as.character(sp_coords$cell), colnames(exp_mat))) {

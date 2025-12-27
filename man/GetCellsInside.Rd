@@ -4,13 +4,19 @@
 \alias{GetCellsInside}
 \title{Identify cells located within spatial boundaries or ring regions}
 \usage{
-GetCellsInside(data = NULL, boundary = NULL)
+GetCellsInside(data = NULL, cluster_col = NULL, boundary = NULL)
 }
 \arguments{
-\item{data}{A Seurat object or a data frame with
-columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.
-If a Seurat object is provided, the \code{seurat_clusters}
-metadata column will be used as the \code{cluster}.}
+\item{data}{A \code{Seurat} object, a \code{SpatialExperiment} object,
+or a data frame containing spatial coordinates.}
+
+\item{cluster_col}{Character scalar specifying the metadata column name
+containing cluster assignments. If \code{NULL}, a default is used
+depending on the input object type:
+\itemize{
+\item \code{"seurat_clusters"} for \code{Seurat} objects
+\item \code{"cluster"} for \code{SpatialExperiment} objects
+}}
 
 \item{boundary}{An \code{sf} object (polygon or ring) or a data frame
 of boundary points returned by \code{GetBoundary()},

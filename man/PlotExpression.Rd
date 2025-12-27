@@ -9,6 +9,7 @@ PlotExpression(
   exp_mat = NULL,
   genes = NULL,
   sub_plot = FALSE,
+  cluster_col = NULL,
   one_cluster = NULL,
   sub_cells = NULL,
   split_by = NULL,
@@ -21,15 +22,23 @@ PlotExpression(
 )
 }
 \arguments{
-\item{data}{A Seurat object or a data frame with
-columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.
-If a Seurat object is provided, the \code{seurat_clusters}
-metadata column will be used as the \code{cluster}.}
+\item{data}{A \code{Seurat} object, a \code{SpatialExperiment} object,
+or a data frame containing spatial coordinates.}
 
-\item{exp_mat}{A gene expression matrix (genes x cells) of class
-\code{matrix} or \code{dgCMatrix}. If \code{data} is a Seurat object,
-the matrix will be extracted automatically
-using \code{Seurat::GetAssayData()}.}
+\item{exp_mat}{A numeric gene expression matrix with genes as rows
+and cells as columns. Must be of class \code{matrix} or
+\code{dgCMatrix}.
+
+If \code{data} is a \code{Seurat} object, \code{exp_mat} can be
+omitted and will be automatically extracted using
+\code{Seurat::GetAssayData()} from the active assay.
+
+If \code{data} is a \code{SpatialExperiment} object, \code{exp_mat}
+can be omitted and will be automatically extracted from
+\code{SingleCellExperiment::logcounts()}.
+
+The column names of \code{exp_mat} must match the cell identifiers
+used in downstream analyses.}
 
 \item{genes}{Character vector specifying gene names to be plotted.
 Must match row names in \code{exp_mat}.}
@@ -37,6 +46,14 @@ Must match row names in \code{exp_mat}.}
 \item{sub_plot}{Logical. If \code{TRUE}, only a subset of cells is plotted
 (based on \code{one_cluster} or \code{sub_cells}).
 Default is \code{FALSE}.}
+
+\item{cluster_col}{Character scalar specifying the metadata column name
+containing cluster assignments. If \code{NULL}, a default is used
+depending on the input object type:
+\itemize{
+\item \code{"seurat_clusters"} for \code{Seurat} objects
+\item \code{"cluster"} for \code{SpatialExperiment} objects
+}}
 
 \item{one_cluster}{Optional. Cluster ID to subset cells if \code{sub_plot = TRUE}.}
 

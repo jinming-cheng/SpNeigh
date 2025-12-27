@@ -49,9 +49,11 @@
 #' coords_sub <- subset(coords, cell %in% cells_ring$cell)
 #' ComputeSpatialInteractionMatrix(coords_sub)
 #'
-ComputeSpatialInteractionMatrix <- function(data = NULL, k = 10) {
+ComputeSpatialInteractionMatrix <- function(data = NULL,
+                                            cluster_col = NULL,
+                                            k = 10) {
     # --- Extract coordinates from data ---
-    sp_coords <- ExtractCoords(data)
+    sp_coords <- ExtractCoords(data, cluster_col = cluster_col)
 
     # --- Build KNN graph (cells x neighbors) ---
     knn <- FNN::get.knn(sp_coords[, c("x", "y")], k = k)

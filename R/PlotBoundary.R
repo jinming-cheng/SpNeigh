@@ -63,6 +63,7 @@
 #'
 PlotBoundary <- function(
     data = NULL,
+    cluster_col = NULL,
     one_cluster = NULL,
     boundary = NULL,
     colors = my_colors_15,
@@ -77,7 +78,7 @@ PlotBoundary <- function(
     legend_size = 2,
     ...) {
     # Extract coordinates from data
-    sp_coords <- ExtractCoords(data = data)
+    sp_coords <- ExtractCoords(data = data, cluster_col = cluster_col)
 
     # Ensure cluster is a factor with ordered levels if not provided
     if (is.null(levels(sp_coords$cluster))) {

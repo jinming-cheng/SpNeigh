@@ -4,40 +4,50 @@
 \alias{ExtractCoords}
 \title{Extract spatial coordinates and cluster information}
 \usage{
-ExtractCoords(data = NULL, extract_cluster = TRUE)
+ExtractCoords(data, cluster_col = NULL, extract_cluster = TRUE)
 }
 \arguments{
-\item{data}{A Seurat object or a data frame with
-columns: \code{x}, \code{y}, \code{cell}, and \code{cluster}.
-If a Seurat object is provided, the \code{seurat_clusters}
-metadata column will be used as the \code{cluster}.}
+\item{data}{A \code{Seurat} object, a \code{SpatialExperiment} object,
+or a data frame containing spatial coordinates.}
 
-\item{extract_cluster}{Logical. Whether to extract the \code{seurat_clusters}
-column from the Seurat object when available.
-Ignored if \code{data} is a data frame. Default is \code{TRUE}.}
+\item{cluster_col}{Character scalar specifying the metadata column name
+containing cluster assignments. If \code{NULL}, a default is used
+depending on the input object type:
+\itemize{
+\item \code{"seurat_clusters"} for \code{Seurat} objects
+\item \code{"cluster"} for \code{SpatialExperiment} objects
+}}
+
+\item{extract_cluster}{Logical indicating whether to extract cluster
+information. If \code{FALSE}, only spatial coordinates and cell IDs
+are returned. Default is \code{TRUE}.}
 }
 \value{
-A data frame with columns \code{x}, \code{y}, \code{cell}, and optionally
-\code{cluster}, representing spatial coordinates and cluster assignments.
+A data frame with columns \code{x}, \code{y}, and \code{cell},
+and optionally \code{cluster} if \code{extract_cluster = TRUE}.
 }
 \description{
-This function extracts a spatial coordinate data frame from either
-a Seurat object or a user-supplied data frame.
-When a Seurat object is provided, it retrieves tissue coordinates (\code{x}, \code{y})
-and optionally the cluster identities (e.g., \code{seurat_clusters}).
-When a data frame is provided, it is returned as-is after checking that
-it contains the required columns.
+Extract spatial coordinates and (optionally) cluster assignments from
+a \code{Seurat} object, a \code{SpatialExperiment} object, or a user-supplied
+data frame.
+}
+\details{
+For \code{Seurat} objects, tissue coordinates are obtained using
+\code{Seurat::GetTissueCoordinates()}, and cluster labels are taken from
+the specified metadata column (by default \code{seurat_clusters}).
+
+For \code{SpatialExperiment} objects, spatial coordinates are obtained from
+\code{spatialCoords()}, and cluster labels are taken from \code{colData()}
+(by default the \code{cluster} column).
+
+If a data frame is provided, it must already contain columns named
+\code{x}, \code{y}, \code{cell}, and \code{cluster}.
 }
 \examples{
-# Load coordinates
-coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
+coords <- readRDS(system.file(
+    "extdata", "MouseBrainCoords.rds",
     package = "SpNeigh"
 ))
 
-# An exmaple of the coordinate data.frame used for analysis
-head(coords)
-
-# If the data is a data.frame, returns it without doing anything
 head(ExtractCoords(coords))
-
 }
