@@ -38,38 +38,40 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-The **SpNeigh** package provides a flexible and interpretable framework for 
-analyzing spatial neighborhoods in high-resolution spatial 
-transcriptomics data. 
-Designed with support for technologies such as 10x Xenium, Vizgen MERFISH,
-and 10x Visium HD, The **SpNeigh** facilitates a range of region-aware and 
-distance-aware analyses. Key features include boundary detection, 
-spatial weight calculation based on proximity to structural landmarks 
-(e.g., region centroid or boundary), spatially-informed differential 
-expression testing using spline-based modeling, and visualization of 
-local cellular interactions.
+Recent spatial transcriptomics technologies such as **10x Xenium**, **MERFISH**, and **Visium HD** enable high-resolution profiling of gene expression while preserving tissue architecture. These platforms have opened new avenues for studying tissue organization, cell–cell interactions, and spatial gene regulation.
 
-By integrating spatial geometry with transcriptomic profiles, 
-**SpNeigh** helps uncover biologically meaningful spatial patterns, 
-such as boundary-enriched genes, spatial gradients, and 
-intercellular interactions, enabling deeper insights into 
-tissue organization and cellular communication.
+Most existing methods focus on identifying globally spatially variable genes or enhancing spatial visualization, with limited support for modeling **local spatial context**, such as region boundaries, cell neighborhoods, or gradients across tissue structures.
+
+**SpNeigh** is an R package that introduces a **boundary-aware and region-informed framework** for spatial neighborhood analysis and spatial differential expression modeling. Key features include:
+
+- Boundary detection and neighborhood ring construction  
+- Spatial weighting using distances to centroids or boundaries  
+- Spline-based modeling of gene expression along spatial gradients  
+- A spatial enrichment index (SEI) to quantify boundary- or region-enriched genes  
+
+Unlike existing Bioconductor tools such as **spatialDE**, which emphasize global spatial variability, SpNeigh enables **local, interpretable**, and **geometry-aware** modeling of spatial expression patterns.
+
+SpNeigh supports inputs from both **SpatialExperiment** and **Seurat** objects for coordinate extraction and visualization, and emphasizes transparent modeling using user-supplied matrices and weights—ensuring reproducibility and compatibility with Bioconductor workflows.
+
+By integrating spatial geometry with transcriptomic data, SpNeigh reveals biologically meaningful patterns such as **intermediate cell states**, **microenvironmental differences**, and **spatial gene expression gradients**—critical for understanding development, tissue function, and disease progression.
 
 
-This vignette demonstrates the key functionalities of the **SpNeigh** R package
-using a real [10x Xenium Fresh Frozen Mouse Brain Tiny Subset Dataset](https://www.10xgenomics.com/datasets/fresh-frozen-mouse-brain-for-xenium-explorer-demo-1-standard). 
 
-We show how to:
+# Overview of this vignette
 
-- Identify spatial boundaries and neighboring ring regions
-- Explore spatial interaction patterns between clusters
-- Perform differential expression analysis between two cell populations
-- Compute spatial weights from boundary or centroid proximity
-- Perform spatial differential expression analysis along spatial gradients
-- Perform spatial enrichment analysis along spatial gradients
+This vignette demonstrates the key functionalities of the **SpNeigh** package using a real  
+[10x Xenium Fresh Frozen Mouse Brain Tiny Subset dataset](https://www.10xgenomics.com/datasets/fresh-frozen-mouse-brain-for-xenium-explorer-demo-1-standard).
 
-This workflow highlights the analytical flexibility and biological insights 
-enabled by **SpNeigh**.
+Specifically, we show how to:
+
+- Identify spatial boundaries and construct neighboring ring regions  
+- Explore spatial interaction patterns between cell clusters  
+- Perform differential expression analysis between spatially defined cell populations  
+- Compute spatial weights based on boundary or centroid proximity  
+- Model spatial expression gradients using spline-based differential expression  
+- Quantify spatial enrichment along spatial gradients  
+
+This workflow highlights the analytical flexibility of **SpNeigh** and illustrates how neighborhood-aware modeling can reveal spatial gene expression patterns that are not readily captured by existing approaches.
 
 
 # Installation
@@ -84,12 +86,16 @@ devtools::install_github("jinming-cheng/SpNeigh")
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
 <!-- %                                                 % -->
 
-# Load packages and data
+# Load packages
 
 ```{r loadPackage}
 library(SpNeigh)
 library(ggplot2)
 ```
+
+# Load data
+
+## Input: Coordinate data frame and Normalized expression matrix
 
 Coordinates of mouse brain dataset
 ```{r}
@@ -145,7 +151,120 @@ cell type–level analyses.
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
 <!-- %                                                 % -->
 
+## Alternative input: SpatialExperiment object
+
+Coordinates of cells in clusters 0 and 2
+```{r}
+coords_sub <- subset(coords, cluster %in% c("0", "2"))
+coords_sub <- as.matrix(coords_sub[, c("x", "y")])
+```
+
+metadata of cells in clusters 0 and 2
+```{r}
+metadata_sub <- subset(coords[, c("cell", "cluster")], cluster %in% c("0", "2"))
+```
+
+
+Create SpatialExperiment
+```{r}
+spe <- SpatialExperiment::SpatialExperiment(
+    assay = list("logcounts" = logNorm_expr),
+    colData = metadata_sub,
+    spatialCoords = coords_sub
+)
+spe
+```
+
+Extract coordinates from SpatialExperiment object
+```{r}
+spe_coords <- ExtractCoords(spe)
+```
+
+Extract log-normalized expression matrix from SpatialExperiment object
+```{r}
+spe_logcounts <- SingleCellExperiment::logcounts(spe)
+```
+
+<!-- %                                                 % -->
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
+
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<!-- %                                                 % -->
+
+## Alternative input: Seurat object
+
+Load Seurat pacakge
+```{r}
+library(Seurat)
+```
+
+Create Seurat object (Note: a normalized expression matrix is used here 
+for tutorial purposes only. In practice, use a raw count matrix.)
+```{r}
+seu_sp <- CreateSeuratObject(
+    assay = "Spatial",
+    counts = logNorm_expr,
+    meta.data = metadata_sub
+)
+seu_sp
+``` 
+
+Insert normalized data into the `data` layer (Seurat v5)
+```{r}
+LayerData(seu_sp, assay = "Spatial", layer = "data") <- logNorm_expr
+```
+
+
+Add FOV
+```{r}
+cents <- CreateCentroids(coords_sub[,c("x","y")])
+
+fov <- CreateFOV(
+   coords = list( "centroids" = cents),
+   type = c("centroids"),
+   assay = "Spatial"
+ )
+
+seu_sp[["fov"]] <- fov
+```
+
+Add `seurat_clusters` to the metadata
+```{r}
+seu_sp@meta.data$seurat_clusters <- seu_sp$cluster
+```
+
+Extract coordinates from Seurat object
+```{r}
+seu_sp_coords <- ExtractCoords(seu_sp)
+```
+
+Extract log-normalized expression matrix from Seurat object
+```{r}
+seu_sp_log_expr <- GetAssayData(seu_sp)
+```
+
+<!-- %                                                 % -->
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
+
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<!-- %                                                 % -->
+
 # Neighborhood analysis for cluster 2 cells
+
+## Quick look at the boundaries of one cluster
+
+Quick look at the boundaries of cluster 2 using default parameter settings. 
+The input is a SpatialExperiment object.
+```{r PlotBoundary_spe, fig.width=6.6, fig.height=4.2}
+PlotBoundary(spe, one_cluster = "2")
+```
+
+Similarly, we can use a Seurat object as input and adjust parameters
+```{r PlotBoundary_seu, fig.width=6.6, fig.height=4.2}
+PlotBoundary(seu_sp, one_cluster = "2", eps = 120)
+```
 
 ## Detect spatial boundaries
 
@@ -178,6 +297,7 @@ Plot boundary regions
 bon_polys_c2 <- BuildBoundaryPoly(bon_points_c2)
 PlotRegion(bon_polys_c2)
 ```
+
 
 ## Obtain neighborhood ring regions
 
