@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# SpNeigh
+# SpNeigh <img src="man/figures/SpNeigh_logo.png" align="right" alt="" width="120" />
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/jinming-cheng/SpNeigh/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/jinming-cheng/SpNeigh/actions)
@@ -25,7 +25,7 @@ transcriptomics data. It supports boundary detection,
 spatial weighting (centroid- and boundary-based), 
 spatially informed differential expression using spline-based models, 
 and spatial enrichment analysis via the Spatial Enrichment Index (SEI). 
-Designed for compatibility with Seurat objects and spatial data frames, 
+Designed for compatibility with Seurat objects, SpatialExperiment objects and spatial data frames, 
 SpNeigh enables interpretable, publication-ready analysis of 
 spatial gene expression patterns. 
 
