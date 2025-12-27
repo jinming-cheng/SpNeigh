@@ -47,6 +47,7 @@ Suggests:
     BiocStyle,
     knitr,
     rmarkdown,
+    SeuratObject,
     testthat (>= 3.0.0)
 biocViews: Spatial, SingleCell, GeneExpression, DifferentialExpression,
     Transcriptomics, Software

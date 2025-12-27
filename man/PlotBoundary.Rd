@@ -106,4 +106,46 @@ boundary_points <- GetBoundary(
 )
 PlotBoundary(data = coords, boundary = boundary_points)
 
+# PlotBoundary for a SpatialExperiment object
+logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
+    package = "SpNeigh"
+))
+coords_sub <- subset(coords, cluster \%in\% c("0", "2"))
+coords_sub <- as.matrix(coords_sub[, c("x", "y")])
+metadata_sub <- subset(
+    coords[, c("cell", "cluster")],
+    cluster \%in\% c("0", "2")
+)
+
+spe <- SpatialExperiment::SpatialExperiment(
+    assay = list("logcounts" = logNorm_expr),
+    colData = metadata_sub,
+    spatialCoords = coords_sub
+)
+
+PlotBoundary(data = spe, one_cluster = 2)
+
+# PlotBoundary for a Seurat object
+seu_sp <- Seurat::CreateSeuratObject(
+    assay = "Spatial",
+    counts = logNorm_expr,
+    meta.data = metadata_sub
+)
+SeuratObject::LayerData(seu_sp,
+    assay = "Spatial",
+    layer = "data"
+) <- logNorm_expr
+
+cents <- SeuratObject::CreateCentroids(coords_sub[, c("x", "y")])
+fov <- SeuratObject::CreateFOV(
+    coords = list("centroids" = cents),
+    type = c("centroids"),
+    assay = "Spatial"
+)
+seu_sp[["fov"]] <- fov
+
+seu_sp$seurat_clusters <- seu_sp$cluster
+
+PlotBoundary(data = seu_sp, one_cluster = 2, eps = 120)
+
 }

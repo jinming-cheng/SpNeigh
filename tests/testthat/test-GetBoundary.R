@@ -24,6 +24,53 @@ test_that("Test ExtractCoords", {
     expect_true(is.data.frame(coords))
 
     expect_error(ExtractCoords(coords[, c(1, 2)]))
+
+    expect_error(ExtractCoords(111))
+
+    coords_sub <- subset(coords, cluster %in% c("0", "2"))
+    coords_sub <- as.matrix(coords_sub[, c("x", "y")])
+    metadata_sub <- subset(
+        coords[, c("cell", "cluster")],
+        cluster %in% c("0", "2")
+    )
+    logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
+        package = "SpNeigh"
+    ))
+    spe <- SpatialExperiment::SpatialExperiment(
+        assay = list("logcounts" = logNorm_expr),
+        colData = metadata_sub,
+        spatialCoords = coords_sub
+    )
+
+    coords <- ExtractCoords(spe)
+
+    expect_true(is.data.frame(coords))
+
+    expect_error(ExtractCoords(spe, cluster_col = "unknown"))
+
+    seu_sp <- Seurat::CreateSeuratObject(
+        assay = "Spatial",
+        counts = logNorm_expr,
+        meta.data = metadata_sub
+    )
+    SeuratObject::LayerData(seu_sp,
+        assay = "Spatial",
+        layer = "data"
+    ) <- logNorm_expr
+    cents <- SeuratObject::CreateCentroids(coords_sub[, c("x", "y")])
+    fov <- SeuratObject::CreateFOV(
+        coords = list("centroids" = cents),
+        type = c("centroids"),
+        assay = "Spatial"
+    )
+    seu_sp[["fov"]] <- fov
+    seu_sp@meta.data$seurat_clusters <- seu_sp$cluster
+
+    coords <- ExtractCoords(seu_sp)
+
+    expect_error(ExtractCoords(seu_sp, cluster_col = "unknown"))
+
+    expect_true(is.data.frame(coords))
 })
 
 

@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
     comment = "#>",
     out.width = "100%",
     dev = "png",
-    dpi = 60,
+    dpi = 50,
     fig.height = 4.2,
     fig.width = 5.6
 )
@@ -38,40 +38,66 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-Recent spatial transcriptomics technologies such as **10x Xenium**, **MERFISH**, and **Visium HD** enable high-resolution profiling of gene expression while preserving tissue architecture. These platforms have opened new avenues for studying tissue organization, cell–cell interactions, and spatial gene regulation.
+Recent spatial transcriptomics technologies such as **10x Xenium**, 
+**MERFISH**, and **Visium HD** enable high-resolution profiling of 
+gene expression while preserving tissue architecture. 
+These platforms have opened new avenues for studying tissue organization, 
+cell–cell interactions, and spatial gene regulation.
 
-Most existing methods focus on identifying globally spatially variable genes or enhancing spatial visualization, with limited support for modeling **local spatial context**, such as region boundaries, cell neighborhoods, or gradients across tissue structures.
+Most existing methods focus on identifying globally spatially variable genes 
+or enhancing spatial visualization, with limited support for 
+modeling **local spatial context**, such as region boundaries, 
+cell neighborhoods, or gradients across tissue structures.
 
-**SpNeigh** is an R package that introduces a **boundary-aware and region-informed framework** for spatial neighborhood analysis and spatial differential expression modeling. Key features include:
+**SpNeigh** is an R package that introduces a 
+**boundary-aware and region-informed framework** for spatial 
+neighborhood analysis and spatial differential expression modeling. 
+Key features include:
 
 - Boundary detection and neighborhood ring construction  
 - Spatial weighting using distances to centroids or boundaries  
 - Spline-based modeling of gene expression along spatial gradients  
-- A spatial enrichment index (SEI) to quantify boundary- or region-enriched genes  
+- A spatial enrichment index (SEI) to quantify boundary- or 
+region-enriched genes  
 
-Unlike existing Bioconductor tools such as **spatialDE**, which emphasize global spatial variability, SpNeigh enables **local, interpretable**, and **geometry-aware** modeling of spatial expression patterns.
+Unlike existing Bioconductor tools such as **spatialDE**,
+which emphasize global spatial variability, 
+SpNeigh enables **local, interpretable**, and **geometry-aware** modeling 
+of spatial expression patterns.
 
-SpNeigh supports inputs from both **SpatialExperiment** and **Seurat** objects for coordinate extraction and visualization, and emphasizes transparent modeling using user-supplied matrices and weights—ensuring reproducibility and compatibility with Bioconductor workflows.
+SpNeigh supports inputs from both **SpatialExperiment** and **Seurat** objects 
+for coordinate extraction and visualization, and emphasizes transparent 
+modeling using user-supplied matrices and weights—ensuring reproducibility 
+and compatibility with Bioconductor workflows.
 
-By integrating spatial geometry with transcriptomic data, SpNeigh reveals biologically meaningful patterns such as **intermediate cell states**, **microenvironmental differences**, and **spatial gene expression gradients**—critical for understanding development, tissue function, and disease progression.
+By integrating spatial geometry with transcriptomic data, SpNeigh reveals 
+biologically meaningful patterns such as **intermediate cell states**, 
+**microenvironmental differences**, and **spatial gene expression gradients**, 
+which are critical for understanding development, tissue function, 
+and disease progression.
 
 
 
 # Overview of this vignette
 
-This vignette demonstrates the key functionalities of the **SpNeigh** package using a real  
+This vignette demonstrates the key functionalities of the **SpNeigh** 
+package using a real  
 [10x Xenium Fresh Frozen Mouse Brain Tiny Subset dataset](https://www.10xgenomics.com/datasets/fresh-frozen-mouse-brain-for-xenium-explorer-demo-1-standard).
 
 Specifically, we show how to:
 
 - Identify spatial boundaries and construct neighboring ring regions  
 - Explore spatial interaction patterns between cell clusters  
-- Perform differential expression analysis between spatially defined cell populations  
+- Perform differential expression analysis between spatially 
+defined cell populations  
 - Compute spatial weights based on boundary or centroid proximity  
-- Model spatial expression gradients using spline-based differential expression  
+- Model spatial expression gradients using spline-based differential 
+expression  
 - Quantify spatial enrichment along spatial gradients  
 
-This workflow highlights the analytical flexibility of **SpNeigh** and illustrates how neighborhood-aware modeling can reveal spatial gene expression patterns that are not readily captured by existing approaches.
+This workflow highlights the analytical flexibility of **SpNeigh** and 
+illustrates how neighborhood-aware modeling can reveal spatial gene expression 
+patterns that are not readily captured by existing approaches.
 
 
 # Installation
@@ -218,20 +244,20 @@ LayerData(seu_sp, assay = "Spatial", layer = "data") <- logNorm_expr
 
 Add FOV
 ```{r}
-cents <- CreateCentroids(coords_sub[,c("x","y")])
+cents <- CreateCentroids(coords_sub[, c("x", "y")])
 
 fov <- CreateFOV(
-   coords = list( "centroids" = cents),
-   type = c("centroids"),
-   assay = "Spatial"
- )
+    coords = list("centroids" = cents),
+    type = c("centroids"),
+    assay = "Spatial"
+)
 
 seu_sp[["fov"]] <- fov
 ```
 
 Add `seurat_clusters` to the metadata
 ```{r}
-seu_sp@meta.data$seurat_clusters <- seu_sp$cluster
+seu_sp$seurat_clusters <- seu_sp$cluster
 ```
 
 Extract coordinates from Seurat object

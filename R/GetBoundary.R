@@ -117,12 +117,15 @@ RemoveOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 #' ))
 #'
 #' head(ExtractCoords(coords))
-ExtractCoords <- function(data,
-                          cluster_col = NULL,
-                          extract_cluster = TRUE) {
+ExtractCoords <- function(
+    data,
+    cluster_col = NULL,
+    extract_cluster = TRUE) {
     ## ---- Seurat ----
     if (methods::is(data, "Seurat")) {
-        coords <- Seurat::GetTissueCoordinates(data)[, c("x", "y"), drop = FALSE]
+        coords <- Seurat::GetTissueCoordinates(data)[, c("x", "y"),
+            drop = FALSE
+        ]
         sp_coords <- data.frame(
             x = coords[, 1],
             y = coords[, 2],
