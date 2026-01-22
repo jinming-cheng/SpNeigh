@@ -1,0 +1,14 @@
+
+citHeader("To cite SpNeigh in publications, please use:")
+
+bibentry(
+  bibtype  = "Article",
+  title    = "SpNeigh: spatial neighborhood and differential expression analysis for high-resolution spatial transcriptomics",
+  author   = c(person("Jinming", "Cheng"),
+               person("Pierce Kah Hoe", "Chow"),
+               person("Nan", "Liu")
+               ),
+  journal  = "bioRxiv",
+  year     = "2025",
+  doi      = "10.1101/2025.11.07.687304"
+)
