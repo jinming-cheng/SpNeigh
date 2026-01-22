@@ -3,7 +3,7 @@ title: "Getting Started with SpNeigh"
 author:
   - name: Jinming Cheng
     affiliation:
-    - &duk_nus Centre for Quantitative Medicine,
+    - &duk_nus Centre for Biomedical Data Science,
                Duke-NUS Medical School,
                Singapore, 169857, 
                Singapore
