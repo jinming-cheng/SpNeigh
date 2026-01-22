@@ -8,16 +8,17 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/jinming-cheng/SpNeigh/blob/main/DESCRIPTION)
+[`inst/CITATION`](https://github.com/jinming-cheng/SpNeigh/blob/main/inst/CITATION)
 
-Cheng J (2025). *SpNeigh: Spatial Neighborhood Modeling and Differential
-Expression Analysis for Transcriptomics*. R package version 0.99.1,
-<https://github.com/jinming-cheng/SpNeigh>.
+Cheng J, Chow P, Liu N (2025). “SpNeigh: spatial neighborhood and
+differential expression analysis for high-resolution spatial
+transcriptomics.” *bioRxiv*.
+[doi:10.1101/2025.11.07.687304](https://doi.org/10.1101/2025.11.07.687304).
 
-    @Manual{,
-      title = {SpNeigh: Spatial Neighborhood Modeling and Differential Expression Analysis for Transcriptomics},
-      author = {Jinming Cheng},
+    @Article{,
+      title = {SpNeigh: spatial neighborhood and differential expression analysis for high-resolution spatial transcriptomics},
+      author = {Jinming Cheng and Pierce Kah Hoe Chow and Nan Liu},
+      journal = {bioRxiv},
       year = {2025},
-      note = {R package version 0.99.1},
-      url = {https://github.com/jinming-cheng/SpNeigh},
+      doi = {10.1101/2025.11.07.687304},
     }
