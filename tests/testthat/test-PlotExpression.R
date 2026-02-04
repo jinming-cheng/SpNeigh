@@ -69,18 +69,22 @@ test_that("Test PlotSpatialExpression", {
 
     spatial_distance <- runif(100)
 
-    expect_silent(PlotSpatialExpression(
+    p <- PlotSpatialExpression(
         exp_mat = exp_mat,
         spatial_distance = spatial_distance,
         genes = rownames(exp_mat)[1:5]
-    ))
+    )
 
-    expect_silent(PlotSpatialExpression(
+    expect_true(inherits(p,"ggplot"))
+
+    p1 <- PlotSpatialExpression(
         exp_mat = exp_mat,
         spatial_distance = spatial_distance,
         genes = rownames(exp_mat)[1:5],
         scale_method = "minmax"
-    ))
+    )
+
+    expect_true(inherits(p1,"ggplot"))
 
     expect_error(PlotSpatialExpression(
         exp_mat = NULL,
