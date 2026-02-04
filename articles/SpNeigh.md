@@ -782,17 +782,17 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] Seurat_5.4.0       SeuratObject_5.3.0 sp_2.2-0           ggplot2_4.0.1     
-#> [5] SpNeigh_0.99.2     BiocStyle_2.34.0  
+#> [1] Seurat_5.4.0       SeuratObject_5.3.0 sp_2.2-0           ggplot2_4.0.2     
+#> [5] SpNeigh_0.99.31    BiocStyle_2.34.0  
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RcppAnnoy_0.0.23            splines_4.4.2              
 #>   [3] later_1.4.5                 tibble_3.3.1               
 #>   [5] polyclip_1.10-7             fastDummies_1.7.5          
 #>   [7] lifecycle_1.0.5             sf_1.0-24                  
-#>   [9] globals_0.18.0              lattice_0.22-7             
+#>   [9] globals_0.19.0              lattice_0.22-7             
 #>  [11] MASS_7.3-65                 magrittr_2.0.4             
-#>  [13] limma_3.62.2                plotly_4.11.0              
+#>  [13] limma_3.62.2                plotly_4.12.0              
 #>  [15] sass_0.4.10                 rmarkdown_2.30             
 #>  [17] jquerylib_0.1.4             yaml_2.3.12                
 #>  [19] httpuv_1.6.16               otel_0.2.0                 
@@ -805,15 +805,15 @@ sessionInfo()
 #>  [33] purrr_1.2.1                 BiocGenerics_0.52.0        
 #>  [35] GenomeInfoDbData_1.2.13     IRanges_2.40.1             
 #>  [37] S4Vectors_0.44.0            ggrepel_0.9.6              
-#>  [39] irlba_2.3.5.1               listenv_0.10.0             
+#>  [39] irlba_2.3.7                 listenv_0.10.0             
 #>  [41] spatstat.utils_3.2-1        units_1.0-0                
 #>  [43] goftest_1.2-3               RSpectra_0.16-2            
-#>  [45] spatstat.random_3.4-3       fitdistrplus_1.2-4         
+#>  [45] spatstat.random_3.4-4       fitdistrplus_1.2-6         
 #>  [47] parallelly_1.46.1           pkgdown_2.2.0              
 #>  [49] codetools_0.2-20            DelayedArray_0.32.0        
 #>  [51] tidyselect_1.2.1            UCSC.utils_1.2.0           
 #>  [53] farver_2.1.2                matrixStats_1.5.0          
-#>  [55] stats4_4.4.2                spatstat.explore_3.6-0     
+#>  [55] stats4_4.4.2                spatstat.explore_3.7-0     
 #>  [57] jsonlite_2.0.0              e1071_1.7-17               
 #>  [59] progressr_0.18.0            ggridges_0.5.7             
 #>  [61] survival_3.8-6              systemfonts_1.3.1          
@@ -822,14 +822,14 @@ sessionInfo()
 #>  [67] Rcpp_1.1.1                  glue_1.8.0                 
 #>  [69] gridExtra_2.3               SparseArray_1.6.2          
 #>  [71] xfun_0.56                   MatrixGenerics_1.18.1      
-#>  [73] GenomeInfoDb_1.42.3         dplyr_1.1.4                
+#>  [73] GenomeInfoDb_1.42.3         dplyr_1.2.0                
 #>  [75] withr_3.0.2                 BiocManager_1.30.27        
 #>  [77] fastmap_1.2.0               digest_0.6.39              
 #>  [79] R6_2.6.1                    mime_0.13                  
 #>  [81] textshaping_1.0.4           scattermore_1.2            
 #>  [83] tensor_1.5.1                spatstat.data_3.1-9        
 #>  [85] tidyr_1.3.2                 generics_0.1.4             
-#>  [87] data.table_1.18.0           FNN_1.1.4.1                
+#>  [87] data.table_1.18.2.1         FNN_1.1.4.1                
 #>  [89] class_7.3-23                httr_1.4.7                 
 #>  [91] htmlwidgets_1.6.4           S4Arrays_1.6.0             
 #>  [93] uwot_0.2.4                  pkgconfig_2.0.3            
@@ -847,7 +847,7 @@ sessionInfo()
 #> [117] KernSmooth_2.23-26          parallel_4.4.2             
 #> [119] miniUI_0.1.2                concaveman_1.2.0           
 #> [121] desc_1.4.3                  pillar_1.11.1              
-#> [123] grid_4.4.2                  vctrs_0.7.0                
+#> [123] grid_4.4.2                  vctrs_0.7.1                
 #> [125] RANN_2.6.2                  promises_1.5.0             
 #> [127] xtable_1.8-4                cluster_2.1.8.1            
 #> [129] evaluate_1.0.5              magick_2.9.0               
@@ -862,6 +862,6 @@ sessionInfo()
 #> [147] RcppHNSW_0.6.0              patchwork_1.3.2            
 #> [149] future_1.69.0               statmod_1.5.1              
 #> [151] shiny_1.12.1                SummarizedExperiment_1.36.0
-#> [153] ROCR_1.0-11                 igraph_2.2.1               
-#> [155] bslib_0.9.0
+#> [153] ROCR_1.0-12                 igraph_2.2.1               
+#> [155] bslib_0.10.0
 ```
