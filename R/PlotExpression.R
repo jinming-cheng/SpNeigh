@@ -282,6 +282,9 @@ PlotSpatialExpression <- function(
         distance = spatial_distance
     )
 
+    ## Make sure gene names are not changed
+    colnames(df) <- c(genes, "distance")
+
     df_long <- df %>%
         tidyr::pivot_longer(
             cols = -"distance",
