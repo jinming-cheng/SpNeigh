@@ -9,8 +9,6 @@
 #' gene expression formats, and can be applied using any distance-based
 #' weighting scheme.
 #'
-#' @importClassesFrom Matrix dgCMatrix
-#' @importMethodsFrom Matrix [
 #' @param exp_mat A normalized gene expression matrix with genes as rows and
 #'                cells as columns. Should be of class `matrix` or `dgCMatrix`.
 #' @param weights A numeric vector of spatial weights (e.g.,
@@ -68,15 +66,9 @@ ComputeSpatialEnrichmentIndex <- function(exp_mat = NULL, weights = NULL) {
     }
 
     # --- Compute SEI ---
-    if (inherits(exp_mat, "dgCMatrix")) {
-        weighted_expr <- exp_mat %*% Matrix::Diagonal(x = weights)
-        SEI_scores <- Matrix::rowSums(weighted_expr) / sum(weights)
-        mean_expr <- Matrix::rowMeans(exp_mat)
-    } else {
-        weighted_expr <- sweep(exp_mat, 2, weights, `*`)
-        SEI_scores <- rowSums(weighted_expr) / sum(weights)
-        mean_expr <- rowMeans(exp_mat)
-    }
+    weights <- weights / sum(weights)
+    SEI_scores <- as.numeric(exp_mat %*% weights)
+    mean_expr <- rowMeans(exp_mat)
 
     # --- Normalize SEI ---
     normalized_SEI <- SEI_scores / (mean_expr + 1e-6)
