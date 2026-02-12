@@ -790,7 +790,7 @@ sessionInfo()
 #>   [3] later_1.4.5                 tibble_3.3.1               
 #>   [5] polyclip_1.10-7             fastDummies_1.7.5          
 #>   [7] lifecycle_1.0.5             sf_1.0-24                  
-#>   [9] globals_0.19.0              lattice_0.22-7             
+#>   [9] globals_0.19.0              lattice_0.22-9             
 #>  [11] MASS_7.3-65                 magrittr_2.0.4             
 #>  [13] limma_3.62.2                plotly_4.12.0              
 #>  [15] sass_0.4.10                 rmarkdown_2.30             
@@ -849,14 +849,14 @@ sessionInfo()
 #> [121] desc_1.4.3                  pillar_1.11.1              
 #> [123] grid_4.4.2                  vctrs_0.7.1                
 #> [125] RANN_2.6.2                  promises_1.5.0             
-#> [127] xtable_1.8-4                cluster_2.1.8.1            
+#> [127] xtable_1.8-4                cluster_2.1.8.2            
 #> [129] evaluate_1.0.5              magick_2.9.0               
 #> [131] cli_3.6.5                   compiler_4.4.2             
 #> [133] rlang_1.1.7                 crayon_1.5.3               
 #> [135] future.apply_1.20.1         labeling_0.4.3             
 #> [137] classInt_0.4-11             plyr_1.8.9                 
 #> [139] fs_1.6.6                    stringi_1.8.7              
-#> [141] viridisLite_0.4.2           deldir_2.0-4               
+#> [141] viridisLite_0.4.3           deldir_2.0-4               
 #> [143] lazyeval_0.2.2              spatstat.geom_3.7-0        
 #> [145] V8_8.0.1                    Matrix_1.7-4               
 #> [147] RcppHNSW_0.6.0              patchwork_1.3.2            
