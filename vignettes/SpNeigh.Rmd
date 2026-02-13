@@ -294,9 +294,17 @@ plotBoundary(seu_sp, one_cluster = "2", eps = 120)
 
 ## Detect spatial boundaries
 
-Extract boundaries of cluster 2. Adjust the `eps` and `minPt`s parameters 
+Extract boundaries of cluster 2. Adjust the `eps` and `minPts` parameters 
 to refine the number of subregions detected by the default 
-dbscan clustering method.
+dbscan clustering method. 
+
+Note: The `eps` parameter controls the clustering tolerance for boundary 
+detection based on spatial distance. The default value is `eps = 80`, 
+which is suitable for coordinates in the range of hundreds or thousands 
+(e.g., 10x Xenium or Visium HD data). 
+For datasets with smaller coordinate ranges (e.g., 1 to 5), 
+such as manually scaled or normalized inputs, 
+a smaller value such as `eps = 0.1` may be more appropriate.
 ```{r}
 bon_points_c2 <- getBoundary(
     data = coords,
