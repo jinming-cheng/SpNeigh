@@ -9,7 +9,7 @@ clusters around each focal cluster.
 ## Usage
 
 ``` r
-ComputeSpatialInteractionMatrix(data = NULL, cluster_col = NULL, k = 10)
+computeSpatialInteractionMatrix(data = NULL, cluster_col = NULL, k = 10)
 ```
 
 ## Arguments
@@ -57,7 +57,7 @@ coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 ))
 
 # Compute interaction matrix using all cells
-interaction_matrix <- ComputeSpatialInteractionMatrix(coords)
+interaction_matrix <- computeSpatialInteractionMatrix(coords)
 head(interaction_matrix)
 #>       0     1     2     3     4     5    6   7   8   9   10  11
 #> 0 26326  6590  5670  7847  4608  4212 2814 548 364 542  456 193
@@ -68,13 +68,13 @@ head(interaction_matrix)
 #> 5  4337    12  1682   849     0 29000   27   6   0   1    6   0
 
 # Compute interaction matrix for cells inside boundaries
-boundary_points <- GetBoundary(
+boundary_points <- getBoundary(
     data = coords, one_cluster = 2,
     eps = 120, minPts = 10
 )
-cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
+cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
 coords_sub <- subset(coords, cell %in% cells_inside$cell)
-ComputeSpatialInteractionMatrix(coords_sub)
+computeSpatialInteractionMatrix(coords_sub)
 #>       0     2   3   4   5   6   10
 #> 0  5115  1965  94  65  24  17  410
 #> 2  2199 27625 923 558 187 201 1337
@@ -85,10 +85,10 @@ ComputeSpatialInteractionMatrix(coords_sub)
 #> 10  416  1274 123   0   6  54 3987
 
 # Compute interaction matrix for cells inside ring region 2
-ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-cells_ring <- GetCellsInside(data = coords, boundary = ring_regions[2, ])
+ring_regions <- getRingRegion(boundary = boundary_points, dist = 100)
+cells_ring <- getCellsInside(data = coords, boundary = ring_regions[2, ])
 coords_sub <- subset(coords, cell %in% cells_ring$cell)
-ComputeSpatialInteractionMatrix(coords_sub)
+computeSpatialInteractionMatrix(coords_sub)
 #>      0   2   3    5 6 7
 #> 0 2634 219 230  476 8 3
 #> 2  253 183  51  527 6 0

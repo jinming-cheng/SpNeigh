@@ -7,7 +7,7 @@ segments.
 ## Usage
 
 ``` r
-SplitBoundaryPolyByAnchor(boundary_poly = NULL, pt1 = NULL, pt2 = NULL)
+splitBoundaryPolyByAnchor(boundary_poly = NULL, pt1 = NULL, pt2 = NULL)
 ```
 
 ## Arguments
@@ -48,23 +48,23 @@ head(coords)
 #> 6 1926.540 2560.044    6       4
 
 # Build boundary polygons from the boundary points
-boundary_points <- GetBoundary(
+boundary_points <- getBoundary(
     data = coords, one_cluster = 2,
     subregion_method = "dbscan",
     eps = 120, minPts = 10
 )
-boundary_polys <- BuildBoundaryPoly(boundary_points)
+boundary_polys <- buildBoundaryPoly(boundary_points)
 
 # Split boundary polygon 1 into two edges using leftmost
 # and rightmost anchor points
-boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1, ])
+boundary_edges <- splitBoundaryPolyByAnchor(boundary_polys[1, ])
 plot(boundary_edges, lwd = 2)
 
 
 # Split boundary polygon 1 into two edges using two anchor points
 pt1 <- c(4000, 1500)
 pt2 <- c(2000, 3000)
-boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1, ],
+boundary_edges <- splitBoundaryPolyByAnchor(boundary_polys[1, ],
     pt1 = pt1,
     pt2 = pt2
 )

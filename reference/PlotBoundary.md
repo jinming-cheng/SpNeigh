@@ -3,7 +3,7 @@
 Plots spatial cell locations and overlays cluster or population
 boundaries if available. If `boundary` is not provided and `one_cluster`
 is specified, the boundary will be automatically generated using the
-[`GetBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetBoundary.md)
+[`getBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetBoundary.md)
 function. This function supports plotting either all clusters or a
 specific cluster using `sub_plot = TRUE`. Boundaries can be overlaid as
 polygons to visualize spatial subregions.
@@ -11,12 +11,12 @@ polygons to visualize spatial subregions.
 ## Usage
 
 ``` r
-PlotBoundary(
+plotBoundary(
   data = NULL,
   cluster_col = NULL,
   one_cluster = NULL,
   boundary = NULL,
-  colors = my_colors_15,
+  colors = colors15_cheng,
   point_size = 0.5,
   color_boundary = "black",
   linewidth_boundary = 1.5,
@@ -24,7 +24,7 @@ PlotBoundary(
   split_by = NULL,
   ncol = NULL,
   angle_x_label = 0,
-  theme_ggplot = my_theme_ggplot(),
+  theme_ggplot = theme_spneigh(),
   legend_size = 2,
   ...
 )
@@ -59,7 +59,7 @@ PlotBoundary(
 
 - colors:
 
-  A vector of cluster colors. Default uses `my_colors_15`.
+  A vector of cluster colors. Default uses `colors15_cheng`.
 
 - point_size:
 
@@ -99,7 +99,7 @@ PlotBoundary(
 - theme_ggplot:
 
   A ggplot2 theme object. Default is
-  [`my_theme_ggplot()`](https://github.com/jinming-cheng/SpNeigh/reference/my_theme_ggplot.md).
+  [`theme_spneigh()`](https://github.com/jinming-cheng/SpNeigh/reference/theme_spneigh.md).
 
 - legend_size:
 
@@ -108,7 +108,7 @@ PlotBoundary(
 - ...:
 
   Additional arguments passed to
-  [`GetBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetBoundary.md)
+  [`getBoundary`](https://github.com/jinming-cheng/SpNeigh/reference/GetBoundary.md)
   when auto-generating boundaries.
 
 ## Value
@@ -133,22 +133,22 @@ head(coords)
 #> 6 1926.540 2560.044    6       4
 
 # Plot all cells without boundaries
-PlotBoundary(coords)
+plotBoundary(coords)
 
 
 # Plot one cluster and its boundary
-PlotBoundary(coords, one_cluster = 2)
+plotBoundary(coords, one_cluster = 2)
 
 
 # Manually compute boundary and plot
-boundary_points <- GetBoundary(
+boundary_points <- getBoundary(
     data = coords, one_cluster = 2,
     eps = 120, minPts = 10
 )
-PlotBoundary(data = coords, boundary = boundary_points)
+plotBoundary(data = coords, boundary = boundary_points)
 
 
-# PlotBoundary for a SpatialExperiment object
+# plotBoundary for a SpatialExperiment object
 logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
     package = "SpNeigh"
 ))
@@ -165,10 +165,10 @@ spe <- SpatialExperiment::SpatialExperiment(
     spatialCoords = coords_sub
 )
 
-PlotBoundary(data = spe, one_cluster = 2)
+plotBoundary(data = spe, one_cluster = 2)
 
 
-# PlotBoundary for a Seurat object
+# plotBoundary for a Seurat object
 seu_sp <- Seurat::CreateSeuratObject(
     assay = "Spatial",
     counts = logNorm_expr,
@@ -189,6 +189,6 @@ seu_sp[["fov"]] <- fov
 
 seu_sp$seurat_clusters <- seu_sp$cluster
 
-PlotBoundary(data = seu_sp, one_cluster = 2, eps = 120)
+plotBoundary(data = seu_sp, one_cluster = 2, eps = 120)
 
 ```

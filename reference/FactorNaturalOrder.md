@@ -9,7 +9,7 @@ numeric order.
 ## Usage
 
 ``` r
-FactorNaturalOrder(x)
+factorNaturalOrder(x)
 ```
 
 ## Arguments
@@ -27,12 +27,12 @@ A factor with levels sorted in natural (human-readable) order.
 
 ``` r
 # Numeric vector
-FactorNaturalOrder(10:1)
+factorNaturalOrder(10:1)
 #>  [1] 10 9  8  7  6  5  4  3  2  1 
 #> Levels: 1 2 3 4 5 6 7 8 9 10
 
 # Character vector with embedded numbers
-FactorNaturalOrder(c("a11", "a12", "a1", "a2", "a"))
+factorNaturalOrder(c("a11", "a12", "a1", "a2", "a"))
 #> [1] a11 a12 a1  a2  a  
 #> Levels: a a1 a2 a11 a12
 ```

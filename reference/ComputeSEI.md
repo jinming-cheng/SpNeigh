@@ -1,19 +1,26 @@
 # Compute Spatial Enrichment Index (SEI)
 
 Alias for
-[`ComputeSpatialEnrichmentIndex`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeSpatialEnrichmentIndex.md).
+[`computeSpatialEnrichmentIndex`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeSpatialEnrichmentIndex.md).
 
 ## Usage
 
 ``` r
-ComputeSEI(...)
+computeSEI(exp_mat = NULL, weights = NULL)
 ```
 
 ## Arguments
 
-- ...:
+- exp_mat:
 
-  Parameters in `ComputeSpatialEnrichmentIndex`.
+  A normalized gene expression matrix with genes as rows and cells as
+  columns. Should be of class `matrix` or `dgCMatrix`.
+
+- weights:
+
+  A numeric vector of spatial weights (e.g., from
+  `computeBoundaryWeights` or `computeCentroidWeights`). Must be the
+  same length as the number of columns (cells) in `exp_mat`.
 
 ## Value
 
@@ -31,14 +38,14 @@ logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
 ))
 
 # Compute spatial weights and SEI
-bon_c0 <- GetBoundary(data = coords, one_cluster = 0)
+bon_c0 <- getBoundary(data = coords, one_cluster = 0)
 cells_c0 <- subset(coords, cluster == 0)$cell
-weights <- ComputeBoundaryWeights(
+weights <- computeBoundaryWeights(
     data = coords,
     cell_ids = cells_c0,
     boundary = bon_c0
 )
-sei_df <- ComputeSEI(logNorm_expr[, cells_c0], weights)
+sei_df <- computeSEI(logNorm_expr[, cells_c0], weights)
 head(sei_df)
 #>      gene      SEI mean_expr normalized_SEI
 #> 1    Fmod 1.742086  1.562370       1.115027

@@ -8,7 +8,7 @@ minimum expression threshold across groups.
 ## Usage
 
 ``` r
-RunLimmaDE(
+runLimmaDE(
   exp_mat = NULL,
   cells_reference = NULL,
   cells_target = NULL,
@@ -98,7 +98,7 @@ cells_ref <- subset(coords, cluster == 0)$cell
 cells_tar <- subset(coords, cluster == 2)$cell
 
 # Run differential expression with minimum expression threshold
-tab <- RunLimmaDE(
+tab <- runLimmaDE(
     exp_mat = logNorm_expr,
     cells_reference = cells_ref,
     cells_target = cells_tar,

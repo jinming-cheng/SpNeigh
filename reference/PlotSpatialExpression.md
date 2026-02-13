@@ -7,7 +7,7 @@ average expression within each bin is plotted as a heatmap.
 ## Usage
 
 ``` r
-PlotSpatialExpression(
+plotSpatialExpression(
   exp_mat = NULL,
   spatial_distance = NULL,
   genes = NULL,
@@ -18,7 +18,7 @@ PlotSpatialExpression(
   column_gap = 0,
   label_x = "Spatial distance",
   label_y = "Gene",
-  theme_ggplot = my_theme_ggplot()
+  theme_ggplot = theme_spneigh()
 )
 ```
 
@@ -90,7 +90,7 @@ PlotSpatialExpression(
 - theme_ggplot:
 
   A ggplot2 theme object. Default is
-  [`my_theme_ggplot()`](https://github.com/jinming-cheng/SpNeigh/reference/my_theme_ggplot.md).
+  [`theme_spneigh()`](https://github.com/jinming-cheng/SpNeigh/reference/theme_spneigh.md).
 
 ## Value
 
@@ -105,7 +105,7 @@ set.seed(1)
 exp_mat <- matrix(runif(1000), nrow = 10)
 rownames(exp_mat) <- paste0("Gene", 1:10)
 spatial_distance <- runif(100)
-PlotSpatialExpression(
+plotSpatialExpression(
     exp_mat = exp_mat,
     spatial_distance = spatial_distance,
     genes = rownames(exp_mat)[1:5]

@@ -8,7 +8,7 @@ along continuous variables.
 ## Usage
 
 ``` r
-SplineDesign(x, df = 3)
+splineDesign(x, df = 3)
 ```
 
 ## Arguments
@@ -38,7 +38,7 @@ or monotonic trend.
 
 ``` r
 x <- seq(0, 1, length.out = 100)
-Z <- SplineDesign(x)
+Z <- splineDesign(x)
 cor(Z[, 1], x) # Should be > 0
 #> [1] 1
 

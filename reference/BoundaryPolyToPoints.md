@@ -8,7 +8,7 @@ labeled polygonal regions.
 ## Usage
 
 ``` r
-BoundaryPolyToPoints(boundary_poly = NULL)
+boundaryPolyToPoints(boundary_poly = NULL)
 ```
 
 ## Arguments
@@ -30,11 +30,11 @@ vertex coordinates of the boundary geometries.
 coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
     package = "SpNeigh"
 ))
-boundary_points <- GetBoundary(data = coords, one_cluster = 2)
-boundary_polys <- BuildBoundaryPoly(boundary_points)
+boundary_points <- getBoundary(data = coords, one_cluster = 2)
+boundary_polys <- buildBoundaryPoly(boundary_points)
 
 # Convert back to boundary points
-boundary_pts <- BoundaryPolyToPoints(boundary_polys)
+boundary_pts <- boundaryPolyToPoints(boundary_polys)
 #> Warning: repeating attributes for all sub-geometries for which they may not be constant
 head(boundary_pts)
 #>            x        y region_id

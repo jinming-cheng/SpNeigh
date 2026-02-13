@@ -9,7 +9,7 @@ filtering based on a minimum proportion threshold.
 ## Usage
 
 ``` r
-PlotStatsPie(
+plotStatsPie(
   cell_stats = NULL,
   plot_donut = FALSE,
   add_labels = TRUE,
@@ -17,7 +17,7 @@ PlotStatsPie(
   label_color = "white",
   label_size = 4,
   label_nudge_x = 0.1,
-  colors = my_colors_15
+  colors = colors15_cheng
 )
 ```
 
@@ -27,7 +27,7 @@ PlotStatsPie(
 
   A data frame containing cluster statistics per region, typically the
   output from
-  [`StatsCellsInside()`](https://github.com/jinming-cheng/SpNeigh/reference/StatsCellsInside.md).
+  [`statsCellsInside()`](https://github.com/jinming-cheng/SpNeigh/reference/StatsCellsInside.md).
   Must include columns `region_id`, `cluster`, and `proportion`.
 
 - plot_donut:
@@ -60,7 +60,7 @@ PlotStatsPie(
 
 - colors:
 
-  A vector of cluster colors. Default uses `my_colors_15`.
+  A vector of cluster colors. Default uses `colors15_cheng`.
 
 ## Value
 
@@ -74,19 +74,19 @@ coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
     package = "SpNeigh"
 ))
 
-boundary_points <- GetBoundary(
+boundary_points <- getBoundary(
     data = coords, one_cluster = 2,
     eps = 120, minPts = 10
 )
-cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
-stats_cells <- StatsCellsInside(cells_inside)
+cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
+stats_cells <- statsCellsInside(cells_inside)
 
-PlotStatsPie(stats_cells, add_labels = FALSE)
+plotStatsPie(stats_cells, add_labels = FALSE)
 
-PlotStatsPie(stats_cells, label_cutoff = 0)
+plotStatsPie(stats_cells, label_cutoff = 0)
 
-PlotStatsPie(stats_cells, label_cutoff = 0.01)
+plotStatsPie(stats_cells, label_cutoff = 0.01)
 
-PlotStatsPie(stats_cells, plot_donut = TRUE)
+plotStatsPie(stats_cells, plot_donut = TRUE)
 
 ```

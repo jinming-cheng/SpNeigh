@@ -8,7 +8,7 @@ composition of cell types per region.
 ## Usage
 
 ``` r
-StatsCellsInside(cells_inside = NULL)
+statsCellsInside(cells_inside = NULL)
 ```
 
 ## Arguments
@@ -16,7 +16,7 @@ StatsCellsInside(cells_inside = NULL)
 - cells_inside:
 
   An `sf` object of cells returned by
-  [`GetCellsInside()`](https://github.com/jinming-cheng/SpNeigh/reference/GetCellsInside.md).
+  [`getCellsInside()`](https://github.com/jinming-cheng/SpNeigh/reference/GetCellsInside.md).
   Must contain `cluster` and `region_id` columns.
 
 ## Value
@@ -42,14 +42,14 @@ coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 ))
 
 # Get boundary and cells inside
-boundary_points <- GetBoundary(
+boundary_points <- getBoundary(
     data = coords, one_cluster = 2,
     eps = 120, minPts = 10
 )
-cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
+cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
 
 # Summarize cluster statistics per region
-stats_cells <- StatsCellsInside(cells_inside)
+stats_cells <- statsCellsInside(cells_inside)
 head(stats_cells)
 #> # A tibble: 6 × 4
 #>   region_id cluster count proportion

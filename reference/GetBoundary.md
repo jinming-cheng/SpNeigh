@@ -10,7 +10,7 @@ k-nearest neighbor distance filter to ensure boundary smoothness.
 ## Usage
 
 ``` r
-GetBoundary(
+getBoundary(
   data = NULL,
   cluster_col = NULL,
   one_cluster = NULL,
@@ -104,7 +104,7 @@ head(coords)
 #> 6 1926.540 2560.044    6       4
 
 # Get boundary points of cluster 1
-boundary_points <- GetBoundary(data = coords, one_cluster = 1)
+boundary_points <- getBoundary(data = coords, one_cluster = 1)
 head(boundary_points)
 #>          x        y region_id
 #> 1 447.7028 3404.517         1
@@ -122,7 +122,7 @@ table(boundary_points$region_id)
 
 # Get boundary points of cluster 1 using kmeans method
 # and manually specify subregion number
-boundary_points <- GetBoundary(
+boundary_points <- getBoundary(
     data = coords,
     one_cluster = 1,
     subregion_method = "kmeans",
@@ -134,7 +134,7 @@ table(boundary_points$region_id)
 #> 353 538 
 
 # Get boundary points of cluster 1 without multiple regions
-boundary_points <- GetBoundary(
+boundary_points <- getBoundary(
     data = coords,
     one_cluster = 1,
     multi_region = FALSE

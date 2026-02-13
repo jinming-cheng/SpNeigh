@@ -9,7 +9,7 @@ scaling.
 ## Usage
 
 ``` r
-ComputeCentroidWeights(
+computeCentroidWeights(
   data = NULL,
   cell_ids = NULL,
   scale = TRUE,
@@ -62,7 +62,7 @@ coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 cells_c2 <- subset(coords, cluster == 2)$cell
 
 # Compute centroid-based weights using default settings
-weights <- ComputeCentroidWeights(data = coords, cell_ids = cells_c2)
+weights <- computeCentroidWeights(data = coords, cell_ids = cells_c2)
 head(weights)
 #>         3         8         9        11        18        20 
 #> 0.7829382 0.7033367 0.7067281 0.7090737 0.7185800 0.8012193 

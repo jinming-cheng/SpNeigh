@@ -7,7 +7,7 @@ shapes for visualizing spatial clusters, rings, or enriched zones.
 ## Usage
 
 ``` r
-AddBoundaryPoly(
+addBoundaryPoly(
   boundary_poly,
   color_boundary = "black",
   linewidth_boundary = 1.5
@@ -42,15 +42,15 @@ coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
     package = "SpNeigh"
 ))
 
-boundary_points <- GetBoundary(
+boundary_points <- getBoundary(
     data = coords, one_cluster = 2,
     subregion_method = "dbscan",
     eps = 120, minPts = 10
 )
-boundary_polys <- BuildBoundaryPoly(boundary_points)
+boundary_polys <- buildBoundaryPoly(boundary_points)
 
 # Add boundary polygons to the plot
-PlotBoundary(coords) +
-    AddBoundaryPoly(boundary_polys, color_boundary = "blue")
+plotBoundary(coords) +
+    addBoundaryPoly(boundary_polys, color_boundary = "blue")
 
 ```

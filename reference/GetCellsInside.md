@@ -3,18 +3,18 @@
 Returns the subset of cells from the input data that fall spatially
 within a given boundary or ring. The boundary can be provided either as
 raw boundary points (from
-[`GetBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetBoundary.md)),
+[`getBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetBoundary.md)),
 as polygons (from
-[`BuildBoundaryPoly()`](https://github.com/jinming-cheng/SpNeigh/reference/BuildBoundaryPoly.md)),
+[`buildBoundaryPoly()`](https://github.com/jinming-cheng/SpNeigh/reference/BuildBoundaryPoly.md)),
 or as ring regions (from
-[`GetRingRegion()`](https://github.com/jinming-cheng/SpNeigh/reference/GetRingRegion.md)).
+[`getRingRegion()`](https://github.com/jinming-cheng/SpNeigh/reference/GetRingRegion.md)).
 The function uses spatial point-in-polygon matching via
 [`sf::st_within`](https://r-spatial.github.io/sf/reference/geos_binary_pred.html).
 
 ## Usage
 
 ``` r
-GetCellsInside(data = NULL, cluster_col = NULL, boundary = NULL)
+getCellsInside(data = NULL, cluster_col = NULL, boundary = NULL)
 ```
 
 ## Arguments
@@ -38,10 +38,10 @@ GetCellsInside(data = NULL, cluster_col = NULL, boundary = NULL)
 
   An `sf` object (polygon or ring) or a data frame of boundary points
   returned by
-  [`GetBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetBoundary.md),
-  [`BuildBoundaryPoly()`](https://github.com/jinming-cheng/SpNeigh/reference/BuildBoundaryPoly.md),
+  [`getBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetBoundary.md),
+  [`buildBoundaryPoly()`](https://github.com/jinming-cheng/SpNeigh/reference/BuildBoundaryPoly.md),
   or
-  [`GetRingRegion()`](https://github.com/jinming-cheng/SpNeigh/reference/GetRingRegion.md).
+  [`getRingRegion()`](https://github.com/jinming-cheng/SpNeigh/reference/GetRingRegion.md).
 
 ## Value
 
@@ -65,11 +65,11 @@ head(coords)
 #> 6 1926.540 2560.044    6       4
 
 # Get cells inside boundaries
-boundary_points <- GetBoundary(
+boundary_points <- getBoundary(
     data = coords, one_cluster = 2,
     eps = 120, minPts = 10
 )
-cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
+cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
 cells_inside
 #> Simple feature collection with 5073 features and 3 fields
 #> Geometry type: POINT
@@ -90,8 +90,8 @@ cells_inside
 #> 55   55       2         1 POINT (2407.538 2545.443)
 
 # Get cells inside rings
-ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-cells_ring <- GetCellsInside(data = coords, boundary = ring_regions)
+ring_regions <- getRingRegion(boundary = boundary_points, dist = 100)
+cells_ring <- getCellsInside(data = coords, boundary = ring_regions)
 cells_ring
 #> Simple feature collection with 4362 features and 3 fields
 #> Geometry type: POINT

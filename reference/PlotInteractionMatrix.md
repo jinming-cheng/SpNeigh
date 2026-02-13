@@ -9,7 +9,7 @@ patterns between cell populations.
 ## Usage
 
 ``` r
-PlotInteractionMatrix(
+plotInteractionMatrix(
   interaction_matrix = NULL,
   low_color = "blue",
   mid_color = "white",
@@ -25,7 +25,7 @@ PlotInteractionMatrix(
 
   A numeric matrix with focal clusters as rows and neighbor clusters as
   columns. Typically the output from
-  [`ComputeSpatialInteractionMatrix()`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeSpatialInteractionMatrix.md).
+  [`computeSpatialInteractionMatrix()`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeSpatialInteractionMatrix.md).
 
 - low_color:
 
@@ -59,15 +59,15 @@ coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
     package = "SpNeigh"
 ))
 
-boundary_points <- GetBoundary(
+boundary_points <- getBoundary(
     data = coords, one_cluster = 2,
     eps = 120, minPts = 10
 )
-ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-cells_ring <- GetCellsInside(data = coords, boundary = ring_regions)
+ring_regions <- getRingRegion(boundary = boundary_points, dist = 100)
+cells_ring <- getCellsInside(data = coords, boundary = ring_regions)
 coords_sub <- subset(coords, cell %in% cells_ring$cell)
-interaction_matrix <- ComputeSpatialInteractionMatrix(coords_sub)
+interaction_matrix <- computeSpatialInteractionMatrix(coords_sub)
 
-PlotInteractionMatrix(interaction_matrix)
+plotInteractionMatrix(interaction_matrix)
 
 ```

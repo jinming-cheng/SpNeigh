@@ -8,7 +8,7 @@ tissue (e.g., near boundaries or centroids).
 ## Usage
 
 ``` r
-ComputeSpatialEnrichmentIndex(exp_mat = NULL, weights = NULL)
+computeSpatialEnrichmentIndex(exp_mat = NULL, weights = NULL)
 ```
 
 ## Arguments
@@ -21,7 +21,7 @@ ComputeSpatialEnrichmentIndex(exp_mat = NULL, weights = NULL)
 - weights:
 
   A numeric vector of spatial weights (e.g., from
-  `ComputeBoundaryWeights` or `ComputeCentroidWeights`). Must be the
+  `computeBoundaryWeights` or `computeCentroidWeights`). Must be the
   same length as the number of columns (cells) in `exp_mat`.
 
 ## Value
@@ -65,14 +65,14 @@ logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
 ))
 
 # Compute spatial weights and SEI
-bon_c0 <- GetBoundary(data = coords, one_cluster = 0)
+bon_c0 <- getBoundary(data = coords, one_cluster = 0)
 cells_c0 <- subset(coords, cluster == 0)$cell
-weights <- ComputeBoundaryWeights(
+weights <- computeBoundaryWeights(
     data = coords,
     cell_ids = cells_c0,
     boundary = bon_c0
 )
-sei_df <- ComputeSpatialEnrichmentIndex(logNorm_expr[, cells_c0], weights)
+sei_df <- computeSpatialEnrichmentIndex(logNorm_expr[, cells_c0], weights)
 head(sei_df)
 #>      gene      SEI mean_expr normalized_SEI
 #> 1    Fmod 1.742086  1.562370       1.115027

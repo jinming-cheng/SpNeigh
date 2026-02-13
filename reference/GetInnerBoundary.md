@@ -3,14 +3,14 @@
 Computes an inward-shifted (contracted) boundary by applying a negative
 spatial buffer to an existing boundary polygon. This function is a
 wrapper around
-[`GetOuterBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetOuterBoundary.md)
+[`getOuterBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetOuterBoundary.md)
 and is useful for defining an inner region around a spatial cluster or
 structure.
 
 ## Usage
 
 ``` r
-GetInnerBoundary(boundary = NULL, dist = 50)
+getInnerBoundary(boundary = NULL, dist = 50)
 ```
 
 ## Arguments
@@ -39,7 +39,7 @@ or irregular shapes.
 
 ## See also
 
-[`GetOuterBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetOuterBoundary.md)
+[`getOuterBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetOuterBoundary.md)
 for the outward (positive) buffer version.
 
 ## Examples
@@ -51,13 +51,13 @@ coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 ))
 
 # Get boundary polygons of cluster 2
-boundary_points <- GetBoundary(data = coords, one_cluster = 2)
-boundary_polys <- BuildBoundaryPoly(boundary_points)
+boundary_points <- getBoundary(data = coords, one_cluster = 2)
+boundary_polys <- buildBoundaryPoly(boundary_points)
 plot(boundary_polys)
 
 
 # Generate inner boundary with 50-unit buffer for boundary region 1
-inner_boundary <- GetInnerBoundary(boundary_polys)
+inner_boundary <- getInnerBoundary(boundary_polys)
 #> Warning: Some inner boundaries may have collapsed or disappeared due to excessive shrinkage.
 plot(inner_boundary)
 

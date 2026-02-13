@@ -24,18 +24,21 @@ devtools::install_github("jinming-cheng/SpNeigh")
 
 Please cite this article if you use SpNeigh:
 
-Cheng, J.\*, Chow, P. K.H., and Liu, N.\*. “SpNeigh: spatial
-neighborhood and differential expression analysis for high-resolution
-spatial transcriptomics”. *bioRxiv* (2025).
-
-(or use BibTex)
-
 ``` R
-@article {Cheng2025SpNeigh,
-    author = {Cheng, J. and Chow, P. K.H. and Liu, N.},
+To cite SpNeigh in publications, please use:
+
+  Cheng J, Chow P, Liu N (2025). "SpNeigh: spatial neighborhood and
+  differential expression analysis for high-resolution spatial
+  transcriptomics." _bioRxiv_. doi:10.1101/2025.11.07.687304
+  <https://doi.org/10.1101/2025.11.07.687304>.
+
+A BibTeX entry for LaTeX users is
+
+  @Article{,
     title = {SpNeigh: spatial neighborhood and differential expression analysis for high-resolution spatial transcriptomics},
+    author = {Jinming Cheng and Pierce Kah Hoe Chow and Nan Liu},
+    journal = {bioRxiv},
     year = {2025},
     doi = {10.1101/2025.11.07.687304},
-    journal = {bioRxiv}
-}
+  }
 ```

@@ -9,7 +9,7 @@ returning either a combined plot or a list of individual ggplot objects.
 ## Usage
 
 ``` r
-PlotExpression(
+plotExpression(
   data = NULL,
   exp_mat = NULL,
   genes = NULL,
@@ -23,7 +23,7 @@ PlotExpression(
   point_size = 0.2,
   angle_x_label = 0,
   shuffle = FALSE,
-  theme_ggplot = my_theme_ggplot()
+  theme_ggplot = theme_spneigh()
 )
 ```
 
@@ -117,7 +117,7 @@ PlotExpression(
 - theme_ggplot:
 
   A ggplot2 theme object. Default is
-  [`my_theme_ggplot()`](https://github.com/jinming-cheng/SpNeigh/reference/my_theme_ggplot.md).
+  [`theme_spneigh()`](https://github.com/jinming-cheng/SpNeigh/reference/theme_spneigh.md).
 
 ## Value
 
@@ -143,13 +143,13 @@ colnames(exp_mat) <- df$cell
 
 # set a random seed when shuffle is TRUE to reproduce the plot
 set.seed(123)
-PlotExpression(
+plotExpression(
     data = df, exp_mat = exp_mat, shuffle = TRUE,
     genes = c("gene1", "gene2"), point_size = 2
 )
 
 
-PlotExpression(
+plotExpression(
     data = df, exp_mat = exp_mat,
     genes = "gene1", sub_plot = TRUE,
     one_cluster = 1, point_size = 2

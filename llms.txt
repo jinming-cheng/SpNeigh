@@ -24,103 +24,106 @@ devtools::install_github("jinming-cheng/SpNeigh")
 
 Please cite this article if you use SpNeigh:
 
-Cheng, J.\*, Chow, P. K.H., and Liu, N.\*. “SpNeigh: spatial
-neighborhood and differential expression analysis for high-resolution
-spatial transcriptomics”. *bioRxiv* (2025).
-
-(or use BibTex)
-
 ``` R
-@article {Cheng2025SpNeigh,
-    author = {Cheng, J. and Chow, P. K.H. and Liu, N.},
+To cite SpNeigh in publications, please use:
+
+  Cheng J, Chow P, Liu N (2025). "SpNeigh: spatial neighborhood and
+  differential expression analysis for high-resolution spatial
+  transcriptomics." _bioRxiv_. doi:10.1101/2025.11.07.687304
+  <https://doi.org/10.1101/2025.11.07.687304>.
+
+A BibTeX entry for LaTeX users is
+
+  @Article{,
     title = {SpNeigh: spatial neighborhood and differential expression analysis for high-resolution spatial transcriptomics},
+    author = {Jinming Cheng and Pierce Kah Hoe Chow and Nan Liu},
+    journal = {bioRxiv},
     year = {2025},
     doi = {10.1101/2025.11.07.687304},
-    journal = {bioRxiv}
-}
+  }
 ```
 
 # Package index
 
 ## All functions
 
-- [`AddBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/AddBoundary.md)
+- [`addBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/AddBoundary.md)
   : Add boundary outlines to a spatial ggplot
-- [`AddBoundaryPoly()`](https://github.com/jinming-cheng/SpNeigh/reference/AddBoundaryPoly.md)
+- [`addBoundaryPoly()`](https://github.com/jinming-cheng/SpNeigh/reference/AddBoundaryPoly.md)
   : Add boundary polygons or linestrings to a spatial plot
-- [`BoundaryPolyToPoints()`](https://github.com/jinming-cheng/SpNeigh/reference/BoundaryPolyToPoints.md)
+- [`boundaryPolyToPoints()`](https://github.com/jinming-cheng/SpNeigh/reference/BoundaryPolyToPoints.md)
   : Convert boundary polygons to boundary point coordinates
-- [`BuildBoundaryPoly()`](https://github.com/jinming-cheng/SpNeigh/reference/BuildBoundaryPoly.md)
+- [`buildBoundaryPoly()`](https://github.com/jinming-cheng/SpNeigh/reference/BuildBoundaryPoly.md)
   : Convert boundary points into valid polygon geometries
-- [`ComputeBoundaryWeights()`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeBoundaryWeights.md)
+- [`computeBoundaryWeights()`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeBoundaryWeights.md)
   : Compute spatial weights based on distance to nearest boundary
-- [`ComputeCentroidWeights()`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeCentroidWeights.md)
+- [`computeCentroidWeights()`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeCentroidWeights.md)
   : Compute spatial weights based on distance to the centroid
-- [`ComputeSEI()`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeSEI.md)
+- [`computeSEI()`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeSEI.md)
   : Compute Spatial Enrichment Index (SEI)
-- [`ComputeSpatialEnrichmentIndex()`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeSpatialEnrichmentIndex.md)
+- [`computeSpatialEnrichmentIndex()`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeSpatialEnrichmentIndex.md)
   : Compute Spatial Enrichment Index (SEI) for Each Gene
-- [`ComputeSpatialInteractionMatrix()`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeSpatialInteractionMatrix.md)
+- [`computeSpatialInteractionMatrix()`](https://github.com/jinming-cheng/SpNeigh/reference/ComputeSpatialInteractionMatrix.md)
   : Compute a spatial neighborhood interaction matrix using K-nearest
   neighbors (KNN)
-- [`ExtractCoords()`](https://github.com/jinming-cheng/SpNeigh/reference/ExtractCoords.md)
+- [`extractCoords()`](https://github.com/jinming-cheng/SpNeigh/reference/ExtractCoords.md)
   : Extract spatial coordinates and cluster information
-- [`FactorNaturalOrder()`](https://github.com/jinming-cheng/SpNeigh/reference/FactorNaturalOrder.md)
+- [`factorNaturalOrder()`](https://github.com/jinming-cheng/SpNeigh/reference/FactorNaturalOrder.md)
   : Create a factor with natural (human-friendly) ordering
-- [`GetBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetBoundary.md)
+- [`getBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetBoundary.md)
   : Extract spatial boundary points for a cluster or cell population
-- [`GetCellsInside()`](https://github.com/jinming-cheng/SpNeigh/reference/GetCellsInside.md)
+- [`getCellsInside()`](https://github.com/jinming-cheng/SpNeigh/reference/GetCellsInside.md)
   : Identify cells located within spatial boundaries or ring regions
-- [`GetInnerBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetInnerBoundary.md)
+- [`getInnerBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetInnerBoundary.md)
   : Generate an inner boundary polygon by shrinking an existing boundary
   inward
-- [`GetOuterBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetOuterBoundary.md)
+- [`getOuterBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetOuterBoundary.md)
   : Generate an outer or inner boundary polygon by buffering an existing
   boundary
-- [`GetRingRegion()`](https://github.com/jinming-cheng/SpNeigh/reference/GetRingRegion.md)
+- [`getRingRegion()`](https://github.com/jinming-cheng/SpNeigh/reference/GetRingRegion.md)
   : Generate ring regions between a boundary and its outer buffer
-- [`PlotBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotBoundary.md)
+- [`plotBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotBoundary.md)
   : Plot spatial cell coordinates with cluster boundaries
-- [`PlotCellsInside()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotCellsInside.md)
+- [`plotCellsInside()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotCellsInside.md)
   : Plot cells located within spatial boundaries or ring regions
-- [`PlotEdge()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotEdge.md)
+- [`plotEdge()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotEdge.md)
   : Plot boundary edges or segmented boundary lines
-- [`PlotExpression()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotExpression.md)
+- [`plotExpression()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotExpression.md)
   : Plot gene expression across spatial coordinates
-- [`PlotInteractionMatrix()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotInteractionMatrix.md)
+- [`plotInteractionMatrix()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotInteractionMatrix.md)
   : Plot a heatmap of a row-scaled spatial interaction matrix
-- [`PlotRegion()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotRegion.md)
+- [`plotRegion()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotRegion.md)
   : Plot filled spatial regions inside boundaries or rings
-- [`PlotSpatialExpression()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotSpatialExpression.md)
+- [`plotSpatialExpression()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotSpatialExpression.md)
   : Plot average gene expression along spatial distance
-- [`PlotStatsBar()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotStatsBar.md)
+- [`plotStatsBar()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotStatsBar.md)
   : Bar plot of cluster statistics for cells inside boundaries or ring
   regions
-- [`PlotStatsPie()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotStatsPie.md)
+- [`plotStatsPie()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotStatsPie.md)
   : Pie chart or donut chart of cluster proportions inside spatial
   regions
-- [`PlotWeights()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotWeights.md)
+- [`plotWeights()`](https://github.com/jinming-cheng/SpNeigh/reference/PlotWeights.md)
   : Plot spatial weights for cells on a spatial plot
-- [`RemoveOutliers()`](https://github.com/jinming-cheng/SpNeigh/reference/RemoveOutliers.md)
+- [`removeOutliers()`](https://github.com/jinming-cheng/SpNeigh/reference/RemoveOutliers.md)
   : Removes spatial outlier cells based on local k-nearest neighbor
   distances
-- [`RunLimmaDE()`](https://github.com/jinming-cheng/SpNeigh/reference/RunLimmaDE.md)
+- [`runLimmaDE()`](https://github.com/jinming-cheng/SpNeigh/reference/RunLimmaDE.md)
   : Differential expression analysis between two groups of cells using
   limma
-- [`RunSpatialDE()`](https://github.com/jinming-cheng/SpNeigh/reference/RunSpatialDE.md)
+- [`runSpatialDE()`](https://github.com/jinming-cheng/SpNeigh/reference/RunSpatialDE.md)
   : Differential expression along spatial distance gradients using
   splines
-- [`SafeColorPalette()`](https://github.com/jinming-cheng/SpNeigh/reference/SafeColorPalette.md)
+- [`safeColorPalette()`](https://github.com/jinming-cheng/SpNeigh/reference/SafeColorPalette.md)
   : Generate a safe color palette for discrete clusters
-- [`SplineDesign()`](https://github.com/jinming-cheng/SpNeigh/reference/SplineDesign.md)
+- [`splineDesign()`](https://github.com/jinming-cheng/SpNeigh/reference/SplineDesign.md)
   : Generate an orthonormal spline-based design matrix
-- [`SplitBoundaryPolyByAnchor()`](https://github.com/jinming-cheng/SpNeigh/reference/SplitBoundaryPolyByAnchor.md)
+- [`splitBoundaryPolyByAnchor()`](https://github.com/jinming-cheng/SpNeigh/reference/SplitBoundaryPolyByAnchor.md)
   : Split a polygon boundary into two parts using anchor points
-- [`StatsCellsInside()`](https://github.com/jinming-cheng/SpNeigh/reference/StatsCellsInside.md)
+- [`statsCellsInside()`](https://github.com/jinming-cheng/SpNeigh/reference/StatsCellsInside.md)
   : Summarize cell counts and proportions inside spatial regions
-- [`my_colors_15`](https://github.com/jinming-cheng/SpNeigh/reference/my_colors_15.md)
+- [`colors15_cheng`](https://github.com/jinming-cheng/SpNeigh/reference/colors15_cheng.md)
   : Custom Color Palette
-- [`my_theme_ggplot()`](https://github.com/jinming-cheng/SpNeigh/reference/my_theme_ggplot.md)
+- [`theme_spneigh()`](https://github.com/jinming-cheng/SpNeigh/reference/theme_spneigh.md)
   : Custom ggplot2 theme
 
 # Articles

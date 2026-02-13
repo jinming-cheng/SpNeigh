@@ -7,7 +7,7 @@ frame.
 ## Usage
 
 ``` r
-ExtractCoords(data, cluster_col = NULL, extract_cluster = TRUE)
+extractCoords(data, cluster_col = NULL, extract_cluster = TRUE)
 ```
 
 ## Arguments
@@ -59,7 +59,7 @@ coords <- readRDS(system.file(
     package = "SpNeigh"
 ))
 
-head(ExtractCoords(coords))
+head(extractCoords(coords))
 #>          x        y cell cluster
 #> 1 1898.815 2540.963    1       4
 #> 2 1895.305 2532.627    2       4

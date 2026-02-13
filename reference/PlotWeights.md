@@ -8,11 +8,11 @@ trends such as proximity to boundaries or centroids.
 ## Usage
 
 ``` r
-PlotWeights(
+plotWeights(
   data = NULL,
   weights = NULL,
   point_size = 0.2,
-  theme_ggplot = my_theme_ggplot()
+  theme_ggplot = theme_spneigh()
 )
 ```
 
@@ -34,7 +34,7 @@ PlotWeights(
 - theme_ggplot:
 
   A ggplot2 theme object. Default is
-  [`my_theme_ggplot()`](https://github.com/jinming-cheng/SpNeigh/reference/my_theme_ggplot.md).
+  [`theme_spneigh()`](https://github.com/jinming-cheng/SpNeigh/reference/theme_spneigh.md).
 
 ## Value
 
@@ -53,16 +53,16 @@ coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 cells_c2 <- subset(coords, cluster == 2)[, "cell"]
 
 # Compute centroid weights and plot
-weights_cen <- ComputeCentroidWeights(data = coords, cell_ids = cells_c2)
-PlotWeights(data = coords, weights = weights_cen)
+weights_cen <- computeCentroidWeights(data = coords, cell_ids = cells_c2)
+plotWeights(data = coords, weights = weights_cen)
 
 
 # Compute boundary weights and plot
-boundary_points <- GetBoundary(data = coords, one_cluster = 2)
-weights_bon <- ComputeBoundaryWeights(
+boundary_points <- getBoundary(data = coords, one_cluster = 2)
+weights_bon <- computeBoundaryWeights(
     data = coords, cell_ids = cells_c2,
     boundary = boundary_points
 )
-PlotWeights(data = coords, weights = weights_bon)
+plotWeights(data = coords, weights = weights_bon)
 
 ```

@@ -4,14 +4,14 @@ Computes spatial ring-shaped regions by subtracting the original
 boundary polygons from their corresponding outer buffered polygons. If
 the `outer_boundary` is not supplied, it will be automatically computed
 using
-[`GetOuterBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetOuterBoundary.md).
+[`getOuterBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetOuterBoundary.md).
 This is useful for analyzing periphery-enriched cell types or
 gradient-based features near a boundary.
 
 ## Usage
 
 ``` r
-GetRingRegion(boundary = NULL, outer_boundary = NULL, ...)
+getRingRegion(boundary = NULL, outer_boundary = NULL, ...)
 ```
 
 ## Arguments
@@ -25,12 +25,12 @@ GetRingRegion(boundary = NULL, outer_boundary = NULL, ...)
 
   Optional `sf` object containing buffered (outer) boundary polygons. If
   not provided, it will be automatically computed using
-  [`GetOuterBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetOuterBoundary.md).
+  [`getOuterBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetOuterBoundary.md).
 
 - ...:
 
   Additional arguments passed to
-  [`GetOuterBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetOuterBoundary.md)
+  [`getOuterBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetOuterBoundary.md)
   if `outer_boundary` is not provided.
 
 ## Value
@@ -56,15 +56,15 @@ head(coords)
 #> 6 1926.540 2560.044    6       4
 
 # Get boundary points of cluster 2
-boundary_points <- GetBoundary(data = coords, one_cluster = 2)
+boundary_points <- getBoundary(data = coords, one_cluster = 2)
 
 # Automatically compute outer boundary and get rings
-ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
+ring_regions <- getRingRegion(boundary = boundary_points, dist = 100)
 plot(ring_regions)
 
 
 # Or provide both inner and outer boundaries explicitly
-outer <- GetOuterBoundary(boundary_points, dist = 100)
-rings <- GetRingRegion(boundary = boundary_points, outer_boundary = outer)
+outer <- getOuterBoundary(boundary_points, dist = 100)
+rings <- getRingRegion(boundary = boundary_points, outer_boundary = outer)
 plot(rings)
 ```

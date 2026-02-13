@@ -10,7 +10,7 @@ genes whose expression varies continuously across spatial structures.
 ## Usage
 
 ``` r
-RunSpatialDE(
+runSpatialDE(
   exp_mat = NULL,
   cell_ids = NULL,
   spatial_distance = NULL,
@@ -83,14 +83,14 @@ logNorm_expr <- readRDS(system.file("extdata", "LogNormExpr.rds",
 
 # Identify cluster-specific cells and compute spatial weights
 cells_c0 <- subset(coords, cluster == 0)$cell
-bon_c0 <- GetBoundary(data = coords, one_cluster = 0)
-weights <- ComputeBoundaryWeights(
+bon_c0 <- getBoundary(data = coords, one_cluster = 0)
+weights <- computeBoundaryWeights(
     data = coords, cell_ids = cells_c0,
     boundary = bon_c0
 )
 
 # Run spatial DE
-result <- RunSpatialDE(
+result <- runSpatialDE(
     exp_mat = logNorm_expr, cell_ids = cells_c0,
     spatial_distance = weights
 )

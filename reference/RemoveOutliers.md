@@ -9,7 +9,7 @@ filtering isolated ones.
 ## Usage
 
 ``` r
-RemoveOutliers(coords, k = 5, distance_cutoff = 30)
+removeOutliers(coords, k = 5, distance_cutoff = 30)
 ```
 
 ## Arguments
@@ -68,7 +68,7 @@ plot(coords$x, coords$y,
 
 
 # Remove outlier points with a specified knn distance cutoff
-new_coords <- RemoveOutliers(coords, k = 5, distance_cutoff = 2)
+new_coords <- removeOutliers(coords, k = 5, distance_cutoff = 2)
 dim(new_coords)
 #> [1] 20  3
 

@@ -9,7 +9,7 @@ user-defined regions.
 ## Usage
 
 ``` r
-ComputeBoundaryWeights(
+computeBoundaryWeights(
   data = NULL,
   cell_ids = NULL,
   boundary = NULL,
@@ -34,7 +34,7 @@ ComputeBoundaryWeights(
 
   Either an `sf` object containing boundary geometries (`POLYGON` or
   `LINESTRING`), or a data frame of boundary points returned from
-  [`GetBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetBoundary.md).
+  [`getBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetBoundary.md).
 
 - scale:
 
@@ -72,19 +72,19 @@ coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 ))
 
 # Get and build boundary polygons from cluster 2
-boundary_points <- GetBoundary(data = coords, one_cluster = 2)
-boundary_polys <- BuildBoundaryPoly(boundary_points)
+boundary_points <- getBoundary(data = coords, one_cluster = 2)
+boundary_polys <- buildBoundaryPoly(boundary_points)
 
 # Compute weights to polygon boundary
 cells_c2 <- subset(coords, cluster == 2)$cell
-weights <- ComputeBoundaryWeights(
+weights <- computeBoundaryWeights(
     data = coords, cell_ids = cells_c2,
     boundary = boundary_polys[1, ]
 )
 
 # Compute weights to a specific boundary edge
-boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1, ])
-weights_edge <- ComputeBoundaryWeights(
+boundary_edges <- splitBoundaryPolyByAnchor(boundary_polys[1, ])
+weights_edge <- computeBoundaryWeights(
     data = coords, cell_ids = cells_c2,
     boundary = boundary_edges[2, ]
 )

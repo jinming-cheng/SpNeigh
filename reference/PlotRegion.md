@@ -5,19 +5,19 @@ using filled polygons. Each region is automatically assigned a fill
 color based on its `region_id`. This function is commonly used to
 visualize the area inside spatial boundaries or surrounding rings, such
 as those created by
-[`BuildBoundaryPoly()`](https://github.com/jinming-cheng/SpNeigh/reference/BuildBoundaryPoly.md)
+[`buildBoundaryPoly()`](https://github.com/jinming-cheng/SpNeigh/reference/BuildBoundaryPoly.md)
 or
-[`GetRingRegion()`](https://github.com/jinming-cheng/SpNeigh/reference/GetRingRegion.md).
+[`getRingRegion()`](https://github.com/jinming-cheng/SpNeigh/reference/GetRingRegion.md).
 
 ## Usage
 
 ``` r
-PlotRegion(
+plotRegion(
   boundary_poly = NULL,
   alpha = 0.5,
   color_boundary = "black",
   linewidth_boundary = 1,
-  theme_ggplot = my_theme_ggplot(),
+  theme_ggplot = theme_spneigh(),
   ...
 )
 ```
@@ -28,9 +28,9 @@ PlotRegion(
 
   An `sf` object of `POLYGON` geometries containing a `region_id`
   column. Typically created by
-  [`BuildBoundaryPoly()`](https://github.com/jinming-cheng/SpNeigh/reference/BuildBoundaryPoly.md)
+  [`buildBoundaryPoly()`](https://github.com/jinming-cheng/SpNeigh/reference/BuildBoundaryPoly.md)
   or
-  [`GetRingRegion()`](https://github.com/jinming-cheng/SpNeigh/reference/GetRingRegion.md).
+  [`getRingRegion()`](https://github.com/jinming-cheng/SpNeigh/reference/GetRingRegion.md).
 
 - alpha:
 
@@ -48,7 +48,7 @@ PlotRegion(
 - theme_ggplot:
 
   A ggplot2 theme object. Default is
-  [`my_theme_ggplot()`](https://github.com/jinming-cheng/SpNeigh/reference/my_theme_ggplot.md).
+  [`theme_spneigh()`](https://github.com/jinming-cheng/SpNeigh/reference/theme_spneigh.md).
 
 - ...:
 
@@ -67,16 +67,16 @@ coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 ))
 
 # Plot filled boundary regions
-boundary_points <- GetBoundary(
+boundary_points <- getBoundary(
     data = coords, one_cluster = 2,
     eps = 120, minPts = 10
 )
-boundary_polys <- BuildBoundaryPoly(boundary_points)
-PlotRegion(boundary_poly = boundary_polys)
+boundary_polys <- buildBoundaryPoly(boundary_points)
+plotRegion(boundary_poly = boundary_polys)
 
 
 # Plot filled ring regions
-ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-PlotRegion(boundary_poly = ring_regions)
+ring_regions <- getRingRegion(boundary = boundary_points, dist = 100)
+plotRegion(boundary_poly = ring_regions)
 
 ```

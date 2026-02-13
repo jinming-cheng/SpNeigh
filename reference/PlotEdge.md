@@ -3,15 +3,15 @@
 Plots boundary edges as colored `LINESTRING` or `POLYGON` outlines using
 `ggplot2`. This function is especially useful for visualizing specific
 edges extracted from a polygon using
-[`SplitBoundaryPolyByAnchor()`](https://github.com/jinming-cheng/SpNeigh/reference/SplitBoundaryPolyByAnchor.md).
+[`splitBoundaryPolyByAnchor()`](https://github.com/jinming-cheng/SpNeigh/reference/SplitBoundaryPolyByAnchor.md).
 
 ## Usage
 
 ``` r
-PlotEdge(
+plotEdge(
   boundary_poly = NULL,
   linewidth_boundary = 1,
-  theme_ggplot = my_theme_ggplot(),
+  theme_ggplot = theme_spneigh(),
   ...
 )
 ```
@@ -30,7 +30,7 @@ PlotEdge(
 - theme_ggplot:
 
   A ggplot2 theme object. Default is
-  [`my_theme_ggplot()`](https://github.com/jinming-cheng/SpNeigh/reference/my_theme_ggplot.md).
+  [`theme_spneigh()`](https://github.com/jinming-cheng/SpNeigh/reference/theme_spneigh.md).
 
 - ...:
 
@@ -49,16 +49,16 @@ coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 ))
 
 # Build boundary polygon and plot its outline
-boundary_points <- GetBoundary(
+boundary_points <- getBoundary(
     data = coords, one_cluster = 2,
     eps = 120, minPts = 10
 )
-boundary_polys <- BuildBoundaryPoly(boundary_points)
-PlotEdge(boundary_poly = boundary_polys)
+boundary_polys <- buildBoundaryPoly(boundary_points)
+plotEdge(boundary_poly = boundary_polys)
 
 
 # Split a polygon into edge segments and plot
-boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1, ])
-PlotEdge(boundary_poly = boundary_edges)
+boundary_edges <- splitBoundaryPolyByAnchor(boundary_polys[1, ])
+plotEdge(boundary_poly = boundary_edges)
 
 ```

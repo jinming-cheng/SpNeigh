@@ -8,12 +8,12 @@ across multiple spatial subregions.
 ## Usage
 
 ``` r
-PlotStatsBar(
+plotStatsBar(
   cell_stats = NULL,
   stat_column = c("proportion", "count"),
-  colors = my_colors_15,
+  colors = colors15_cheng,
   angle_x_label = 0,
-  theme_ggplot = my_theme_ggplot()
+  theme_ggplot = theme_spneigh()
 )
 ```
 
@@ -23,7 +23,7 @@ PlotStatsBar(
 
   A data frame containing summarized cell statistics, typically the
   output from
-  [`StatsCellsInside()`](https://github.com/jinming-cheng/SpNeigh/reference/StatsCellsInside.md).
+  [`statsCellsInside()`](https://github.com/jinming-cheng/SpNeigh/reference/StatsCellsInside.md).
   Must include columns `region_id`, `cluster`, and the specified
   `stat_column`.
 
@@ -35,7 +35,7 @@ PlotStatsBar(
 
 - colors:
 
-  A vector of cluster colors. Default uses `my_colors_15`.
+  A vector of cluster colors. Default uses `colors15_cheng`.
 
 - angle_x_label:
 
@@ -46,7 +46,7 @@ PlotStatsBar(
 - theme_ggplot:
 
   A ggplot2 theme object. Default is
-  [`my_theme_ggplot()`](https://github.com/jinming-cheng/SpNeigh/reference/my_theme_ggplot.md).
+  [`theme_spneigh()`](https://github.com/jinming-cheng/SpNeigh/reference/theme_spneigh.md).
 
 ## Value
 
@@ -60,15 +60,15 @@ coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
     package = "SpNeigh"
 ))
 
-boundary_points <- GetBoundary(
+boundary_points <- getBoundary(
     data = coords, one_cluster = 2,
     eps = 120, minPts = 10
 )
-cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
-stats_cells <- StatsCellsInside(cells_inside)
+cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
+stats_cells <- statsCellsInside(cells_inside)
 
-PlotStatsBar(stats_cells, stat_column = "proportion")
+plotStatsBar(stats_cells, stat_column = "proportion")
 
-PlotStatsBar(stats_cells, stat_column = "count")
+plotStatsBar(stats_cells, stat_column = "count")
 
 ```

@@ -3,16 +3,16 @@
 Computes an expanded or shrunken boundary by applying a spatial buffer
 to an existing polygon. The input can be either boundary points (as
 returned by
-[`GetBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetBoundary.md))
+[`getBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetBoundary.md))
 or polygon geometries (as returned by
-[`BuildBoundaryPoly()`](https://github.com/jinming-cheng/SpNeigh/reference/BuildBoundaryPoly.md)).
+[`buildBoundaryPoly()`](https://github.com/jinming-cheng/SpNeigh/reference/BuildBoundaryPoly.md)).
 This is useful for defining outer spatial neighborhoods or for shrinking
 boundaries inward to define inner regions.
 
 ## Usage
 
 ``` r
-GetOuterBoundary(boundary = NULL, dist = 100)
+getOuterBoundary(boundary = NULL, dist = 100)
 ```
 
 ## Arguments
@@ -41,7 +41,7 @@ entirely if the buffer width exceeds the shape's interior size.
 
 ## See also
 
-[`GetInnerBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetInnerBoundary.md)
+[`getInnerBoundary()`](https://github.com/jinming-cheng/SpNeigh/reference/GetInnerBoundary.md)
 for a simplified wrapper for inward shrinking.
 
 ## Examples
@@ -53,14 +53,14 @@ coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
 ))
 
 # Get boundary points of cluster 2
-boundary_points <- GetBoundary(data = coords, one_cluster = 2)
+boundary_points <- getBoundary(data = coords, one_cluster = 2)
 
 # Build polygons from boundary points
-boundary_polys <- BuildBoundaryPoly(boundary_points)
+boundary_polys <- buildBoundaryPoly(boundary_points)
 
 # Generate outer boundaries with 100-unit buffer
-outer1 <- GetOuterBoundary(boundary_points, dist = 100)
-outer2 <- GetOuterBoundary(boundary_polys, dist = 100)
+outer1 <- getOuterBoundary(boundary_points, dist = 100)
+outer2 <- getOuterBoundary(boundary_polys, dist = 100)
 
 # Plot original and expanded boundaries
 plot(boundary_polys)

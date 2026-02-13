@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">SpNeigh</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.31</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.32</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,7 @@
 Cheng</h4>
             <address class="author_afil">
       Centre for Biomedical Data Science, Duke-NUS Medical School,
-Singapore, 169857, Singapore<br><h4 data-toc-skip class="date">12 February, 2026</h4>
+Singapore, 169857, Singapore<br><h4 data-toc-skip class="date">13 February, 2026</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jinming-cheng/SpNeigh/blob/main/vignettes/SpNeigh.Rmd"><code>vignettes/SpNeigh.Rmd</code></a></small>
       <div class="d-none name"><code>SpNeigh.Rmd</code></div>
@@ -246,7 +246,7 @@ type–level analyses.</p>
 <span><span class="co">#&gt; imgData names(0):</span></span></code></pre></div>
 <p>Extract coordinates from SpatialExperiment object</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">spe_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ExtractCoords.html">ExtractCoords</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">spe_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ExtractCoords.html">extractCoords</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span></span></code></pre></div>
 <p>Extract log-normalized expression matrix from SpatialExperiment
 object</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -306,7 +306,7 @@ v5)</p>
 <code class="sourceCode R"><span><span class="va">seu_sp</span><span class="op">$</span><span class="va">seurat_clusters</span> <span class="op">&lt;-</span> <span class="va">seu_sp</span><span class="op">$</span><span class="va">cluster</span></span></code></pre></div>
 <p>Extract coordinates from Seurat object</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">seu_sp_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ExtractCoords.html">ExtractCoords</a></span><span class="op">(</span><span class="va">seu_sp</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">seu_sp_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ExtractCoords.html">extractCoords</a></span><span class="op">(</span><span class="va">seu_sp</span><span class="op">)</span></span></code></pre></div>
 <p>Extract log-normalized expression matrix from Seurat object</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">seu_sp_log_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/AssayData.html" class="external-link">GetAssayData</a></span><span class="op">(</span><span class="va">seu_sp</span><span class="op">)</span></span></code></pre></div>
@@ -325,22 +325,29 @@ v5)</p>
 <p>Quick look at the boundaries of cluster 2 using default parameter
 settings. The input is a SpatialExperiment object.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotBoundary.html">PlotBoundary</a></span><span class="op">(</span><span class="va">spe</span>, one_cluster <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotBoundary.html">plotBoundary</a></span><span class="op">(</span><span class="va">spe</span>, one_cluster <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotBoundary_spe-1.png" class="r-plt" alt="" width="100%"></p>
 <p>Similarly, we can use a Seurat object as input and adjust
 parameters</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotBoundary.html">PlotBoundary</a></span><span class="op">(</span><span class="va">seu_sp</span>, one_cluster <span class="op">=</span> <span class="st">"2"</span>, eps <span class="op">=</span> <span class="fl">120</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotBoundary.html">plotBoundary</a></span><span class="op">(</span><span class="va">seu_sp</span>, one_cluster <span class="op">=</span> <span class="st">"2"</span>, eps <span class="op">=</span> <span class="fl">120</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotBoundary_seu-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 id="detect-spatial-boundaries">Detect spatial boundaries<a class="anchor" aria-label="anchor" href="#detect-spatial-boundaries"></a>
 </h3>
 <p>Extract boundaries of cluster 2. Adjust the <code>eps</code> and
-<code>minPt</code>s parameters to refine the number of subregions
+<code>minPts</code> parameters to refine the number of subregions
 detected by the default dbscan clustering method.</p>
+<p>Note: The <code>eps</code> parameter controls the clustering
+tolerance for boundary detection based on spatial distance. The default
+value is <code>eps = 80</code>, which is suitable for coordinates in the
+range of hundreds or thousands (e.g., 10x Xenium or Visium HD data). For
+datasets with smaller coordinate ranges (e.g., 1 to 5), such as manually
+scaled or normalized inputs, a smaller value such as
+<code>eps = 0.1</code> may be more appropriate.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">bon_points_c2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetBoundary.html">GetBoundary</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">bon_points_c2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetBoundary.html">getBoundary</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">coords</span>,</span>
 <span>    one_cluster <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>    eps <span class="op">=</span> <span class="fl">120</span>,</span>
@@ -352,16 +359,16 @@ detected by the default dbscan clustering method.</p>
 <span><span class="co">#&gt; 572 132</span></span></code></pre></div>
 <p>Add boundaries of cluster 2 to the spatial plot</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotBoundary.html">PlotBoundary</a></span><span class="op">(</span><span class="va">coords</span>, boundary <span class="op">=</span> <span class="va">bon_points_c2</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotBoundary.html">plotBoundary</a></span><span class="op">(</span><span class="va">coords</span>, boundary <span class="op">=</span> <span class="va">bon_points_c2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotWithBoundary_C2-1.png" class="r-plt" alt="" width="100%"></p>
-<p>Alternatively, add boundaries of cluster 2 using AddBoundary()
+<p>Alternatively, add boundaries of cluster 2 using addBoundary()
 function</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># PlotBoundary(coords) + AddBoundary(boundary = bon_points_c2)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># plotBoundary(coords) + addBoundary(boundary = bon_points_c2)</span></span></code></pre></div>
 <p>Plot boundary regions</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">bon_polys_c2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BuildBoundaryPoly.html">BuildBoundaryPoly</a></span><span class="op">(</span><span class="va">bon_points_c2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/PlotRegion.html">PlotRegion</a></span><span class="op">(</span><span class="va">bon_polys_c2</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">bon_polys_c2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BuildBoundaryPoly.html">buildBoundaryPoly</a></span><span class="op">(</span><span class="va">bon_points_c2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/PlotRegion.html">plotRegion</a></span><span class="op">(</span><span class="va">bon_polys_c2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotRegion_C2-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level3">
@@ -372,20 +379,20 @@ polygons from their corresponding outer buffered polygons. The
 <code>outer_boundary</code> is automatically computed when it is not
 supplied.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ring_regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetRingRegion.html">GetRingRegion</a></span><span class="op">(</span>boundary <span class="op">=</span> <span class="va">bon_points_c2</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ring_regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetRingRegion.html">getRingRegion</a></span><span class="op">(</span>boundary <span class="op">=</span> <span class="va">bon_points_c2</span><span class="op">)</span></span></code></pre></div>
 <p>Plot ring regions</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotRegion.html">PlotRegion</a></span><span class="op">(</span><span class="va">ring_regions</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotRegion.html">plotRegion</a></span><span class="op">(</span><span class="va">ring_regions</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotRing_C2-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 id="statistics-of-cells-inside-rings">Statistics of cells inside rings<a class="anchor" aria-label="anchor" href="#statistics-of-cells-inside-rings"></a>
 </h3>
-<p>Get cells inside rings for cluster 2. (<code><a href="../reference/GetCellsInside.html">GetCellsInside()</a></code>
+<p>Get cells inside rings for cluster 2. (<code><a href="../reference/GetCellsInside.html">getCellsInside()</a></code>
 takes a few seconds to run on this example, but may require several
 minutes or longer for larger datasets.)</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cells_ring</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetCellsInside.html">GetCellsInside</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, boundary <span class="op">=</span> <span class="va">ring_regions</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">cells_ring</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetCellsInside.html">getCellsInside</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, boundary <span class="op">=</span> <span class="va">ring_regions</span><span class="op">)</span></span>
 <span><span class="va">cells_ring</span></span>
 <span><span class="co">#&gt; Simple feature collection with 4362 features and 3 fields</span></span>
 <span><span class="co">#&gt; Geometry type: POINT</span></span>
@@ -406,22 +413,22 @@ minutes or longer for larger datasets.)</p>
 <span><span class="co">#&gt; 30   30       3         1 POINT (2209.931 2542.314)</span></span></code></pre></div>
 <p>Plot cells inside rings</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotCellsInside.html">PlotCellsInside</a></span><span class="op">(</span><span class="va">cells_ring</span>, point_size <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotCellsInside.html">plotCellsInside</a></span><span class="op">(</span><span class="va">cells_ring</span>, point_size <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotCellsInsideRing_C2-1.png" class="r-plt" alt="" width="100%"></p>
 <p>Obtain statistics of cells inside rings for cluster 2</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">stats_ring</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/StatsCellsInside.html">StatsCellsInside</a></span><span class="op">(</span><span class="va">cells_ring</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">stats_ring</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/StatsCellsInside.html">statsCellsInside</a></span><span class="op">(</span><span class="va">cells_ring</span><span class="op">)</span></span></code></pre></div>
 <p>Plot proportion of cells in different clusters for each sub region
 using bar plot.
 <!-- The `stat_column` is used to plot "proportion" or "count". --></p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotStatsBar.html">PlotStatsBar</a></span><span class="op">(</span><span class="va">stats_ring</span>, stat_column <span class="op">=</span> <span class="st">"proportion"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotStatsBar.html">plotStatsBar</a></span><span class="op">(</span><span class="va">stats_ring</span>, stat_column <span class="op">=</span> <span class="st">"proportion"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotStatsBar_Proportion_C2_Ring-1.png" class="r-plt" alt="" width="100%"></p>
 <p>Plot proportion of cells in different clusters for each sub region
 using donut chart. If <code>plot_donut = FALSE</code>, pie chart is
 used.</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotStatsPie.html">PlotStatsPie</a></span><span class="op">(</span><span class="va">stats_ring</span>, plot_donut <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotStatsPie.html">plotStatsPie</a></span><span class="op">(</span><span class="va">stats_ring</span>, plot_donut <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotStats_Donut_C2_Ring-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level3">
@@ -430,7 +437,7 @@ used.</p>
 <p>Compute neighborhood interaction matrix using K-nearest neighbors for
 cells inside rings</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">interaction_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputeSpatialInteractionMatrix.html">ComputeSpatialInteractionMatrix</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">interaction_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputeSpatialInteractionMatrix.html">computeSpatialInteractionMatrix</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">coords</span>, <span class="va">cell</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">cells_ring</span><span class="op">$</span><span class="va">cell</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">interaction_matrix</span></span>
@@ -451,15 +458,15 @@ cells inside rings</p>
 cluster 2. The heatmap reveals that clusters 2, 3, and 4 are spatially
 adjacent to one another.</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotInteractionMatrix.html">PlotInteractionMatrix</a></span><span class="op">(</span><span class="va">interaction_matrix</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotInteractionMatrix.html">plotInteractionMatrix</a></span><span class="op">(</span><span class="va">interaction_matrix</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/Heatmap_InteractionMatrix_C2_Ring-1.png" class="r-plt" alt="" width="100%"></p>
 <p>The plot of cells inside rings split by clusters further confirms the
 co-occurrence of clusters 2, 3, 4 in ring region 1.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotCellsInside.html">PlotCellsInside</a></span><span class="op">(</span><span class="va">cells_ring</span><span class="op">)</span> <span class="op">+</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotCellsInside.html">plotCellsInside</a></span><span class="op">(</span><span class="va">cells_ring</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cluster</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">RotatedAxis</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="../reference/AddBoundaryPoly.html">AddBoundaryPoly</a></span><span class="op">(</span><span class="va">ring_regions</span>, linewidth_boundary <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
+<span>    <span class="fu"><a href="../reference/AddBoundaryPoly.html">addBoundaryPoly</a></span><span class="op">(</span><span class="va">ring_regions</span>, linewidth_boundary <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotCellsInside_SplitByCluster_C2_Ring-1.png" class="r-plt" alt="" width="100%"></p>
 <!-- %                                                 % -->
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
@@ -475,7 +482,7 @@ on the DE analysis between cluster 2 cells inside boundary of sub region
 1 and cells in the outside neighboring ring region 1.</p>
 <p>Get cells inside the boundaries of cluster 2</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cells_inside</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetCellsInside.html">GetCellsInside</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, boundary <span class="op">=</span> <span class="va">bon_points_c2</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">cells_inside</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetCellsInside.html">getCellsInside</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, boundary <span class="op">=</span> <span class="va">bon_points_c2</span><span class="op">)</span></span>
 <span><span class="va">cells_inside</span></span>
 <span><span class="co">#&gt; Simple feature collection with 5073 features and 3 fields</span></span>
 <span><span class="co">#&gt; Geometry type: POINT</span></span>
@@ -502,7 +509,7 @@ on the DE analysis between cluster 2 cells inside boundary of sub region
 boundary using the <code>limma</code> framewrok (<code>lmFit</code> +
 <code>eBayes</code>)</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RunLimmaDE.html">RunLimmaDE</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RunLimmaDE.html">runLimmaDE</a></span><span class="op">(</span></span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span>,</span>
 <span>    min.pct <span class="op">=</span> <span class="fl">0.25</span>,</span>
 <span>    cells_reference <span class="op">=</span> <span class="va">cells_in</span>,</span>
@@ -520,7 +527,7 @@ boundary. The DE genes are ordered by the abstract value of
 <span><span class="co">#&gt; Neurod6 Neurod6 1.788980 5.267216e-123     0.1224555  0.5063898</span></span>
 <span><span class="co">#&gt; Igfbp4   Igfbp4 1.608183  8.429609e-96     0.1437659  0.4952077</span></span>
 <span><span class="co">#&gt; Nrn1       Nrn1 1.590518  4.942213e-65     0.2722646  0.5926518</span></span></code></pre></div>
-<p>Set a random seed to make PlotExpression results reproducible</p>
+<p>Set a random seed to make plotExpression results reproducible</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></code></pre></div>
 <p>Expression of top DE genes in cluster 2 cells outside boundary. The
@@ -528,7 +535,7 @@ cells are plotted randomly using the given seed when
 <code>shuffle = TRUE</code>. If <code>shuffle = FALSE</code>, cells with
 higher expression values are plotted last (on the top).</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotExpression.html">PlotExpression</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotExpression.html">plotExpression</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">coords</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">logNorm_expr</span><span class="op">)</span>, <span class="op">]</span>,</span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span>,</span>
 <span>    genes <span class="op">=</span> <span class="va">tab</span><span class="op">$</span><span class="va">gene</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>,</span>
@@ -543,7 +550,7 @@ higher expression values are plotted last (on the top).</p>
 boundary of sub region 1. Cluster 2 cells outside the boundary show much
 higher expression of Slc17a7.</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotExpression.html">PlotExpression</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotExpression.html">plotExpression</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">coords</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">logNorm_expr</span><span class="op">)</span>, <span class="op">]</span>,</span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span>,</span>
 <span>    genes <span class="op">=</span> <span class="st">"Slc17a7"</span>,</span>
@@ -552,7 +559,7 @@ higher expression of Slc17a7.</p>
 <span>    sub_cells <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cells_in</span>, <span class="va">cells_out</span><span class="op">)</span>,</span>
 <span>    point_size <span class="op">=</span> <span class="fl">0.3</span></span>
 <span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="../reference/AddBoundaryPoly.html">AddBoundaryPoly</a></span><span class="op">(</span><span class="va">bon_polys_c2</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, linewidth_boundary <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
+<span>    <span class="fu"><a href="../reference/AddBoundaryPoly.html">addBoundaryPoly</a></span><span class="op">(</span><span class="va">bon_polys_c2</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, linewidth_boundary <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/Expression_Slc17a7_InOutBoundary-1.png" class="r-plt" alt="" width="100%"></p>
 <p>Expression of a general marker gene <em>Sox10</em> for
 Oligodendrocytes (cluster 2 cells). <em>Sox10</em> is expressed in both
@@ -560,7 +567,7 @@ cluster 2 cells inside and outside the boundary. This suggests that
 cluster 2 cells located near the boundary may represent intermediate
 cell states.</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotExpression.html">PlotExpression</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotExpression.html">plotExpression</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">coords</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">logNorm_expr</span><span class="op">)</span>, <span class="op">]</span>,</span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span>,</span>
 <span>    sub_cells <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cells_in</span>, <span class="va">cells_out</span><span class="op">)</span>,</span>
@@ -569,7 +576,7 @@ cell states.</p>
 <span>    shuffle <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    point_size <span class="op">=</span> <span class="fl">0.3</span></span>
 <span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="../reference/AddBoundaryPoly.html">AddBoundaryPoly</a></span><span class="op">(</span><span class="va">bon_polys_c2</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, linewidth_boundary <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
+<span>    <span class="fu"><a href="../reference/AddBoundaryPoly.html">addBoundaryPoly</a></span><span class="op">(</span><span class="va">bon_polys_c2</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, linewidth_boundary <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotExpression_Sox10-1.png" class="r-plt" alt="" width="100%"></p>
 <!-- %                                                 % -->
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
@@ -587,15 +594,15 @@ cell states.</p>
 <code class="sourceCode R"><span><span class="va">cells_c0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">coords</span>, <span class="va">cluster</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">[</span>, <span class="st">"cell"</span><span class="op">]</span></span></code></pre></div>
 <p>Plot cluster 0 cells without boundary</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotBoundary.html">PlotBoundary</a></span><span class="op">(</span><span class="va">coords</span><span class="op">[</span><span class="va">cells_c0</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotBoundary.html">plotBoundary</a></span><span class="op">(</span><span class="va">coords</span><span class="op">[</span><span class="va">cells_c0</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/Plot_NoBoundary_C0-1.png" class="r-plt" alt="" width="100%"></p>
 <p>Get boundaries of cluster 0</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">bon_points_c0</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetBoundary.html">GetBoundary</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, one_cluster <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="va">bon_polys_c0</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BuildBoundaryPoly.html">BuildBoundaryPoly</a></span><span class="op">(</span><span class="va">bon_points_c0</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">bon_points_c0</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetBoundary.html">getBoundary</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, one_cluster <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="va">bon_polys_c0</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BuildBoundaryPoly.html">buildBoundaryPoly</a></span><span class="op">(</span><span class="va">bon_points_c0</span><span class="op">)</span></span></code></pre></div>
 <p>Plot boundary edges for cluster 0</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotEdge.html">PlotEdge</a></span><span class="op">(</span>boundary_poly <span class="op">=</span> <span class="va">bon_polys_c0</span>, linewidth_boundary <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotEdge.html">plotEdge</a></span><span class="op">(</span>boundary_poly <span class="op">=</span> <span class="va">bon_polys_c0</span>, linewidth_boundary <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/PlotBoundary_C0-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level3">
@@ -603,7 +610,7 @@ cell states.</p>
 </h3>
 <p>Compute spatial weights based on the distance to boundaries</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">weights_bon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputeBoundaryWeights.html">ComputeBoundaryWeights</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">weights_bon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputeBoundaryWeights.html">computeBoundaryWeights</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">coords</span>,</span>
 <span>    cell_ids <span class="op">=</span> <span class="va">cells_c0</span>,</span>
 <span>    boundary <span class="op">=</span> <span class="va">bon_points_c0</span></span>
@@ -617,10 +624,10 @@ IDs</p>
 <p>Alternatively, compute spatial weights based on the distance to
 centroids</p>
 <div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">weights_cen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputeCentroidWeights.html">ComputeCentroidWeights</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, cell_ids <span class="op">=</span> <span class="va">cells_c0</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">weights_cen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputeCentroidWeights.html">computeCentroidWeights</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, cell_ids <span class="op">=</span> <span class="va">cells_c0</span><span class="op">)</span></span></code></pre></div>
 <p>Plot boundary weights</p>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotWeights.html">PlotWeights</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, weights <span class="op">=</span> <span class="va">weights_bon</span>, point_size <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotWeights.html">plotWeights</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, weights <span class="op">=</span> <span class="va">weights_bon</span>, point_size <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Boundary weights"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpNeigh_files/figure-html/unnamed-chunk-35-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
@@ -630,7 +637,7 @@ centroids</p>
 <p>Run spatial DE analysis for cluster 0 cells along boundary weights
 using splines</p>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tab_sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RunSpatialDE.html">RunSpatialDE</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">tab_sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RunSpatialDE.html">runSpatialDE</a></span><span class="op">(</span></span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span><span class="op">[</span>, <span class="va">cells_c0</span><span class="op">]</span>,</span>
 <span>    spatial_distance <span class="op">=</span> <span class="va">weights_bon</span>,</span>
 <span>    cell_ids <span class="op">=</span> <span class="va">cells_c0</span></span>
@@ -657,7 +664,7 @@ distance, while a negative value indicates decreasing expression.</p>
 <span><span class="co">#&gt; Gjb2       Gjb2 Positive</span></span></code></pre></div>
 <p>Expression of top DE genes along boundary weights</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotExpression.html">PlotExpression</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotExpression.html">plotExpression</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">coords</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">logNorm_expr</span><span class="op">)</span>, <span class="op">]</span>,</span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span>,</span>
 <span>    genes <span class="op">=</span> <span class="va">tab_sp</span><span class="op">$</span><span class="va">gene</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>,</span>
@@ -672,7 +679,7 @@ distance, while a negative value indicates decreasing expression.</p>
 spatial DE genes. The scaled average expression ranges from 0 to 1 by
 using min-max normalization method.</p>
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotSpatialExpression.html">PlotSpatialExpression</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotSpatialExpression.html">plotSpatialExpression</a></span><span class="op">(</span></span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span><span class="op">[</span>, <span class="va">cells_c0</span><span class="op">]</span>,</span>
 <span>    spatial_distance <span class="op">=</span> <span class="va">weights_bon</span>,</span>
 <span>    scale_method <span class="op">=</span> <span class="st">"minmax"</span>,</span>
@@ -690,7 +697,7 @@ boundary weights. The SEI reflects the extent to which gene expression
 is enriched in spatially weighted regions. The result is sorted in
 descending order by <code>normalized_SEI</code>.</p>
 <div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">SEI_bon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputeSpatialEnrichmentIndex.html">ComputeSpatialEnrichmentIndex</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">SEI_bon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputeSpatialEnrichmentIndex.html">computeSpatialEnrichmentIndex</a></span><span class="op">(</span></span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span><span class="op">[</span>, <span class="va">cells_c0</span><span class="op">]</span>,</span>
 <span>    weights <span class="op">=</span> <span class="va">weights_bon</span></span>
 <span><span class="op">)</span></span>
@@ -704,7 +711,7 @@ descending order by <code>normalized_SEI</code>.</p>
 <span><span class="co">#&gt; 6  Cyp1b1 1.495145  1.365958       1.094575</span></span></code></pre></div>
 <p>Expression of top genes enriched near boundaries</p>
 <div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotExpression.html">PlotExpression</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotExpression.html">plotExpression</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">coords</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">logNorm_expr</span><span class="op">)</span>, <span class="op">]</span>,</span>
 <span>    exp_mat <span class="op">=</span> <span class="va">logNorm_expr</span>,</span>
 <span>    genes <span class="op">=</span> <span class="va">SEI_bon</span><span class="op">$</span><span class="va">gene</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>,</span>
@@ -747,7 +754,7 @@ descending order by <code>normalized_SEI</code>.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
 <span><span class="co">#&gt; [1] Seurat_5.4.0       SeuratObject_5.3.0 sp_2.2-0           ggplot2_4.0.2     </span></span>
-<span><span class="co">#&gt; [5] SpNeigh_0.99.31    BiocStyle_2.34.0  </span></span>
+<span><span class="co">#&gt; [5] SpNeigh_0.99.32    BiocStyle_2.34.0  </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;   [1] RcppAnnoy_0.0.23            splines_4.4.2              </span></span>
