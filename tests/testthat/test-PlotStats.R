@@ -3,23 +3,23 @@ test_that("Test PlotStats functions", {
         package = "SpNeigh"
     ))
 
-    boundary_points <- GetBoundary(
+    boundary_points <- getBoundary(
         data = coords, one_cluster = 2,
         eps = 120, minPts = 10
     )
 
-    boundary_polys <- BuildBoundaryPoly(boundary_points)
+    boundary_polys <- buildBoundaryPoly(boundary_points)
 
-    cells_inside <- GetCellsInside(data = coords, boundary = boundary_polys[2, ])
+    cells_inside <- getCellsInside(data = coords, boundary = boundary_polys[2, ])
 
-    stats_cells <- StatsCellsInside(cells_inside)
+    stats_cells <- statsCellsInside(cells_inside)
 
-    expect_silent(PlotStatsBar(stats_cells, stat_column = "proportion"))
+    expect_silent(plotStatsBar(stats_cells, stat_column = "proportion"))
 
 
     stats_cells$cluster <- as.character(stats_cells$cluster)
 
-    expect_silent(PlotStatsBar(stats_cells, stat_column = "count"))
+    expect_silent(plotStatsBar(stats_cells, stat_column = "count"))
 
-    expect_silent(PlotStatsPie(stats_cells, plot_donut = TRUE))
+    expect_silent(plotStatsPie(stats_cells, plot_donut = TRUE))
 })

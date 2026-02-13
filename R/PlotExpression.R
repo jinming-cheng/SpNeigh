@@ -7,8 +7,8 @@
 #' Also supports splitting the plot using metadata columns (e.g., `cluster`)
 #' and returning either a combined plot or a list of individual ggplot objects.
 #'
-#' @inheritParams ExtractCoords
-#' @inheritParams PlotBoundary
+#' @inheritParams extractCoords
+#' @inheritParams plotBoundary
 #' @importFrom methods is
 #' @importFrom rlang .data
 #' @param exp_mat A numeric gene expression matrix with genes as rows
@@ -65,18 +65,18 @@
 #'
 #' # set a random seed when shuffle is TRUE to reproduce the plot
 #' set.seed(123)
-#' PlotExpression(
+#' plotExpression(
 #'     data = df, exp_mat = exp_mat, shuffle = TRUE,
 #'     genes = c("gene1", "gene2"), point_size = 2
 #' )
 #'
-#' PlotExpression(
+#' plotExpression(
 #'     data = df, exp_mat = exp_mat,
 #'     genes = "gene1", sub_plot = TRUE,
 #'     one_cluster = 1, point_size = 2
 #' )
 #'
-PlotExpression <- function(
+plotExpression <- function(
     data = NULL,
     exp_mat = NULL,
     genes = NULL,
@@ -90,7 +90,7 @@ PlotExpression <- function(
     point_size = 0.2,
     angle_x_label = 0,
     shuffle = FALSE,
-    theme_ggplot = my_theme_ggplot()) {
+    theme_ggplot = theme_spneigh()) {
     ## ---- Seurat ----
     if (is(data, "Seurat")) {
         exp_mat <- Seurat::GetAssayData(data)
@@ -114,7 +114,7 @@ PlotExpression <- function(
     }
 
     # Extract coordinates and metadata
-    sp_coords <- ExtractCoords(data = data, cluster_col = cluster_col)
+    sp_coords <- extractCoords(data = data, cluster_col = cluster_col)
 
     # Check that cell names match and are in the same order
     if (!identical(as.character(sp_coords$cell), colnames(exp_mat))) {
@@ -194,8 +194,8 @@ PlotExpression <- function(
 #' The spatial distance is binned, and the average expression within
 #' each bin is plotted as a heatmap.
 #'
-#' @inheritParams RunSpatialDE
-#' @inheritParams PlotBoundary
+#' @inheritParams runSpatialDE
+#' @inheritParams plotBoundary
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
 #' @param spatial_distance A named numeric vector containing the
@@ -237,13 +237,13 @@ PlotExpression <- function(
 #' exp_mat <- matrix(runif(1000), nrow = 10)
 #' rownames(exp_mat) <- paste0("Gene", 1:10)
 #' spatial_distance <- runif(100)
-#' PlotSpatialExpression(
+#' plotSpatialExpression(
 #'     exp_mat = exp_mat,
 #'     spatial_distance = spatial_distance,
 #'     genes = rownames(exp_mat)[1:5]
 #' )
 #'
-PlotSpatialExpression <- function(
+plotSpatialExpression <- function(
     exp_mat = NULL,
     spatial_distance = NULL,
     genes = NULL,
@@ -254,7 +254,7 @@ PlotSpatialExpression <- function(
     column_gap = 0,
     label_x = "Spatial distance",
     label_y = "Gene",
-    theme_ggplot = my_theme_ggplot()) {
+    theme_ggplot = theme_spneigh()) {
     # --- Checks ---
     if (is.null(exp_mat) || !inherits(exp_mat, c("matrix", "dgCMatrix"))) {
         stop("`exp_mat` must be a numeric matrix or dgCMatrix (genes x cells).")

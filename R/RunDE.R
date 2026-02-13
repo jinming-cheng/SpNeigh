@@ -50,7 +50,7 @@
 #' cells_tar <- subset(coords, cluster == 2)$cell
 #'
 #' # Run differential expression with minimum expression threshold
-#' tab <- RunLimmaDE(
+#' tab <- runLimmaDE(
 #'     exp_mat = logNorm_expr,
 #'     cells_reference = cells_ref,
 #'     cells_target = cells_tar,
@@ -59,7 +59,7 @@
 #'
 #' head(tab[, c("gene", "logFC", "adj.P.Val", "pct.reference", "pct.target")])
 #'
-RunLimmaDE <- function(
+runLimmaDE <- function(
     exp_mat = NULL,
     cells_reference = NULL,
     cells_target = NULL,
@@ -154,8 +154,8 @@ RunLimmaDE <- function(
 #' This method is suitable for identifying genes whose expression varies
 #' continuously across spatial structures.
 #'
-#' @inheritParams RunLimmaDE
-#' @inheritParams SplineDesign
+#' @inheritParams runLimmaDE
+#' @inheritParams splineDesign
 #' @param cell_ids A character vector of cell IDs (column names of `exp_mat`)
 #'                 used for DE analysis.
 #' @param spatial_distance A named numeric vector containing the spatial
@@ -190,20 +190,20 @@ RunLimmaDE <- function(
 #'
 #' # Identify cluster-specific cells and compute spatial weights
 #' cells_c0 <- subset(coords, cluster == 0)$cell
-#' bon_c0 <- GetBoundary(data = coords, one_cluster = 0)
-#' weights <- ComputeBoundaryWeights(
+#' bon_c0 <- getBoundary(data = coords, one_cluster = 0)
+#' weights <- computeBoundaryWeights(
 #'     data = coords, cell_ids = cells_c0,
 #'     boundary = bon_c0
 #' )
 #'
 #' # Run spatial DE
-#' result <- RunSpatialDE(
+#' result <- runSpatialDE(
 #'     exp_mat = logNorm_expr, cell_ids = cells_c0,
 #'     spatial_distance = weights
 #' )
 #' head(result)
 #'
-RunSpatialDE <- function(
+runSpatialDE <- function(
     exp_mat = NULL,
     cell_ids = NULL,
     spatial_distance = NULL,
@@ -241,7 +241,7 @@ RunSpatialDE <- function(
     expr <- exp_mat[, all_cells, drop = FALSE]
 
     # --- Create spline-based design matrix ---
-    Z <- SplineDesign(t1, df = df)
+    Z <- splineDesign(t1, df = df)
     design <- stats::model.matrix(~Z)
 
     # --- Run limma ---
@@ -292,14 +292,14 @@ RunSpatialDE <- function(
 #'
 #' @examples
 #' x <- seq(0, 1, length.out = 100)
-#' Z <- SplineDesign(x)
+#' Z <- splineDesign(x)
 #' cor(Z[, 1], x) # Should be > 0
 #'
 #' # Use Z in modeling
 #' y <- sin(2 * pi * x) + rnorm(100, sd = 0.2)
 #' fit <- lm(y ~ Z)
 #' summary(fit)
-SplineDesign <- function(x, df = 3) {
+splineDesign <- function(x, df = 3) {
     if (!is.numeric(x)) {
         stop("'x' must be a numeric vector.")
     }

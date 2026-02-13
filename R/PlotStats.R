@@ -6,10 +6,10 @@
 #' The plot is faceted by `region_id` to show statistics across
 #' multiple spatial subregions.
 #'
-#' @inheritParams PlotBoundary
+#' @inheritParams plotBoundary
 #' @importFrom rlang .data
 #' @param cell_stats A data frame containing summarized cell statistics,
-#'                   typically the output from `StatsCellsInside()`.
+#'                   typically the output from `statsCellsInside()`.
 #'                   Must include columns `region_id`, `cluster`,
 #'                   and the specified `stat_column`.
 #' @param stat_column Character. Column name in `cell_stats` to
@@ -26,32 +26,32 @@
 #'     package = "SpNeigh"
 #' ))
 #'
-#' boundary_points <- GetBoundary(
+#' boundary_points <- getBoundary(
 #'     data = coords, one_cluster = 2,
 #'     eps = 120, minPts = 10
 #' )
-#' cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
-#' stats_cells <- StatsCellsInside(cells_inside)
+#' cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
+#' stats_cells <- statsCellsInside(cells_inside)
 #'
-#' PlotStatsBar(stats_cells, stat_column = "proportion")
-#' PlotStatsBar(stats_cells, stat_column = "count")
+#' plotStatsBar(stats_cells, stat_column = "proportion")
+#' plotStatsBar(stats_cells, stat_column = "count")
 #'
-PlotStatsBar <- function(
+plotStatsBar <- function(
     cell_stats = NULL,
     stat_column = c("proportion", "count"),
-    colors = my_colors_15,
+    colors = colors15_cheng,
     angle_x_label = 0,
-    theme_ggplot = my_theme_ggplot()) {
+    theme_ggplot = theme_spneigh()) {
     stat_column <- match.arg(stat_column)
 
     # Ensure cluster is a factor with defined levels
     if (is.null(levels(cell_stats$cluster))) {
-        cell_stats$cluster <- FactorNaturalOrder(cell_stats$cluster)
+        cell_stats$cluster <- factorNaturalOrder(cell_stats$cluster)
     }
 
     # Assign colors to clusters
     n_clusters <- nlevels(cell_stats$cluster)
-    named_colors <- SafeColorPalette(
+    named_colors <- safeColorPalette(
         n_clusters = n_clusters,
         base_colors = colors
     )
@@ -96,11 +96,11 @@ PlotStatsBar <- function(
 #' each spatial subregion. Optionally, percentage labels can be added
 #' with filtering based on a minimum proportion threshold.
 #'
-#' @inheritParams PlotBoundary
+#' @inheritParams plotBoundary
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
 #' @param cell_stats A data frame containing cluster statistics per region,
-#'                   typically the output from `StatsCellsInside()`.
+#'                   typically the output from `statsCellsInside()`.
 #'                   Must include columns `region_id`, `cluster`,
 #'                   and `proportion`.
 #' @param plot_donut Logical. If `TRUE`, a donut chart is generated;
@@ -124,19 +124,19 @@ PlotStatsBar <- function(
 #'     package = "SpNeigh"
 #' ))
 #'
-#' boundary_points <- GetBoundary(
+#' boundary_points <- getBoundary(
 #'     data = coords, one_cluster = 2,
 #'     eps = 120, minPts = 10
 #' )
-#' cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
-#' stats_cells <- StatsCellsInside(cells_inside)
+#' cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
+#' stats_cells <- statsCellsInside(cells_inside)
 #'
-#' PlotStatsPie(stats_cells, add_labels = FALSE)
-#' PlotStatsPie(stats_cells, label_cutoff = 0)
-#' PlotStatsPie(stats_cells, label_cutoff = 0.01)
-#' PlotStatsPie(stats_cells, plot_donut = TRUE)
+#' plotStatsPie(stats_cells, add_labels = FALSE)
+#' plotStatsPie(stats_cells, label_cutoff = 0)
+#' plotStatsPie(stats_cells, label_cutoff = 0.01)
+#' plotStatsPie(stats_cells, plot_donut = TRUE)
 #'
-PlotStatsPie <- function(
+plotStatsPie <- function(
     cell_stats = NULL,
     plot_donut = FALSE,
     add_labels = TRUE,
@@ -144,15 +144,15 @@ PlotStatsPie <- function(
     label_color = "white",
     label_size = 4,
     label_nudge_x = 0.1,
-    colors = my_colors_15) {
+    colors = colors15_cheng) {
     # Ensure cluster is a factor with defined levels
     if (is.null(levels(cell_stats$cluster))) {
-        cell_stats$cluster <- FactorNaturalOrder(cell_stats$cluster)
+        cell_stats$cluster <- factorNaturalOrder(cell_stats$cluster)
     }
 
     # Assign colors to clusters
     n_clusters <- nlevels(cell_stats$cluster)
-    named_colors <- SafeColorPalette(
+    named_colors <- safeColorPalette(
         n_clusters = n_clusters,
         base_colors = colors
     )

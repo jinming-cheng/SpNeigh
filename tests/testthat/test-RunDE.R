@@ -1,4 +1,4 @@
-test_that("Test RunLimmaDE", {
+test_that("Test runLimmaDE", {
     coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
         package = "SpNeigh"
     ))
@@ -11,7 +11,7 @@ test_that("Test RunLimmaDE", {
 
     cells_tar <- subset(coords, cluster == 2)$cell
 
-    tab <- RunLimmaDE(
+    tab <- runLimmaDE(
         exp_mat = as.matrix(logNorm_expr),
         cells_reference = cells_ref,
         cells_target = cells_tar,
@@ -20,28 +20,28 @@ test_that("Test RunLimmaDE", {
 
     expect_true(is.data.frame(tab))
 
-    expect_error(RunLimmaDE(
+    expect_error(runLimmaDE(
         exp_mat = "non_matrix",
         cells_reference = cells_ref,
         cells_target = cells_tar,
         min.pct = 0.25
     ))
 
-    expect_error(RunLimmaDE(
+    expect_error(runLimmaDE(
         exp_mat = logNorm_expr,
         cells_reference = NULL,
         cells_target = cells_tar,
         min.pct = 0.25
     ))
 
-    expect_error(RunLimmaDE(
+    expect_error(runLimmaDE(
         exp_mat = logNorm_expr,
         cells_reference = c(cells_ref, "unknown_cells"),
         cells_target = cells_tar,
         min.pct = 0.25
     ))
 
-    expect_error(RunLimmaDE(
+    expect_error(runLimmaDE(
         exp_mat = logNorm_expr,
         cells_reference = cells_ref,
         cells_target = cells_tar,
@@ -49,7 +49,7 @@ test_that("Test RunLimmaDE", {
         min.pct = 0.25
     ))
 
-    expect_warning(RunLimmaDE(
+    expect_warning(runLimmaDE(
         exp_mat = logNorm_expr,
         cells_reference = cells_ref,
         cells_target = cells_tar,
@@ -58,7 +58,7 @@ test_that("Test RunLimmaDE", {
     ))
 
 
-    expect_error(RunLimmaDE(
+    expect_error(runLimmaDE(
         exp_mat = logNorm_expr,
         cells_reference = cells_ref,
         cells_target = cells_tar,
@@ -67,7 +67,7 @@ test_that("Test RunLimmaDE", {
 })
 
 
-test_that("Test RunSpatialDE", {
+test_that("Test runSpatialDE", {
     coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
         package = "SpNeigh"
     ))
@@ -78,51 +78,51 @@ test_that("Test RunSpatialDE", {
 
     cells_c0 <- subset(coords, cluster == 0)$cell
 
-    bon_c0 <- GetBoundary(data = coords, one_cluster = 0)
+    bon_c0 <- getBoundary(data = coords, one_cluster = 0)
 
-    weights <- ComputeBoundaryWeights(
+    weights <- computeBoundaryWeights(
         data = coords, cell_ids = cells_c0,
         boundary = bon_c0
     )
 
-    result <- RunSpatialDE(
+    result <- runSpatialDE(
         exp_mat = logNorm_expr, cell_ids = cells_c0,
         spatial_distance = weights
     )
 
     expect_true(is.data.frame(result))
 
-    expect_error(RunSpatialDE(
+    expect_error(runSpatialDE(
         exp_mat = "non_matrix", cell_ids = cells_c0,
         spatial_distance = weights
     ))
 
-    expect_error(RunSpatialDE(
+    expect_error(runSpatialDE(
         exp_mat = logNorm_expr, cell_ids = NULL,
         spatial_distance = weights
     ))
 
-    expect_error(RunSpatialDE(
+    expect_error(runSpatialDE(
         exp_mat = logNorm_expr, cell_ids = c(cells_c0, "unknown_cells"),
         spatial_distance = weights
     ))
 
-    expect_error(RunSpatialDE(
+    expect_error(runSpatialDE(
         exp_mat = logNorm_expr, cell_ids = cells_c0,
         spatial_distance = weights[1:10]
     ))
 
-    expect_warning(RunSpatialDE(
+    expect_warning(runSpatialDE(
         exp_mat = logNorm_expr, cell_ids = cells_c0,
         spatial_distance = weights, adj_p.value = -1,
     ))
 })
 
 
-test_that("Test SplineDesign", {
+test_that("Test splineDesign", {
     x <- seq(1, 0, length.out = 100)
 
-    Z <- SplineDesign(x, df = 3)
+    Z <- splineDesign(x, df = 3)
 
     k <- ncol(Z)
 
@@ -130,5 +130,5 @@ test_that("Test SplineDesign", {
 
     expect_equal(k, 3)
 
-    expect_error(SplineDesign(x = "a"))
+    expect_error(splineDesign(x = "a"))
 })

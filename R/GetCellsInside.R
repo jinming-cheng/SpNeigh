@@ -3,15 +3,15 @@
 #' Returns the subset of cells from the input data that fall spatially
 #' within a given boundary or ring.
 #' The boundary can be provided either as raw boundary points
-#' (from `GetBoundary()`), as polygons (from `BuildBoundaryPoly()`),
-#' or as ring regions (from `GetRingRegion()`).
+#' (from `getBoundary()`), as polygons (from `buildBoundaryPoly()`),
+#' or as ring regions (from `getRingRegion()`).
 #' The function uses spatial point-in-polygon matching via `sf::st_within`.
 #'
 #' @importFrom rlang .data
-#' @inheritParams GetBoundary
+#' @inheritParams getBoundary
 #' @param boundary An `sf` object (polygon or ring) or a data frame
-#'                 of boundary points returned by `GetBoundary()`,
-#'                 `BuildBoundaryPoly()`, or `GetRingRegion()`.
+#'                 of boundary points returned by `getBoundary()`,
+#'                 `buildBoundaryPoly()`, or `getRingRegion()`.
 #'
 #' @return A data frame (tibble) of cells located inside the
 #'         given spatial region(s), with region assignment in
@@ -25,21 +25,21 @@
 #' head(coords)
 #'
 #' # Get cells inside boundaries
-#' boundary_points <- GetBoundary(
+#' boundary_points <- getBoundary(
 #'     data = coords, one_cluster = 2,
 #'     eps = 120, minPts = 10
 #' )
-#' cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
+#' cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
 #' cells_inside
 #'
 #' # Get cells inside rings
-#' ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-#' cells_ring <- GetCellsInside(data = coords, boundary = ring_regions)
+#' ring_regions <- getRingRegion(boundary = boundary_points, dist = 100)
+#' cells_ring <- getCellsInside(data = coords, boundary = ring_regions)
 #' cells_ring
 #'
-GetCellsInside <- function(data = NULL, cluster_col = NULL, boundary = NULL) {
+getCellsInside <- function(data = NULL, cluster_col = NULL, boundary = NULL) {
     # Extract coordinate data
-    sp_coords <- ExtractCoords(data = data, cluster_col = cluster_col)
+    sp_coords <- extractCoords(data = data, cluster_col = cluster_col)
 
     # Convert to sf point geometry
     spatial_points <- sf::st_as_sf(sp_coords, coords = c("x", "y"), crs = NA)
@@ -48,7 +48,7 @@ GetCellsInside <- function(data = NULL, cluster_col = NULL, boundary = NULL) {
     boundary_polys <- if (inherits(boundary, "sf")) {
         boundary
     } else {
-        BuildBoundaryPoly(boundary)
+        buildBoundaryPoly(boundary)
     }
 
     # Spatial join: find cells inside polygons

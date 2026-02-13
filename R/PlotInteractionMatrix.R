@@ -12,7 +12,7 @@
 #' @param interaction_matrix A numeric matrix with focal clusters as rows
 #'                           and neighbor clusters as columns.
 #'                           Typically the output from
-#'                           `ComputeSpatialInteractionMatrix()`.
+#'                           `computeSpatialInteractionMatrix()`.
 #' @param low_color Color representing low z-score values. Default is `"blue"`.
 #' @param mid_color Color representing the midpoint (z-score = 0).
 #'                  Default is `"white"`.
@@ -30,18 +30,18 @@
 #'     package = "SpNeigh"
 #' ))
 #'
-#' boundary_points <- GetBoundary(
+#' boundary_points <- getBoundary(
 #'     data = coords, one_cluster = 2,
 #'     eps = 120, minPts = 10
 #' )
-#' ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-#' cells_ring <- GetCellsInside(data = coords, boundary = ring_regions)
+#' ring_regions <- getRingRegion(boundary = boundary_points, dist = 100)
+#' cells_ring <- getCellsInside(data = coords, boundary = ring_regions)
 #' coords_sub <- subset(coords, cell %in% cells_ring$cell)
-#' interaction_matrix <- ComputeSpatialInteractionMatrix(coords_sub)
+#' interaction_matrix <- computeSpatialInteractionMatrix(coords_sub)
 #'
-#' PlotInteractionMatrix(interaction_matrix)
+#' plotInteractionMatrix(interaction_matrix)
 #'
-PlotInteractionMatrix <- function(
+plotInteractionMatrix <- function(
     interaction_matrix = NULL,
     low_color = "blue",
     mid_color = "white",

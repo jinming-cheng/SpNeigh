@@ -6,14 +6,14 @@
 #' This is useful for visualizing spatial trends such as proximity to
 #' boundaries or centroids.
 #'
-#' @inheritParams ComputeCentroidWeights
+#' @inheritParams computeCentroidWeights
 #' @importFrom rlang .data
 #' @importFrom methods is
 #' @param weights A named numeric vector of spatial weights,
 #'                with cell IDs as names.
 #' @param point_size Numeric. Point size of the cells in the plot.
 #'                   Default is `0.2`.
-#' @param theme_ggplot A ggplot2 theme object. Default is `my_theme_ggplot()`.
+#' @param theme_ggplot A ggplot2 theme object. Default is `theme_spneigh()`.
 #'
 #' @return A `ggplot2` object displaying a scatter plot of cells
 #'         colored by weights.
@@ -28,25 +28,25 @@
 #' cells_c2 <- subset(coords, cluster == 2)[, "cell"]
 #'
 #' # Compute centroid weights and plot
-#' weights_cen <- ComputeCentroidWeights(data = coords, cell_ids = cells_c2)
-#' PlotWeights(data = coords, weights = weights_cen)
+#' weights_cen <- computeCentroidWeights(data = coords, cell_ids = cells_c2)
+#' plotWeights(data = coords, weights = weights_cen)
 #'
 #' # Compute boundary weights and plot
-#' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
-#' weights_bon <- ComputeBoundaryWeights(
+#' boundary_points <- getBoundary(data = coords, one_cluster = 2)
+#' weights_bon <- computeBoundaryWeights(
 #'     data = coords, cell_ids = cells_c2,
 #'     boundary = boundary_points
 #' )
-#' PlotWeights(data = coords, weights = weights_bon)
+#' plotWeights(data = coords, weights = weights_bon)
 #'
-PlotWeights <- function(
+plotWeights <- function(
     data = NULL,
     weights = NULL,
     point_size = 0.2,
-    theme_ggplot = my_theme_ggplot()) {
+    theme_ggplot = theme_spneigh()) {
     # Extract spatial coordinates
     if (is(data, "Seurat")) {
-        sp_coords <- ExtractCoords(data, extract_cluster = FALSE)
+        sp_coords <- extractCoords(data, extract_cluster = FALSE)
     } else {
         sp_coords <- data
     }

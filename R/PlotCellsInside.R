@@ -2,13 +2,13 @@
 #'
 #' Visualizes cells that fall within defined spatial regions
 #' (boundaries or rings), typically obtained using
-#' the `GetCellsInside()` function. The cells are colored by cluster,
+#' the `getCellsInside()` function. The cells are colored by cluster,
 #' and the function offers two plotting modes: using `geom_sf()`
 #' (with fixed 1:1 aspect ratio) or `geom_point()` (with more flexible layout).
 #'
-#' @inheritParams PlotBoundary
+#' @inheritParams plotBoundary
 #' @importFrom rlang .data
-#' @param cells_inside An `sf` object of cells returned by `GetCellsInside()`.
+#' @param cells_inside An `sf` object of cells returned by `getCellsInside()`.
 #'                     Must contain `cluster` and `region_id` columns.
 #' @param fixed_aspect_ratio Logical. If `TRUE`, uses `geom_sf()` to preserve
 #'                           spatial scale. If `FALSE`, uses `geom_point()`
@@ -24,30 +24,30 @@
 #' ))
 #'
 #' # Plot cells inside boundaries
-#' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
-#' cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
-#' PlotCellsInside(cells_inside)
+#' boundary_points <- getBoundary(data = coords, one_cluster = 2)
+#' cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
+#' plotCellsInside(cells_inside)
 #'
 #' # Plot cells inside rings
-#' ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-#' cells_ring <- GetCellsInside(data = coords, boundary = ring_regions)
-#' PlotCellsInside(cells_ring, fixed_aspect_ratio = FALSE)
+#' ring_regions <- getRingRegion(boundary = boundary_points, dist = 100)
+#' cells_ring <- getCellsInside(data = coords, boundary = ring_regions)
+#' plotCellsInside(cells_ring, fixed_aspect_ratio = FALSE)
 #'
-PlotCellsInside <- function(
+plotCellsInside <- function(
     cells_inside = NULL,
     point_size = 0.5,
-    colors = my_colors_15,
-    theme_ggplot = my_theme_ggplot(),
+    colors = colors15_cheng,
+    theme_ggplot = theme_spneigh(),
     legend_size = 2,
     fixed_aspect_ratio = TRUE) {
     # Ensure cluster is a factor with ordered levels
     if (is.null(levels(cells_inside$cluster))) {
-        cells_inside$cluster <- FactorNaturalOrder(cells_inside$cluster)
+        cells_inside$cluster <- factorNaturalOrder(cells_inside$cluster)
     }
 
     # Assign colors to clusters
     n_clusters <- nlevels(cells_inside$cluster)
-    named_colors <- SafeColorPalette(
+    named_colors <- safeColorPalette(
         n_clusters = n_clusters,
         base_colors = colors
     )

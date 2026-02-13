@@ -5,7 +5,7 @@
 #' This function is useful for downstream visualizations such as bar plots or
 #' pie charts showing the spatial composition of cell types per region.
 #'
-#' @inheritParams PlotCellsInside
+#' @inheritParams plotCellsInside
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
 #'
@@ -28,17 +28,17 @@
 #' ))
 #'
 #' # Get boundary and cells inside
-#' boundary_points <- GetBoundary(
+#' boundary_points <- getBoundary(
 #'     data = coords, one_cluster = 2,
 #'     eps = 120, minPts = 10
 #' )
-#' cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
+#' cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
 #'
 #' # Summarize cluster statistics per region
-#' stats_cells <- StatsCellsInside(cells_inside)
+#' stats_cells <- statsCellsInside(cells_inside)
 #' head(stats_cells)
 #'
-StatsCellsInside <- function(cells_inside = NULL) {
+statsCellsInside <- function(cells_inside = NULL) {
     # Count and proportions of cells in different clusters for each region
     cell_stats <- cells_inside %>%
         sf::st_drop_geometry() %>%

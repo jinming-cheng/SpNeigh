@@ -12,7 +12,7 @@
 #' @param exp_mat A normalized gene expression matrix with genes as rows and
 #'                cells as columns. Should be of class `matrix` or `dgCMatrix`.
 #' @param weights A numeric vector of spatial weights (e.g.,
-#'                from `ComputeBoundaryWeights` or `ComputeCentroidWeights`).
+#'                from `computeBoundaryWeights` or `computeCentroidWeights`).
 #'                Must be the same length as the number of columns (cells)
 #'                in `exp_mat`.
 #'
@@ -40,17 +40,17 @@
 #' ))
 #'
 #' # Compute spatial weights and SEI
-#' bon_c0 <- GetBoundary(data = coords, one_cluster = 0)
+#' bon_c0 <- getBoundary(data = coords, one_cluster = 0)
 #' cells_c0 <- subset(coords, cluster == 0)$cell
-#' weights <- ComputeBoundaryWeights(
+#' weights <- computeBoundaryWeights(
 #'     data = coords,
 #'     cell_ids = cells_c0,
 #'     boundary = bon_c0
 #' )
-#' sei_df <- ComputeSpatialEnrichmentIndex(logNorm_expr[, cells_c0], weights)
+#' sei_df <- computeSpatialEnrichmentIndex(logNorm_expr[, cells_c0], weights)
 #' head(sei_df)
 #'
-ComputeSpatialEnrichmentIndex <- function(exp_mat = NULL, weights = NULL) {
+computeSpatialEnrichmentIndex <- function(exp_mat = NULL, weights = NULL) {
     # --- Input checks ---
     if (!inherits(exp_mat, c("matrix", "dgCMatrix"))) {
         stop("'exp_mat' must be of class 'matrix' or 'dgCMatrix'.")
@@ -90,8 +90,8 @@ ComputeSpatialEnrichmentIndex <- function(exp_mat = NULL, weights = NULL) {
 
 
 #' @title Compute Spatial Enrichment Index (SEI)
-#' @description Alias for \code{\link{ComputeSpatialEnrichmentIndex}}.
-#' @param ... Parameters in `ComputeSpatialEnrichmentIndex`.
+#' @description Alias for \code{\link{computeSpatialEnrichmentIndex}}.
+#' @param ... Parameters in `computeSpatialEnrichmentIndex`.
 #' @return A data frame containing the spatial enrichment index (SEI) results.
 #' @export
 #' @examples
@@ -104,15 +104,13 @@ ComputeSpatialEnrichmentIndex <- function(exp_mat = NULL, weights = NULL) {
 #' ))
 #'
 #' # Compute spatial weights and SEI
-#' bon_c0 <- GetBoundary(data = coords, one_cluster = 0)
+#' bon_c0 <- getBoundary(data = coords, one_cluster = 0)
 #' cells_c0 <- subset(coords, cluster == 0)$cell
-#' weights <- ComputeBoundaryWeights(
+#' weights <- computeBoundaryWeights(
 #'     data = coords,
 #'     cell_ids = cells_c0,
 #'     boundary = bon_c0
 #' )
-#' sei_df <- ComputeSEI(logNorm_expr[, cells_c0], weights)
+#' sei_df <- computeSEI(logNorm_expr[, cells_c0], weights)
 #' head(sei_df)
-ComputeSEI <- function(...) {
-    ComputeSpatialEnrichmentIndex(...)
-}
+computeSEI <- computeSpatialEnrichmentIndex

@@ -11,7 +11,7 @@
 #' based on spatial coordinates, and then tabulating the cluster identities
 #' of those neighbors with respect to the cluster identity of the focal cell.
 #'
-#' @inheritParams ExtractCoords
+#' @inheritParams extractCoords
 #' @param k Integer. Number of nearest neighbors to use for each cell.
 #'          Default is 10.
 #'
@@ -31,29 +31,29 @@
 #' ))
 #'
 #' # Compute interaction matrix using all cells
-#' interaction_matrix <- ComputeSpatialInteractionMatrix(coords)
+#' interaction_matrix <- computeSpatialInteractionMatrix(coords)
 #' head(interaction_matrix)
 #'
 #' # Compute interaction matrix for cells inside boundaries
-#' boundary_points <- GetBoundary(
+#' boundary_points <- getBoundary(
 #'     data = coords, one_cluster = 2,
 #'     eps = 120, minPts = 10
 #' )
-#' cells_inside <- GetCellsInside(data = coords, boundary = boundary_points)
+#' cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
 #' coords_sub <- subset(coords, cell %in% cells_inside$cell)
-#' ComputeSpatialInteractionMatrix(coords_sub)
+#' computeSpatialInteractionMatrix(coords_sub)
 #'
 #' # Compute interaction matrix for cells inside ring region 2
-#' ring_regions <- GetRingRegion(boundary = boundary_points, dist = 100)
-#' cells_ring <- GetCellsInside(data = coords, boundary = ring_regions[2, ])
+#' ring_regions <- getRingRegion(boundary = boundary_points, dist = 100)
+#' cells_ring <- getCellsInside(data = coords, boundary = ring_regions[2, ])
 #' coords_sub <- subset(coords, cell %in% cells_ring$cell)
-#' ComputeSpatialInteractionMatrix(coords_sub)
+#' computeSpatialInteractionMatrix(coords_sub)
 #'
-ComputeSpatialInteractionMatrix <- function(data = NULL,
+computeSpatialInteractionMatrix <- function(data = NULL,
                                             cluster_col = NULL,
                                             k = 10) {
     # --- Extract coordinates from data ---
-    sp_coords <- ExtractCoords(data, cluster_col = cluster_col)
+    sp_coords <- extractCoords(data, cluster_col = cluster_col)
 
     # --- Build KNN graph (cells x neighbors) ---
     knn <- FNN::get.knn(sp_coords[, c("x", "y")], k = k)

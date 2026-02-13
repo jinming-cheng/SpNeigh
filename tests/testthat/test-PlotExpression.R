@@ -1,4 +1,4 @@
-test_that("Test PlotExpression", {
+test_that("Test plotExpression", {
     df <- data.frame(
         x = c(rnorm(100, 1), rnorm(100, 5)),
         y = c(rnorm(100, 1), rnorm(100, 5)),
@@ -15,39 +15,39 @@ test_that("Test PlotExpression", {
 
     colnames(exp_mat) <- df$cell
 
-    expect_silent(PlotExpression(
+    expect_silent(plotExpression(
         data = df, exp_mat = exp_mat, shuffle = TRUE,
         genes = c("gene1", "gene2")
     ))
 
-    expect_silent(PlotExpression(
+    expect_silent(plotExpression(
         data = df, exp_mat = exp_mat,
         sub_plot = TRUE, sub_cells = df$cell,
         genes = c("gene1")
     ))
 
-    expect_error(PlotExpression(
+    expect_error(plotExpression(
         data = df, exp_mat = "non_matrix",
         genes = c("gene1", "gene2")
     ))
 
-    expect_error(PlotExpression(
+    expect_error(plotExpression(
         data = df, exp_mat = exp_mat,
         genes = c("gene1", "gene2"),
         split_by = "not_in_columns"
     ))
 
-    expect_error(PlotExpression(
+    expect_error(plotExpression(
         data = df, exp_mat = exp_mat,
         genes = c("gene_not_exsit")
     ))
 
-    expect_error(PlotExpression(
+    expect_error(plotExpression(
         data = df[-c(1:10), ], exp_mat = exp_mat,
         genes = c("gene1", "gene2")
     ))
 
-    p <- PlotExpression(
+    p <- plotExpression(
         data = df,
         exp_mat = exp_mat,
         split_by = "cluster",
@@ -62,14 +62,14 @@ test_that("Test PlotExpression", {
 
 
 
-test_that("Test PlotSpatialExpression", {
+test_that("Test plotSpatialExpression", {
     exp_mat <- matrix(runif(1000), nrow = 10)
 
     rownames(exp_mat) <- paste0("Gene", 1:10)
 
     spatial_distance <- runif(100)
 
-    p <- PlotSpatialExpression(
+    p <- plotSpatialExpression(
         exp_mat = exp_mat,
         spatial_distance = spatial_distance,
         genes = rownames(exp_mat)[1:5]
@@ -77,7 +77,7 @@ test_that("Test PlotSpatialExpression", {
 
     expect_true(inherits(p,"ggplot"))
 
-    p1 <- PlotSpatialExpression(
+    p1 <- plotSpatialExpression(
         exp_mat = exp_mat,
         spatial_distance = spatial_distance,
         genes = rownames(exp_mat)[1:5],
@@ -86,20 +86,20 @@ test_that("Test PlotSpatialExpression", {
 
     expect_true(inherits(p1,"ggplot"))
 
-    expect_error(PlotSpatialExpression(
+    expect_error(plotSpatialExpression(
         exp_mat = NULL,
         spatial_distance = spatial_distance,
         genes = rownames(exp_mat)[1:5]
     ))
 
-    expect_error(PlotSpatialExpression(
+    expect_error(plotSpatialExpression(
         exp_mat = exp_mat,
         row_gap = 2,
         spatial_distance = spatial_distance,
         genes = rownames(exp_mat)[1:5]
     ))
 
-    expect_error(PlotSpatialExpression(
+    expect_error(plotSpatialExpression(
         exp_mat = exp_mat,
         column_gap = 2,
         spatial_distance = spatial_distance,
@@ -107,13 +107,13 @@ test_that("Test PlotSpatialExpression", {
     ))
 
 
-    expect_error(PlotSpatialExpression(
+    expect_error(plotSpatialExpression(
         exp_mat = exp_mat,
         spatial_distance = spatial_distance[1:3],
         genes = rownames(exp_mat)[1:5]
     ))
 
-    expect_error(PlotSpatialExpression(
+    expect_error(plotSpatialExpression(
         exp_mat = exp_mat,
         spatial_distance = spatial_distance,
         genes = c(rownames(exp_mat)[1:5], "unknown_gene")

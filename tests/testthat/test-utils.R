@@ -1,22 +1,22 @@
-test_that("Test FactorNaturalOrder", {
-    x <- FactorNaturalOrder(10:1)
+test_that("Test factorNaturalOrder", {
+    x <- factorNaturalOrder(10:1)
 
     expect_true(is.factor(x))
 })
 
 
 
-test_that("Test my_theme_ggplot", {
+test_that("Test theme_spneigh", {
     p <- ggplot2::ggplot() +
-        my_theme_ggplot()
+        theme_spneigh()
 
     expect_silent(p)
 })
 
-test_that("Test SafeColorPalette", {
-    n1 <- length(SafeColorPalette(5))
+test_that("Test safeColorPalette", {
+    n1 <- length(safeColorPalette(5))
 
     expect_equal(n1, 5)
 
-    expect_message(length(SafeColorPalette(20)))
+    expect_message(length(safeColorPalette(20)))
 })

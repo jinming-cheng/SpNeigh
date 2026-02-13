@@ -203,7 +203,7 @@ spe
 
 Extract coordinates from SpatialExperiment object
 ```{r}
-spe_coords <- ExtractCoords(spe)
+spe_coords <- extractCoords(spe)
 ```
 
 Extract log-normalized expression matrix from SpatialExperiment object
@@ -262,7 +262,7 @@ seu_sp$seurat_clusters <- seu_sp$cluster
 
 Extract coordinates from Seurat object
 ```{r}
-seu_sp_coords <- ExtractCoords(seu_sp)
+seu_sp_coords <- extractCoords(seu_sp)
 ```
 
 Extract log-normalized expression matrix from Seurat object
@@ -284,12 +284,12 @@ seu_sp_log_expr <- GetAssayData(seu_sp)
 Quick look at the boundaries of cluster 2 using default parameter settings. 
 The input is a SpatialExperiment object.
 ```{r PlotBoundary_spe, fig.width=6.6, fig.height=4.2}
-PlotBoundary(spe, one_cluster = "2")
+plotBoundary(spe, one_cluster = "2")
 ```
 
 Similarly, we can use a Seurat object as input and adjust parameters
 ```{r PlotBoundary_seu, fig.width=6.6, fig.height=4.2}
-PlotBoundary(seu_sp, one_cluster = "2", eps = 120)
+plotBoundary(seu_sp, one_cluster = "2", eps = 120)
 ```
 
 ## Detect spatial boundaries
@@ -298,7 +298,7 @@ Extract boundaries of cluster 2. Adjust the `eps` and `minPt`s parameters
 to refine the number of subregions detected by the default 
 dbscan clustering method.
 ```{r}
-bon_points_c2 <- GetBoundary(
+bon_points_c2 <- getBoundary(
     data = coords,
     one_cluster = 2,
     eps = 120,
@@ -310,18 +310,18 @@ table(bon_points_c2$region_id)
 
 Add boundaries of cluster 2 to the spatial plot
 ```{r PlotWithBoundary_C2, fig.width=6.6, fig.height=4.2}
-PlotBoundary(coords, boundary = bon_points_c2)
+plotBoundary(coords, boundary = bon_points_c2)
 ```
 
-Alternatively, add boundaries of cluster 2 using AddBoundary() function
+Alternatively, add boundaries of cluster 2 using addBoundary() function
 ```{r}
-# PlotBoundary(coords) + AddBoundary(boundary = bon_points_c2)
+# plotBoundary(coords) + addBoundary(boundary = bon_points_c2)
 ```
 
 Plot boundary regions
 ```{r PlotRegion_C2,fig.height = 2.8,  fig.width = 5.6}
-bon_polys_c2 <- BuildBoundaryPoly(bon_points_c2)
-PlotRegion(bon_polys_c2)
+bon_polys_c2 <- buildBoundaryPoly(bon_points_c2)
+plotRegion(bon_polys_c2)
 ```
 
 
@@ -331,36 +331,36 @@ Get spatial ring-shaped regions by subtracting the original boundary polygons
 from their corresponding outer buffered polygons. 
 The `outer_boundary` is automatically computed when it is not supplied.
 ```{r}
-ring_regions <- GetRingRegion(boundary = bon_points_c2)
+ring_regions <- getRingRegion(boundary = bon_points_c2)
 ```
 
 
 Plot ring regions
 ```{r PlotRing_C2,fig.height = 2.8,  fig.width = 5.6}
-PlotRegion(ring_regions)
+plotRegion(ring_regions)
 ```
 
 
 ## Statistics of cells inside rings
 
-Get cells inside rings for cluster 2. (`GetCellsInside()` takes a few seconds
+Get cells inside rings for cluster 2. (`getCellsInside()` takes a few seconds
 to run on this example, but may require several minutes or longer 
 for larger datasets.)
 ```{r}
-cells_ring <- GetCellsInside(data = coords, boundary = ring_regions)
+cells_ring <- getCellsInside(data = coords, boundary = ring_regions)
 cells_ring
 ```
 
 
 Plot cells inside rings
 ```{r PlotCellsInsideRing_C2,fig.height = 3.6,  fig.width = 5.6}
-PlotCellsInside(cells_ring, point_size = 0.2)
+plotCellsInside(cells_ring, point_size = 0.2)
 ```
 
 
 Obtain statistics of cells inside rings for cluster 2
 ```{r}
-stats_ring <- StatsCellsInside(cells_ring)
+stats_ring <- statsCellsInside(cells_ring)
 ```
 
 
@@ -368,7 +368,7 @@ Plot proportion of cells in different clusters for each sub region
 using bar plot. 
 <!-- The `stat_column` is used to plot "proportion" or "count". -->
 ```{r PlotStatsBar_Proportion_C2_Ring, fig.height = 4.2,  fig.width = 6.6}
-PlotStatsBar(stats_ring, stat_column = "proportion")
+plotStatsBar(stats_ring, stat_column = "proportion")
 ```
 
 
@@ -376,7 +376,7 @@ PlotStatsBar(stats_ring, stat_column = "proportion")
 Plot proportion of cells in different clusters for each sub region 
 using donut chart. If `plot_donut = FALSE`, pie chart is used.
 ```{r PlotStats_Donut_C2_Ring, fig.height = 3.5,  fig.width = 5.6}
-PlotStatsPie(stats_ring, plot_donut = TRUE)
+plotStatsPie(stats_ring, plot_donut = TRUE)
 ```
 
 
@@ -385,7 +385,7 @@ PlotStatsPie(stats_ring, plot_donut = TRUE)
 Compute neighborhood interaction matrix using K-nearest neighbors for 
 cells inside rings
 ```{r}
-interaction_matrix <- ComputeSpatialInteractionMatrix(
+interaction_matrix <- computeSpatialInteractionMatrix(
     subset(coords, cell %in% cells_ring$cell)
 )
 interaction_matrix
@@ -397,16 +397,16 @@ for cluster 2.
 The heatmap reveals that clusters 2, 3, and 4 are spatially adjacent 
 to one another. 
 ```{r Heatmap_InteractionMatrix_C2_Ring, fig.height = 4.2,  fig.width = 5.6}
-PlotInteractionMatrix(interaction_matrix)
+plotInteractionMatrix(interaction_matrix)
 ```
 
 The plot of cells inside rings split by clusters further confirms the 
 co-occurrence of clusters 2, 3, 4 in ring region 1.
 ```{r PlotCellsInside_SplitByCluster_C2_Ring, fig.width=8.4, fig.height=4.2}
-PlotCellsInside(cells_ring) +
+plotCellsInside(cells_ring) +
     facet_wrap(~cluster) +
     Seurat::RotatedAxis() +
-    AddBoundaryPoly(ring_regions, linewidth_boundary = 0.1)
+    addBoundaryPoly(ring_regions, linewidth_boundary = 0.1)
 ```
 
 <!-- %                                                 % -->
@@ -425,7 +425,7 @@ cells in the outside neighboring ring region 1.
 
 Get cells inside the boundaries of cluster 2
 ```{r}
-cells_inside <- GetCellsInside(data = coords, boundary = bon_points_c2)
+cells_inside <- getCellsInside(data = coords, boundary = bon_points_c2)
 cells_inside
 ```
 
@@ -440,7 +440,7 @@ cells_out <- subset(cells_ring, region_id == 1 & cluster == 2)[["cell"]]
 Perform DE analysis between cells inside boundary and outside boundary 
 using the `limma` framewrok (`lmFit` + `eBayes`)
 ```{r}
-tab <- RunLimmaDE(
+tab <- runLimmaDE(
     exp_mat = logNorm_expr,
     min.pct = 0.25,
     cells_reference = cells_in,
@@ -456,7 +456,7 @@ head(tab[, c("gene", "logFC", "adj.P.Val", "pct.reference", "pct.target")])
 ```
 
 
-Set a random seed to make PlotExpression results reproducible
+Set a random seed to make plotExpression results reproducible
 ```{r}
 set.seed(123)
 ```
@@ -467,7 +467,7 @@ The cells are plotted randomly using the given seed when `shuffle = TRUE`.
 If `shuffle = FALSE`, cells with higher expression values 
 are plotted last (on the top).
 ```{r Expression_Slc17a7_c2, fig.width = 8, fig.height = 2.5}
-PlotExpression(
+plotExpression(
     data = coords[colnames(logNorm_expr), ],
     exp_mat = logNorm_expr,
     genes = tab$gene[1:2],
@@ -484,7 +484,7 @@ Expression of *Slc17a7* for cluster 2 cells inside and outside boundary
 of sub region 1. Cluster 2 cells outside the boundary show much 
 higher expression of Slc17a7.
 ```{r Expression_Slc17a7_InOutBoundary,fig.height = 2.8, fig.width = 5.6}
-PlotExpression(
+plotExpression(
     data = coords[colnames(logNorm_expr), ],
     exp_mat = logNorm_expr,
     genes = "Slc17a7",
@@ -493,7 +493,7 @@ PlotExpression(
     sub_cells = c(cells_in, cells_out),
     point_size = 0.3
 ) +
-    AddBoundaryPoly(bon_polys_c2[1, ], linewidth_boundary = 0.5)
+    addBoundaryPoly(bon_polys_c2[1, ], linewidth_boundary = 0.5)
 ``` 
 
 
@@ -502,7 +502,7 @@ Expression of a general marker gene *Sox10* for Oligodendrocytes
 inside and outside the boundary. This suggests that cluster 2 cells 
 located near the boundary may represent intermediate cell states.
 ```{r PlotExpression_Sox10,fig.height = 2.8,  fig.width = 5.6}
-PlotExpression(
+plotExpression(
     data = coords[colnames(logNorm_expr), ],
     exp_mat = logNorm_expr,
     sub_cells = c(cells_in, cells_out),
@@ -511,7 +511,7 @@ PlotExpression(
     shuffle = TRUE,
     point_size = 0.3
 ) +
-    AddBoundaryPoly(bon_polys_c2[1, ], linewidth_boundary = 0.5)
+    addBoundaryPoly(bon_polys_c2[1, ], linewidth_boundary = 0.5)
 ```
 
 
@@ -535,20 +535,20 @@ cells_c0 <- subset(coords, cluster == 0)[, "cell"]
 
 Plot cluster 0 cells without boundary
 ```{r Plot_NoBoundary_C0, fig.width=8*0.7+1, fig.height=6*0.7}
-PlotBoundary(coords[cells_c0, ])
+plotBoundary(coords[cells_c0, ])
 ```
 
 
 Get boundaries of cluster 0
 ```{r}
-bon_points_c0 <- GetBoundary(data = coords, one_cluster = 0)
-bon_polys_c0 <- BuildBoundaryPoly(bon_points_c0)
+bon_points_c0 <- getBoundary(data = coords, one_cluster = 0)
+bon_polys_c0 <- buildBoundaryPoly(bon_points_c0)
 ```
 
 
 Plot boundary edges for cluster 0
 ```{r PlotBoundary_C0, fig.width=6.6, fig.height=4.2}
-PlotEdge(boundary_poly = bon_polys_c0, linewidth_boundary = 0.6)
+plotEdge(boundary_poly = bon_polys_c0, linewidth_boundary = 0.6)
 ```
 
 
@@ -556,7 +556,7 @@ PlotEdge(boundary_poly = bon_polys_c0, linewidth_boundary = 0.6)
 
 Compute spatial weights based on the distance to boundaries
 ```{r}
-weights_bon <- ComputeBoundaryWeights(
+weights_bon <- computeBoundaryWeights(
     data = coords,
     cell_ids = cells_c0,
     boundary = bon_points_c0
@@ -572,13 +572,13 @@ weights_bon[1:3]
 
 Alternatively, compute spatial weights based on the distance to centroids
 ```{r}
-weights_cen <- ComputeCentroidWeights(data = coords, cell_ids = cells_c0)
+weights_cen <- computeCentroidWeights(data = coords, cell_ids = cells_c0)
 ```
 
 
 Plot boundary weights
 ```{r, fig.width=6.6, fig.height=4.2}
-PlotWeights(data = coords, weights = weights_bon, point_size = 0.8) +
+plotWeights(data = coords, weights = weights_bon, point_size = 0.8) +
     labs(title = "Boundary weights")
 ```
 
@@ -587,7 +587,7 @@ PlotWeights(data = coords, weights = weights_bon, point_size = 0.8) +
 
 Run spatial DE analysis for cluster 0 cells along boundary weights using splines
 ```{r}
-tab_sp <- RunSpatialDE(
+tab_sp <- runSpatialDE(
     exp_mat = logNorm_expr[, cells_c0],
     spatial_distance = weights_bon,
     cell_ids = cells_c0
@@ -606,7 +606,7 @@ head(tab_sp)
 
 Expression of top DE genes along boundary weights
 ```{r Expression_top_genes_boundary, fig.width = 8, fig.height = 2.5}
-PlotExpression(
+plotExpression(
     data = coords[colnames(logNorm_expr), ],
     exp_mat = logNorm_expr,
     genes = tab_sp$gene[1:2],
@@ -622,7 +622,7 @@ Plot scaled average expression along boundary weight bins for
 top 10 spatial DE genes. The scaled average expression ranges 
 from 0 to 1 by using min-max normalization method.
 ```{r Expression_along_boundary_weights_c0, fig.width=6.4, fig.height=4}
-PlotSpatialExpression(
+plotSpatialExpression(
     exp_mat = logNorm_expr[, cells_c0],
     spatial_distance = weights_bon,
     scale_method = "minmax",
@@ -639,7 +639,7 @@ The SEI reflects the extent to which gene expression is enriched in
 spatially weighted regions. 
 The result is sorted in descending order by `normalized_SEI`.
 ```{r}
-SEI_bon <- ComputeSpatialEnrichmentIndex(
+SEI_bon <- computeSpatialEnrichmentIndex(
     exp_mat = logNorm_expr[, cells_c0],
     weights = weights_bon
 )
@@ -648,7 +648,7 @@ head(SEI_bon)
 
 Expression of top genes enriched near boundaries
 ```{r Expression_top_genes_SEI_boundary, fig.width = 8, fig.height = 2.5}
-PlotExpression(
+plotExpression(
     data = coords[colnames(logNorm_expr), ],
     exp_mat = logNorm_expr,
     genes = SEI_bon$gene[1:2],

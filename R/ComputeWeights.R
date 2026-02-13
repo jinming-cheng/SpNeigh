@@ -33,10 +33,10 @@
 #' cells_c2 <- subset(coords, cluster == 2)$cell
 #'
 #' # Compute centroid-based weights using default settings
-#' weights <- ComputeCentroidWeights(data = coords, cell_ids = cells_c2)
+#' weights <- computeCentroidWeights(data = coords, cell_ids = cells_c2)
 #' head(weights)
 #'
-ComputeCentroidWeights <- function(
+computeCentroidWeights <- function(
     data = NULL,
     cell_ids = NULL,
     scale = TRUE,
@@ -46,7 +46,7 @@ ComputeCentroidWeights <- function(
 
     # Extract coordinates from data
     if (is(data, "Seurat")) {
-        sp_coords <- ExtractCoords(data, extract_cluster = FALSE)
+        sp_coords <- extractCoords(data, extract_cluster = FALSE)
     } else {
         sp_coords <- data
     }
@@ -103,11 +103,11 @@ ComputeCentroidWeights <- function(
 #' Optionally scales distances to the \[0, 1\] range before computing weights.
 #'
 #' @importFrom methods is
-#' @inheritParams ComputeCentroidWeights
+#' @inheritParams computeCentroidWeights
 #' @param boundary Either an `sf` object containing boundary
 #'                 geometries (`POLYGON` or `LINESTRING`),
 #'                 or a data frame of boundary points
-#'                 returned from `GetBoundary()`.
+#'                 returned from `getBoundary()`.
 #'
 #' @return A named numeric vector of weights, with names corresponding
 #'         to `cell_ids`.
@@ -120,24 +120,24 @@ ComputeCentroidWeights <- function(
 #' ))
 #'
 #' # Get and build boundary polygons from cluster 2
-#' boundary_points <- GetBoundary(data = coords, one_cluster = 2)
-#' boundary_polys <- BuildBoundaryPoly(boundary_points)
+#' boundary_points <- getBoundary(data = coords, one_cluster = 2)
+#' boundary_polys <- buildBoundaryPoly(boundary_points)
 #'
 #' # Compute weights to polygon boundary
 #' cells_c2 <- subset(coords, cluster == 2)$cell
-#' weights <- ComputeBoundaryWeights(
+#' weights <- computeBoundaryWeights(
 #'     data = coords, cell_ids = cells_c2,
 #'     boundary = boundary_polys[1, ]
 #' )
 #'
 #' # Compute weights to a specific boundary edge
-#' boundary_edges <- SplitBoundaryPolyByAnchor(boundary_polys[1, ])
-#' weights_edge <- ComputeBoundaryWeights(
+#' boundary_edges <- splitBoundaryPolyByAnchor(boundary_polys[1, ])
+#' weights_edge <- computeBoundaryWeights(
 #'     data = coords, cell_ids = cells_c2,
 #'     boundary = boundary_edges[2, ]
 #' )
 #'
-ComputeBoundaryWeights <- function(
+computeBoundaryWeights <- function(
     data = NULL,
     cell_ids = NULL,
     boundary = NULL,
@@ -148,7 +148,7 @@ ComputeBoundaryWeights <- function(
 
     # Extract coordinates
     if (is(data, "Seurat")) {
-        sp_coords <- ExtractCoords(data, extract_cluster = FALSE)
+        sp_coords <- extractCoords(data, extract_cluster = FALSE)
     } else {
         sp_coords <- data
     }
@@ -168,7 +168,7 @@ ComputeBoundaryWeights <- function(
     if (inherits(boundary, "sf")) {
         boundary_sf <- boundary
     } else {
-        boundary_sf <- BuildBoundaryPoly(boundary)
+        boundary_sf <- buildBoundaryPoly(boundary)
     }
 
     # Subset and convert coordinates to sf
