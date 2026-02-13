@@ -7,7 +7,7 @@ frame.
 ## Usage
 
 ``` r
-extractCoords(data, cluster_col = NULL, extract_cluster = TRUE)
+extractCoords(data, cluster_col = NULL, extract_cluster = TRUE, ...)
 ```
 
 ## Arguments
@@ -32,24 +32,19 @@ extractCoords(data, cluster_col = NULL, extract_cluster = TRUE)
   Logical indicating whether to extract cluster information. If `FALSE`,
   only spatial coordinates and cell IDs are returned. Default is `TRUE`.
 
+- ...:
+
+  Additional arguments (unused).
+
 ## Value
 
-A data frame with columns `x`, `y`, and `cell`, and optionally `cluster`
-if `extract_cluster = TRUE`.
+A data frame with columns `x`, `y`, and `cell`, and optionally
+`cluster`.
 
 ## Details
 
-For `Seurat` objects, tissue coordinates are obtained using
-[`Seurat::GetTissueCoordinates()`](https://satijalab.github.io/seurat-object/reference/GetTissueCoordinates.html),
-and cluster labels are taken from the specified metadata column (by
-default `seurat_clusters`).
-
-For `SpatialExperiment` objects, spatial coordinates are obtained from
-`spatialCoords()`, and cluster labels are taken from `colData()` (by
-default the `cluster` column).
-
-If a data frame is provided, it must already contain columns named `x`,
-`y`, `cell`, and `cluster`.
+This is an S3 generic with methods implemented for `Seurat`,
+`SpatialExperiment`, and `data.frame`.
 
 ## Examples
 

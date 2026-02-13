@@ -869,6 +869,6 @@ sessionInfo()
 #> [147] RcppHNSW_0.6.0              patchwork_1.3.2            
 #> [149] future_1.69.0               statmod_1.5.1              
 #> [151] shiny_1.12.1                SummarizedExperiment_1.36.0
-#> [153] ROCR_1.0-12                 igraph_2.2.1               
+#> [153] ROCR_1.0-12                 igraph_2.2.2               
 #> [155] bslib_0.10.0
 ```
