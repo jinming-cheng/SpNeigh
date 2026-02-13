@@ -7,7 +7,7 @@ output: github_document
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
     collapse = TRUE,
-    comment = "#>",
+    comment = NA,
     fig.path = "man/figures/README-",
     out.width = "100%"
 )
@@ -44,16 +44,7 @@ devtools::install_github("jinming-cheng/SpNeigh")
 
 Please cite this article if you use SpNeigh:
 
-Cheng, J.\*, Chow, P. K.H., and Liu, N.\*. "SpNeigh: spatial neighborhood and differential expression analysis for high-resolution spatial transcriptomics". *bioRxiv* (2025).
-
-(or use BibTex)
-```
-@article {Cheng2025SpNeigh,
-	author = {Cheng, J. and Chow, P. K.H. and Liu, N.},
-	title = {SpNeigh: spatial neighborhood and differential expression analysis for high-resolution spatial transcriptomics},
-	year = {2025},
-	doi = {10.1101/2025.11.07.687304},
-	journal = {bioRxiv}
-}
+```{r, echo = FALSE}
+citation(package = "SpNeigh")
 ```
 
