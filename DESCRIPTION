@@ -1,7 +1,7 @@
 Package: SpNeigh
 Title: Spatial Neighborhood Modeling and Differential Expression
     Analysis for Transcriptomics
-Version: 0.99.31
+Version: 0.99.32
 Authors@R: 
     person(given = "Jinming", 
            family = "Cheng", 
@@ -19,7 +19,7 @@ Description: SpNeigh provides methods for neighborhood-aware analysis of spatial
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
+RoxygenNote: 7.3.2
 Imports: 
     concaveman,
     dbscan,

@@ -35,7 +35,7 @@
 #'                      or dense plots. Default is 0 (no rotation).
 #' @param theme_ggplot A ggplot2 theme object. Default is `theme_spneigh()`.
 #' @param legend_size Numeric. Size of legend keys. Default is 2.
-#' @param ... Additional arguments passed to `getBoundary()`
+#' @param ... Additional arguments passed to \code{\link{getBoundary}}
 #'            when auto-generating boundaries.
 #'
 #' @return A ggplot object displaying the spatial layout of cells,
