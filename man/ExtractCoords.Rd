@@ -4,7 +4,7 @@
 \alias{extractCoords}
 \title{Extract spatial coordinates and cluster information}
 \usage{
-extractCoords(data, cluster_col = NULL, extract_cluster = TRUE)
+extractCoords(data, cluster_col = NULL, extract_cluster = TRUE, ...)
 }
 \arguments{
 \item{data}{A \code{Seurat} object, a \code{SpatialExperiment} object,
@@ -21,10 +21,12 @@ depending on the input object type:
 \item{extract_cluster}{Logical indicating whether to extract cluster
 information. If \code{FALSE}, only spatial coordinates and cell IDs
 are returned. Default is \code{TRUE}.}
+
+\item{...}{Additional arguments (unused).}
 }
 \value{
 A data frame with columns \code{x}, \code{y}, and \code{cell},
-and optionally \code{cluster} if \code{extract_cluster = TRUE}.
+and optionally \code{cluster}.
 }
 \description{
 Extract spatial coordinates and (optionally) cluster assignments from
@@ -32,16 +34,8 @@ a \code{Seurat} object, a \code{SpatialExperiment} object, or a user-supplied
 data frame.
 }
 \details{
-For \code{Seurat} objects, tissue coordinates are obtained using
-\code{Seurat::GetTissueCoordinates()}, and cluster labels are taken from
-the specified metadata column (by default \code{seurat_clusters}).
-
-For \code{SpatialExperiment} objects, spatial coordinates are obtained from
-\code{spatialCoords()}, and cluster labels are taken from \code{colData()}
-(by default the \code{cluster} column).
-
-If a data frame is provided, it must already contain columns named
-\code{x}, \code{y}, \code{cell}, and \code{cluster}.
+This is an S3 generic with methods implemented for
+\code{Seurat}, \code{SpatialExperiment}, and \code{data.frame}.
 }
 \examples{
 coords <- readRDS(system.file(

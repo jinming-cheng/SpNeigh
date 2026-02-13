@@ -75,7 +75,7 @@ test_that("Test plotSpatialExpression", {
         genes = rownames(exp_mat)[1:5]
     )
 
-    expect_true(inherits(p,"ggplot"))
+    expect_true(inherits(p, "ggplot"))
 
     p1 <- plotSpatialExpression(
         exp_mat = exp_mat,
@@ -84,7 +84,7 @@ test_that("Test plotSpatialExpression", {
         scale_method = "minmax"
     )
 
-    expect_true(inherits(p1,"ggplot"))
+    expect_true(inherits(p1, "ggplot"))
 
     expect_error(plotSpatialExpression(
         exp_mat = NULL,

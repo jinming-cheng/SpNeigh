@@ -73,22 +73,16 @@ removeOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 }
 
 
+
 #' Extract spatial coordinates and cluster information
 #'
 #' Extract spatial coordinates and (optionally) cluster assignments from
 #' a \code{Seurat} object, a \code{SpatialExperiment} object, or a user-supplied
 #' data frame.
 #'
-#' For \code{Seurat} objects, tissue coordinates are obtained using
-#' \code{Seurat::GetTissueCoordinates()}, and cluster labels are taken from
-#' the specified metadata column (by default \code{seurat_clusters}).
+#' This is an S3 generic with methods implemented for
+#' \code{Seurat}, \code{SpatialExperiment}, and \code{data.frame}.
 #'
-#' For \code{SpatialExperiment} objects, spatial coordinates are obtained from
-#' \code{spatialCoords()}, and cluster labels are taken from \code{colData()}
-#' (by default the \code{cluster} column).
-#'
-#' If a data frame is provided, it must already contain columns named
-#' \code{x}, \code{y}, \code{cell}, and \code{cluster}.
 #'
 #' @param data A \code{Seurat} object, a \code{SpatialExperiment} object,
 #'   or a data frame containing spatial coordinates.
@@ -105,8 +99,10 @@ removeOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 #'   information. If \code{FALSE}, only spatial coordinates and cell IDs
 #'   are returned. Default is \code{TRUE}.
 #'
+#' @param ... Additional arguments (unused).
+#'
 #' @return A data frame with columns \code{x}, \code{y}, and \code{cell},
-#'   and optionally \code{cluster} if \code{extract_cluster = TRUE}.
+#'   and optionally \code{cluster}.
 #'
 #' @export
 #'
@@ -120,84 +116,112 @@ removeOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 extractCoords <- function(
     data,
     cluster_col = NULL,
-    extract_cluster = TRUE) {
-    ## ---- Seurat ----
-    if (methods::is(data, "Seurat")) {
-        coords <- Seurat::GetTissueCoordinates(data)[, c("x", "y"),
-            drop = FALSE
-        ]
-        sp_coords <- data.frame(
-            x = coords[, 1],
-            y = coords[, 2],
-            cell = colnames(data),
-            row.names = NULL
-        )
+    extract_cluster = TRUE,
+    ...) {
+    UseMethod("extractCoords")
+}
 
-        if (extract_cluster) {
-            if (is.null(cluster_col)) {
-                cluster_col <- "seurat_clusters"
-            }
-            if (!cluster_col %in% colnames(data[[]])) {
-                stop(
-                    "Cluster column '", cluster_col,
-                    "' not found in Seurat object metadata."
-                )
-            }
-            sp_coords$cluster <- data[[cluster_col, drop = TRUE]]
+
+#' @export
+#' @method extractCoords Seurat
+extractCoords.Seurat <- function(
+    data,
+    cluster_col = NULL,
+    extract_cluster = TRUE,
+    ...) {
+    coords <- Seurat::GetTissueCoordinates(data)
+
+    sp_coords <- data.frame(
+        x = coords[, 1],
+        y = coords[, 2],
+        cell = colnames(data),
+        row.names = NULL
+    )
+
+    if (extract_cluster) {
+        if (is.null(cluster_col)) {
+            cluster_col <- "seurat_clusters"
         }
-
-        return(sp_coords)
-    }
-
-    ## ---- SpatialExperiment ----
-    if (methods::is(data, "SpatialExperiment")) {
-        coords <- SpatialExperiment::spatialCoords(data)
-        sp_coords <- data.frame(
-            x = coords[, 1],
-            y = coords[, 2],
-            cell = colnames(data),
-            row.names = NULL
-        )
-
-        if (extract_cluster) {
-            if (is.null(cluster_col)) {
-                cluster_col <- "cluster"
-            }
-            cd <- SummarizedExperiment::colData(data)
-            if (!cluster_col %in% colnames(cd)) {
-                stop(
-                    "Cluster column '", cluster_col,
-                    "' not found in SpatialExperiment colData."
-                )
-            }
-            sp_coords$cluster <- cd[[cluster_col]]
-        }
-
-        return(sp_coords)
-    }
-
-    ## ---- data.frame ----
-    if (is.data.frame(data)) {
-        required_cols <- c("x", "y", "cell")
-        if (extract_cluster) {
-            required_cols <- c(required_cols, "cluster")
-        }
-
-        missing_cols <- setdiff(required_cols, colnames(data))
-        if (length(missing_cols) > 0) {
+        if (!cluster_col %in% colnames(data[[]])) {
             stop(
-                "Input data frame is missing required columns: ",
-                paste(missing_cols, collapse = ", ")
+                "Cluster column '", cluster_col,
+                "' not found in Seurat object metadata."
             )
         }
-
-        return(data)
+        sp_coords$cluster <- data[[cluster_col, drop = TRUE]]
     }
 
-    ## ---- unsupported ----
+    sp_coords
+}
+
+
+#' @export
+#' @method extractCoords SpatialExperiment
+extractCoords.SpatialExperiment <- function(
+    data,
+    cluster_col = NULL,
+    extract_cluster = TRUE,
+    ...) {
+    coords <- SpatialExperiment::spatialCoords(data)
+
+    sp_coords <- data.frame(
+        x = coords[, 1],
+        y = coords[, 2],
+        cell = colnames(data),
+        row.names = NULL
+    )
+
+    if (extract_cluster) {
+        if (is.null(cluster_col)) {
+            cluster_col <- "cluster"
+        }
+        cd <- SummarizedExperiment::colData(data)
+        if (!cluster_col %in% colnames(cd)) {
+            stop(
+                "Cluster column '", cluster_col,
+                "' not found in SpatialExperiment colData."
+            )
+        }
+        sp_coords$cluster <- cd[[cluster_col]]
+    }
+
+    sp_coords
+}
+
+
+#' @export
+#' @method extractCoords data.frame
+extractCoords.data.frame <- function(
+    data,
+    cluster_col = NULL,
+    extract_cluster = TRUE,
+    ...) {
+    required_cols <- c("x", "y", "cell")
+    if (extract_cluster) {
+        required_cols <- c(required_cols, "cluster")
+    }
+
+    missing_cols <- setdiff(required_cols, colnames(data))
+    if (length(missing_cols) > 0) {
+        stop(
+            "Input data frame is missing required columns: ",
+            paste(missing_cols, collapse = ", ")
+        )
+    }
+
+    data
+}
+
+#' @export
+#' @method extractCoords default
+extractCoords.default <- function(
+    data,
+    cluster_col = NULL,
+    extract_cluster = TRUE,
+    ...) {
     stop(
-        "'data' must be a Seurat object, a SpatialExperiment object, ",
-        "or a data frame."
+        "'extractCoords()' does not support objects of class: ",
+        paste(class(data), collapse = ", ")
     )
 }
 
