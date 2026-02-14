@@ -137,7 +137,7 @@ runLimmaDE <- function(
     # --- Add gene-level annotations ---
     tab <- cbind(tab, df_pct[rownames(tab), ])
     tab$gene <- rownames(tab)
-    tab <- tab[order(-abs(tab$logFC)), ]
+    tab <- tab[order(abs(tab$logFC), decreasing = TRUE), ]
 
     return(tab)
 }

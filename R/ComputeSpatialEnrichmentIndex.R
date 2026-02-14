@@ -82,7 +82,7 @@ computeSpatialEnrichmentIndex <- function(exp_mat = NULL, weights = NULL) {
         row.names = NULL
     )
 
-    df <- df[order(-df$normalized_SEI), ]
+    df <- df[order(df$normalized_SEI, decreasing = TRUE), ]
     rownames(df) <- NULL
 
     return(df)

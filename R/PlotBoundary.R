@@ -184,7 +184,6 @@ plotBoundary <- function(
         p <- p + ggplot2::facet_wrap(ggplot2::vars(.data[[split_by]]),
             ncol = ncol
         )
-
     }
 
     return(p)

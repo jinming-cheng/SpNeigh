@@ -442,10 +442,13 @@ buildBoundaryPoly <- function(boundary = NULL) {
         stop("Input must be a data frame with columns: x, y, and region_id.")
     }
 
+    # Convert coordinates to matrix once and split by region_id
+    coord_split <- split.data.frame(
+        as.matrix(boundary[, c("x", "y")]),
+        boundary$region_id
+    )
     # Build polygon list per region
-    polygon_list <- lapply(split(boundary, boundary$region_id), function(df) {
-        coords <- as.matrix(df[, c("x", "y")])
-
+    polygon_list <- lapply(coord_split, function(coords) {
         # Ensure the polygon is closed
         if (!all(coords[1, ] == coords[nrow(coords), ])) {
             coords <- rbind(coords, coords[1, ])
