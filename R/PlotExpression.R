@@ -323,7 +323,9 @@ plotSpatialExpression <- function(
         dplyr::distinct() %>%
         dplyr::arrange(.data$avg_distance)
 
-    bin_indices <- round(seq(1, nrow(df_labels), length.out = n_labels))
+    bin_indices <- unique(
+        as.integer(seq(1, nrow(df_labels), length.out = n_labels))
+    )
     df_labels$label <- ""
     df_labels$label[bin_indices] <- round(
         df_labels$avg_distance[bin_indices], 2
