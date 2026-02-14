@@ -181,9 +181,10 @@ plotBoundary <- function(
 
     # Make faceted plots if split_by is provided
     if (!is.null(split_by) && split_by %in% colnames(data_for_plot)) {
-        p <- p + ggplot2::facet_wrap(stats::as.formula(paste("~", split_by)),
+        p <- p + ggplot2::facet_wrap(ggplot2::vars(.data[[split_by]]),
             ncol = ncol
         )
+
     }
 
     return(p)

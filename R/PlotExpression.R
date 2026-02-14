@@ -173,7 +173,7 @@ plotExpression <- function(
                 stop("`split_by` must be a column in the input data.")
             }
             p[[i]] <- p[[i]] +
-                ggplot2::facet_wrap(stats::as.formula(paste("~", split_by)),
+                ggplot2::facet_wrap(ggplot2::vars(.data[[split_by]]),
                     ncol = ncol
                 )
         }
