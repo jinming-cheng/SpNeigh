@@ -66,11 +66,18 @@ computeCentroidWeights <- function(
     centroid_y <- mean(sub_coords$y)
 
     # Compute Euclidean distances to centroid
-    dists <- sqrt((sub_coords$x - centroid_x)^2 + (sub_coords$y - centroid_y)^2)
+    dists <- sqrt(
+        (sub_coords$x - centroid_x)^2 + (sub_coords$y - centroid_y)^2
+    )
 
     # Optional scaling to [0, 1]
-    if (scale && max(dists) > 0) {
-        dists <- (dists - min(dists)) / (max(dists) - min(dists))
+    if (scale) {
+        rng <- max(dists) - min(dists)
+        if (rng > 0) {
+            dists <- (dists - min(dists)) / rng
+        } else {
+            dists <- rep(0, length(dists))
+        }
     }
 
     # Compute weights based on selected method
@@ -192,8 +199,13 @@ computeBoundaryWeights <- function(
     dists <- as.numeric(min_dists)
 
     # Optional scaling
-    if (scale && max(dists) > 0) {
-        dists <- (dists - min(dists)) / (max(dists) - min(dists))
+    if (scale) {
+        rng <- max(dists) - min(dists)
+        if (rng > 0) {
+            dists <- (dists - min(dists)) / rng
+        } else {
+            dists <- rep(0, length(dists))
+        }
     }
 
     # Compute weights from distances

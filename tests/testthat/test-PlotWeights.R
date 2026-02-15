@@ -7,7 +7,9 @@ test_that("Test plotWeights", {
 
     weights_cen <- computeCentroidWeights(data = coords, cell_ids = cells_c2)
 
-    expect_silent(plotWeights(data = coords, weights = weights_cen))
+    p <- plotWeights(data = coords, weights = weights_cen)
+
+    expect_s3_class(p, "ggplot")
 
     expect_error(plotWeights(data = coords[, c("x", "y")], weights = weights_cen))
 

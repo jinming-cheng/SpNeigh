@@ -55,31 +55,45 @@ computeSpatialEnrichmentIndex <- function(exp_mat = NULL, weights = NULL) {
     if (!inherits(exp_mat, c("matrix", "dgCMatrix"))) {
         stop("'exp_mat' must be of class 'matrix' or 'dgCMatrix'.")
     }
+
     if (!is.numeric(weights)) {
         stop("'weights' must be a numeric vector.")
     }
+
     if (length(weights) != ncol(exp_mat)) {
         stop(
-            "Length of 'weights' must match the number",
-            " of columns (cells) in 'exp_mat'."
+            "Length of 'weights' must match the number ",
+            "of columns (cells) in 'exp_mat'."
         )
     }
 
-    # --- Compute SEI ---
+    if (sum(weights) == 0) {
+        stop("'weights' must not sum to zero.")
+    }
+
+    # --- Ensure gene names exist ---
+    gene_names <- rownames(exp_mat)
+    if (is.null(gene_names)) {
+        gene_names <- paste0("gene_", seq_len(nrow(exp_mat)))
+    }
+
+    # --- Normalize weights ---
     weights <- weights / sum(weights)
+
+    # --- Compute SEI ---
     SEI_scores <- as.numeric(exp_mat %*% weights)
     mean_expr <- rowMeans(exp_mat)
 
-    # --- Normalize SEI ---
+    # --- Normalize SEI (avoid division by zero) ---
     normalized_SEI <- SEI_scores / (mean_expr + 1e-6)
 
     # --- Assemble result ---
     df <- data.frame(
-        gene = rownames(exp_mat),
+        gene = gene_names,
         SEI = SEI_scores,
         mean_expr = mean_expr,
         normalized_SEI = normalized_SEI,
-        row.names = NULL
+        stringsAsFactors = FALSE
     )
 
     df <- df[order(df$normalized_SEI, decreasing = TRUE), ]
@@ -87,6 +101,7 @@ computeSpatialEnrichmentIndex <- function(exp_mat = NULL, weights = NULL) {
 
     return(df)
 }
+
 
 
 #' @title Compute Spatial Enrichment Index (SEI)

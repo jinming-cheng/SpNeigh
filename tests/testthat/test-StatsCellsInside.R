@@ -14,4 +14,9 @@ test_that("Test statsCellsInside", {
     stats_cells <- statsCellsInside(cells_inside)
 
     expect_true(is.data.frame(stats_cells))
+
+    expect_equal(
+        nlevels(stats_cells$cluster),
+        nlevels(coords$cluster)
+    )
 })

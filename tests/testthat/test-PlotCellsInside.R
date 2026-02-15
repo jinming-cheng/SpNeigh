@@ -9,9 +9,17 @@ test_that("Test plotCellsInside", {
 
     cells_inside <- getCellsInside(data = coords, boundary = boundary_polys[2, ])
 
-    expect_silent(plotCellsInside(cells_inside))
+    p <- expect_s3_class(
+        plotCellsInside(cells_inside),
+        "ggplot"
+    )
+    expect_gt(length(p$layers), 0)
 
     cells_inside$cluster <- as.character(cells_inside$cluster)
 
-    expect_silent(plotCellsInside(cells_inside, fixed_aspect_ratio = FALSE))
+    p <- expect_s3_class(
+        plotCellsInside(cells_inside, fixed_aspect_ratio = FALSE),
+        "ggplot"
+    )
+    expect_gt(length(p$layers), 0)
 })

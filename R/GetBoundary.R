@@ -197,6 +197,7 @@ extractCoords.data.frame <- function(
     extract_cluster = TRUE,
     ...) {
     required_cols <- c("x", "y", "cell")
+
     if (extract_cluster) {
         required_cols <- c(required_cols, "cluster")
     }
@@ -209,8 +210,14 @@ extractCoords.data.frame <- function(
         )
     }
 
-    data
+    # Return only relevant columns
+    if (extract_cluster) {
+        return(data[, c("cell", "x", "y", "cluster"), drop = FALSE])
+    } else {
+        return(data[, c("cell", "x", "y"), drop = FALSE])
+    }
 }
+
 
 #' @export
 #' @method extractCoords default

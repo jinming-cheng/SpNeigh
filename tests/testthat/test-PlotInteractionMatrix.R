@@ -5,7 +5,9 @@ test_that("Test plotInteractionMatrix", {
 
     rownames(mat) <- paste0("C", 1:5)
 
-    expect_silent(plotInteractionMatrix(mat))
+    p <- plotInteractionMatrix(mat)
+
+    expect_s3_class(p, "ggplot")
 
     expect_error(plotInteractionMatrix(1:10))
 })

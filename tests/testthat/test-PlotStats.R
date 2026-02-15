@@ -14,12 +14,17 @@ test_that("Test PlotStats functions", {
 
     stats_cells <- statsCellsInside(cells_inside)
 
-    expect_silent(plotStatsBar(stats_cells, stat_column = "proportion"))
+    p <- plotStatsBar(stats_cells, stat_column = "proportion")
 
+    expect_s3_class(p, "ggplot")
 
     stats_cells$cluster <- as.character(stats_cells$cluster)
 
-    expect_silent(plotStatsBar(stats_cells, stat_column = "count"))
+    p <- plotStatsBar(stats_cells, stat_column = "count")
 
-    expect_silent(plotStatsPie(stats_cells, plot_donut = TRUE))
+    expect_s3_class(p, "ggplot")
+
+    p <- plotStatsPie(stats_cells, plot_donut = TRUE)
+
+    expect_s3_class(p, "ggplot")
 })

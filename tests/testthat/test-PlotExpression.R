@@ -15,16 +15,20 @@ test_that("Test plotExpression", {
 
     colnames(exp_mat) <- df$cell
 
-    expect_silent(plotExpression(
+    p <- plotExpression(
         data = df, exp_mat = exp_mat, shuffle = TRUE,
         genes = c("gene1", "gene2")
-    ))
+    )
 
-    expect_silent(plotExpression(
+    expect_s3_class(p, "ggplot")
+
+    p <- plotExpression(
         data = df, exp_mat = exp_mat,
         sub_plot = TRUE, sub_cells = df$cell,
         genes = c("gene1")
-    ))
+    )
+    expect_s3_class(p, "ggplot")
+
 
     expect_error(plotExpression(
         data = df, exp_mat = "non_matrix",
@@ -58,6 +62,10 @@ test_that("Test plotExpression", {
     )
 
     expect_true(is.list(p))
+
+    expect_equal(length(p), 2)
+
+    expect_s3_class(p[[1]], "ggplot")
 })
 
 
@@ -75,7 +83,7 @@ test_that("Test plotSpatialExpression", {
         genes = rownames(exp_mat)[1:5]
     )
 
-    expect_true(inherits(p, "ggplot"))
+    expect_s3_class(p, "ggplot")
 
     p1 <- plotSpatialExpression(
         exp_mat = exp_mat,
@@ -84,7 +92,7 @@ test_that("Test plotSpatialExpression", {
         scale_method = "minmax"
     )
 
-    expect_true(inherits(p1, "ggplot"))
+    expect_s3_class(p1, "ggplot")
 
     expect_error(plotSpatialExpression(
         exp_mat = NULL,

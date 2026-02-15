@@ -5,9 +5,11 @@ test_that("Test plotBoundary related functions", {
 
     coords$cluster <- as.character(coords$cluster)
 
-    expect_silent(plotBoundary(coords, one_cluster = 2, split_by = "cluster"))
+    p <- plotBoundary(coords, one_cluster = 2, split_by = "cluster")
+    expect_s3_class(p, "ggplot")
 
-    expect_silent(plotBoundary(coords, one_cluster = 2, sub_plot = TRUE))
+    p <- plotBoundary(coords, one_cluster = 2, sub_plot = TRUE)
+    expect_s3_class(p, "ggplot")
 
     expect_error(plotBoundary(coords, one_cluster = NULL, sub_plot = TRUE))
 
@@ -17,7 +19,10 @@ test_that("Test plotBoundary related functions", {
 
     boundary_polys <- buildBoundaryPoly(boundary_points)
 
-    expect_silent(addBoundary(boundary_points))
+    p_layer <- addBoundary(boundary_points)
+
+    p <- ggplot2::ggplot() + p_layer
+    expect_s3_class(p, "ggplot")
 
     expect_warning(addBoundary(boundary_polys))
 
@@ -25,7 +30,10 @@ test_that("Test plotBoundary related functions", {
 
     expect_error(addBoundary(boundary = boundary_points[, c("x", "y")]))
 
-    expect_silent(addBoundaryPoly(boundary_poly = boundary_polys))
+    p_layer <- addBoundaryPoly(boundary_poly = boundary_polys)
+
+    p <- ggplot2::ggplot() + p_layer
+    expect_s3_class(p, "ggplot")
 
     expect_error(addBoundaryPoly(boundary_poly = boundary_points))
 
@@ -33,17 +41,20 @@ test_that("Test plotBoundary related functions", {
 
     ring_regions$region_id <- as.character(ring_regions$region_id)
 
-    expect_silent(plotRegion(boundary_poly = ring_regions))
+    p <- plotRegion(boundary_poly = ring_regions)
+    expect_s3_class(p, "ggplot")
 
     expect_error(plotRegion(boundary_poly = NULL))
 
-    expect_silent(plotEdge(boundary_poly = boundary_polys))
+    p <- plotEdge(boundary_poly = boundary_polys)
+    expect_s3_class(p, "ggplot")
 
     boundary_edges <- splitBoundaryPolyByAnchor(boundary_polys[1, ])
 
     boundary_edges$region_id <- as.character(boundary_edges$region_id)
 
-    expect_silent(plotEdge(boundary_edges))
+    p <- plotEdge(boundary_edges)
+    expect_s3_class(p, "ggplot")
 
     expect_error(plotEdge(boundary_poly = NULL))
 })
