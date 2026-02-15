@@ -790,7 +790,7 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] Seurat_5.4.0       SeuratObject_5.3.0 sp_2.2-0           ggplot2_4.0.2     
-#> [5] SpNeigh_0.99.32    BiocStyle_2.34.0  
+#> [5] SpNeigh_0.99.40    BiocStyle_2.34.0  
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RcppAnnoy_0.0.23            splines_4.4.2              
