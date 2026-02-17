@@ -113,6 +113,8 @@ removeOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 #' ))
 #'
 #' head(extractCoords(coords))
+#'
+#' head(extractCoords(coords, extract_cluster = FALSE))
 extractCoords <- function(
     data,
     cluster_col = NULL,

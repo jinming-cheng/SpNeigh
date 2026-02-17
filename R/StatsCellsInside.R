@@ -32,6 +32,9 @@
 #'     data = coords, one_cluster = 2,
 #'     eps = 120, minPts = 10
 #' )
+#' # Select regions of interests if needed (Optional)
+#' boundary_points <- subset(boundary_points, region_id == 2)
+#'
 #' cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
 #'
 #' # Summarize cluster statistics per region

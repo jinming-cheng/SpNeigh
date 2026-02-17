@@ -1,14 +1,3 @@
-test_that("Test computeSpatialInteractionMatrix", {
-    coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
-        package = "SpNeigh"
-    ))
-
-    interaction_matrix <- computeSpatialInteractionMatrix(coords)
-
-    expect_true(is.matrix(interaction_matrix))
-})
-
-
 test_that("computeSpatialInteractionMatrix computes correct counts", {
     # Deterministic coordinates
     df <- data.frame(
@@ -19,6 +8,8 @@ test_that("computeSpatialInteractionMatrix computes correct counts", {
     )
 
     res <- computeSpatialInteractionMatrix(df, k = 1)
+
+    expect_true(is.matrix(res))
 
     # Expected matrix
     expected <- matrix(

@@ -23,8 +23,13 @@
 #'     package = "SpNeigh"
 #' ))
 #'
-#' # Plot cells inside boundaries
+#' # Obtain boundaries
 #' boundary_points <- getBoundary(data = coords, one_cluster = 2)
+#'
+#' # Select regions of interests if needed (Optional)
+#' boundary_points <- subset(boundary_points, region_id == 2)
+#'
+#' # Plot cells inside boundaries
 #' cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
 #' plotCellsInside(cells_inside)
 #'

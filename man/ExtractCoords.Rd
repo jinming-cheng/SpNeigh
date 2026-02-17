@@ -44,4 +44,6 @@ coords <- readRDS(system.file(
 ))
 
 head(extractCoords(coords))
+
+head(extractCoords(coords, extract_cluster = FALSE))
 }
