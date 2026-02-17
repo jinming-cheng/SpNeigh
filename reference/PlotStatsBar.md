@@ -64,6 +64,7 @@ boundary_points <- getBoundary(
     data = coords, one_cluster = 2,
     eps = 120, minPts = 10
 )
+boundary_points <- subset(boundary_points, region_id == 2) # (Optional)
 cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
 stats_cells <- statsCellsInside(cells_inside)
 

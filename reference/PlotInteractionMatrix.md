@@ -59,10 +59,14 @@ coords <- readRDS(system.file("extdata", "MouseBrainCoords.rds",
     package = "SpNeigh"
 ))
 
+# Obtain boundaries
 boundary_points <- getBoundary(
     data = coords, one_cluster = 2,
     eps = 120, minPts = 10
 )
+# Select regions of interests if needed (Optional)
+boundary_points <- subset(boundary_points, region_id == 2)
+
 ring_regions <- getRingRegion(boundary = boundary_points, dist = 100)
 cells_ring <- getCellsInside(data = coords, boundary = ring_regions)
 coords_sub <- subset(coords, cell %in% cells_ring$cell)

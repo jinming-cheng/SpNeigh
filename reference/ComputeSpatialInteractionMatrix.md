@@ -72,21 +72,19 @@ boundary_points <- getBoundary(
     data = coords, one_cluster = 2,
     eps = 120, minPts = 10
 )
+boundary_points <- subset(boundary_points, region_id == 2) # (Optional)
 cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
 coords_sub <- subset(coords, cell %in% cells_inside$cell)
 computeSpatialInteractionMatrix(coords_sub)
-#>       0     2   3   4   5   6   10
-#> 0  5115  1965  94  65  24  17  410
-#> 2  2199 27625 923 558 187 201 1337
-#> 3   100   893  50 136  22  16  133
-#> 4    70   526 137 581   0  26    0
-#> 5    25   129  18   0 942   0    6
-#> 6    20   211  16  25   0  18   50
-#> 10  416  1274 123   0   6  54 3987
+#>      0    2  3   5
+#> 0 3003   94 12  21
+#> 2  179 1239  2 170
+#> 3   10    2  0  18
+#> 5   23  112 15 940
 
 # Compute interaction matrix for cells inside ring region 2
 ring_regions <- getRingRegion(boundary = boundary_points, dist = 100)
-cells_ring <- getCellsInside(data = coords, boundary = ring_regions[2, ])
+cells_ring <- getCellsInside(data = coords, boundary = ring_regions)
 coords_sub <- subset(coords, cell %in% cells_ring$cell)
 computeSpatialInteractionMatrix(coords_sub)
 #>      0   2   3    5 6 7

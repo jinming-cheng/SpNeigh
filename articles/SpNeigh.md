@@ -789,12 +789,12 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] Seurat_5.4.0       SeuratObject_5.3.0 sp_2.2-0           ggplot2_4.0.2     
-#> [5] SpNeigh_0.99.40    BiocStyle_2.34.0  
+#> [1] Seurat_5.4.0       SeuratObject_5.3.0 sp_2.2-1           ggplot2_4.0.2     
+#> [5] SpNeigh_0.99.41    BiocStyle_2.34.0  
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RcppAnnoy_0.0.23            splines_4.4.2              
-#>   [3] later_1.4.5                 tibble_3.3.1               
+#>   [3] later_1.4.6                 tibble_3.3.1               
 #>   [5] polyclip_1.10-7             fastDummies_1.7.5          
 #>   [7] lifecycle_1.0.5             sf_1.0-24                  
 #>   [9] globals_0.19.0              lattice_0.22-9             
@@ -804,7 +804,7 @@ sessionInfo()
 #>  [17] jquerylib_0.1.4             yaml_2.3.12                
 #>  [19] httpuv_1.6.16               otel_0.2.0                 
 #>  [21] sctransform_0.4.3           spam_2.11-3                
-#>  [23] spatstat.sparse_3.1-0       reticulate_1.44.1          
+#>  [23] spatstat.sparse_3.1-0       reticulate_1.45.0          
 #>  [25] cowplot_1.2.0               pbapply_1.7-4              
 #>  [27] DBI_1.2.3                   RColorBrewer_1.1-3         
 #>  [29] abind_1.4-8                 zlibbioc_1.52.0            
@@ -837,7 +837,7 @@ sessionInfo()
 #>  [83] tensor_1.5.1                spatstat.data_3.1-9        
 #>  [85] tidyr_1.3.2                 generics_0.1.4             
 #>  [87] data.table_1.18.2.1         FNN_1.1.4.1                
-#>  [89] class_7.3-23                httr_1.4.7                 
+#>  [89] class_7.3-23                httr_1.4.8                 
 #>  [91] htmlwidgets_1.6.4           S4Arrays_1.6.0             
 #>  [93] uwot_0.2.4                  pkgconfig_2.0.3            
 #>  [95] gtable_0.3.6                lmtest_0.9-40              

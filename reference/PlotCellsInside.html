@@ -15,7 +15,7 @@ and the function offers two plotting modes: using geom_sf()
 
     <a class="navbar-brand me-2" href="../index.html">SpNeigh</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.40</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.41</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,8 +106,13 @@ spatial regions.</p>
 <span class="r-in"><span>    package <span class="op">=</span> <span class="st">"SpNeigh"</span></span></span>
 <span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Plot cells inside boundaries</span></span></span>
+<span class="r-in"><span><span class="co"># Obtain boundaries</span></span></span>
 <span class="r-in"><span><span class="va">boundary_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="GetBoundary.html">getBoundary</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, one_cluster <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Select regions of interests if needed (Optional)</span></span></span>
+<span class="r-in"><span><span class="va">boundary_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">boundary_points</span>, <span class="va">region_id</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot cells inside boundaries</span></span></span>
 <span class="r-in"><span><span class="va">cells_inside</span> <span class="op">&lt;-</span> <span class="fu"><a href="GetCellsInside.html">getCellsInside</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, boundary <span class="op">=</span> <span class="va">boundary_points</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">plotCellsInside</span><span class="op">(</span><span class="va">cells_inside</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="PlotCellsInside-1.png" alt="" width="700" height="433"></span>

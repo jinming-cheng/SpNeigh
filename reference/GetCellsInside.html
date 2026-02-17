@@ -17,7 +17,7 @@ The function uses spatial point-in-polygon matching via sf::st_within."></head><
 
     <a class="navbar-brand me-2" href="../index.html">SpNeigh</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.40</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.41</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,47 +108,51 @@ a <code>region_id</code> column.</p>
 <span class="r-in"><span>    data <span class="op">=</span> <span class="va">coords</span>, one_cluster <span class="op">=</span> <span class="fl">2</span>,</span></span>
 <span class="r-in"><span>    eps <span class="op">=</span> <span class="fl">120</span>, minPts <span class="op">=</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Select regions of interests if needed (Optional)</span></span></span>
+<span class="r-in"><span><span class="va">boundary_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">boundary_points</span>, <span class="va">region_id</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">cells_inside</span> <span class="op">&lt;-</span> <span class="fu">getCellsInside</span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, boundary <span class="op">=</span> <span class="va">boundary_points</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cells_inside</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 5073 features and 3 fields</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 584 features and 3 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: 1590.613 ymin: 1640.136 xmax: 5443.607 ymax: 3531.379</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: 4665.024 ymin: 2692.795 xmax: 5163.274 ymax: 3317.818</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> First 10 features:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    cell cluster region_id                  geometry</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3       2         1 POINT (2368.073 2534.409)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20   20       2         1 POINT (2456.959 2560.494)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31   31       2         1 POINT (2152.998 2554.538)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43   43       2         1 POINT (2312.183 2555.867)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44   44       2         1  POINT (2323.21 2551.805)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50   50       2         1 POINT (2356.391 2544.839)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 52   52       2         1 POINT (2387.844 2537.827)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 53   53       2         1 POINT (2401.216 2526.458)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 54   54       2         1 POINT (2392.535 2555.696)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 55   55       2         1 POINT (2407.538 2545.443)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      cell cluster region_id                  geometry</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1860 1860       2         2  POINT (4937.139 3062.65)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1863 1863       2         2  POINT (4926.83 3260.598)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1865 1865       2         2 POINT (4959.216 3264.934)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1875 1875       5         2 POINT (4961.168 3277.609)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1880 1880       2         2 POINT (4939.041 3272.613)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1891 1891       2         2 POINT (4955.413 3256.343)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1894 1894       2         2 POINT (4932.086 3195.083)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1897 1897       2         2 POINT (4934.451 3038.603)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1898 1898       2         2  POINT (4942.686 3216.76)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1902 1902       2         2 POINT (4953.803 3244.153)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Get cells inside rings</span></span></span>
 <span class="r-in"><span><span class="va">ring_regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="GetRingRegion.html">getRingRegion</a></span><span class="op">(</span>boundary <span class="op">=</span> <span class="va">boundary_points</span>, dist <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cells_ring</span> <span class="op">&lt;-</span> <span class="fu">getCellsInside</span><span class="op">(</span>data <span class="op">=</span> <span class="va">coords</span>, boundary <span class="op">=</span> <span class="va">ring_regions</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cells_ring</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 4362 features and 3 fields</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 1369 features and 3 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: 1482.997 ymin: 1530.545 xmax: 5441.679 ymax: 3532.463</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: 4572.773 ymin: 2600.433 xmax: 5264.996 ymax: 3421.448</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> First 10 features:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    cell cluster region_id                  geometry</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21   21       4         1 POINT (2080.017 2559.984)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22   22       4         1 POINT (2088.025 2526.528)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23   23       2         1 POINT (2085.119 2546.843)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24   24       2         1 POINT (2101.906 2549.501)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25   25       4         1 POINT (2102.112 2540.185)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26   26       4         1 POINT (2089.812 2539.796)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27   27       4         1  POINT (2095.253 2533.08)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28   28       4         1  POINT (2100.02 2527.252)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29   29       4         1 POINT (2197.507 2524.511)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30   30       3         1 POINT (2209.931 2542.314)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      cell cluster region_id                  geometry</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1861 1861       5         2 POINT (4933.268 3097.647)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1862 1862       2         2 POINT (4934.709 3075.913)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1864 1864       5         2 POINT (4954.823 3070.896)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1866 1866       5         2 POINT (4951.338 3054.113)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1867 1867       5         2 POINT (4952.474 3130.228)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1868 1868       5         2 POINT (4958.769 3086.888)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1869 1869       5         2  POINT (4951.975 3185.69)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1870 1870       5         2 POINT (4950.835 3113.254)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1871 1871       5         2 POINT (4949.809 3047.716)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1872 1872       2         2  POINT (4966.83 3247.072)</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

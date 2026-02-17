@@ -46,18 +46,19 @@ boundary_points <- getBoundary(
     data = coords, one_cluster = 2,
     eps = 120, minPts = 10
 )
+# Select regions of interests if needed (Optional)
+boundary_points <- subset(boundary_points, region_id == 2)
+
 cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
 
 # Summarize cluster statistics per region
 stats_cells <- statsCellsInside(cells_inside)
 head(stats_cells)
-#> # A tibble: 6 × 4
+#> # A tibble: 4 × 4
 #>   region_id cluster count proportion
 #>   <chr>     <fct>   <int>      <dbl>
-#> 1 1         0         456   0.102   
-#> 2 1         2        3144   0.700   
-#> 3 1         3         132   0.0294  
-#> 4 1         4         134   0.0299  
-#> 5 1         5           3   0.000668
-#> 6 1         6          34   0.00757 
+#> 1 2         0         313    0.536  
+#> 2 2         2         159    0.272  
+#> 3 2         3           3    0.00514
+#> 4 2         5         109    0.187  
 ```

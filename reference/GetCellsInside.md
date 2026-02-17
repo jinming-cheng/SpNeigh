@@ -69,45 +69,49 @@ boundary_points <- getBoundary(
     data = coords, one_cluster = 2,
     eps = 120, minPts = 10
 )
+
+# Select regions of interests if needed (Optional)
+boundary_points <- subset(boundary_points, region_id == 2)
+
 cells_inside <- getCellsInside(data = coords, boundary = boundary_points)
 cells_inside
-#> Simple feature collection with 5073 features and 3 fields
+#> Simple feature collection with 584 features and 3 fields
 #> Geometry type: POINT
 #> Dimension:     XY
-#> Bounding box:  xmin: 1590.613 ymin: 1640.136 xmax: 5443.607 ymax: 3531.379
+#> Bounding box:  xmin: 4665.024 ymin: 2692.795 xmax: 5163.274 ymax: 3317.818
 #> CRS:           NA
 #> First 10 features:
-#>    cell cluster region_id                  geometry
-#> 3     3       2         1 POINT (2368.073 2534.409)
-#> 20   20       2         1 POINT (2456.959 2560.494)
-#> 31   31       2         1 POINT (2152.998 2554.538)
-#> 43   43       2         1 POINT (2312.183 2555.867)
-#> 44   44       2         1  POINT (2323.21 2551.805)
-#> 50   50       2         1 POINT (2356.391 2544.839)
-#> 52   52       2         1 POINT (2387.844 2537.827)
-#> 53   53       2         1 POINT (2401.216 2526.458)
-#> 54   54       2         1 POINT (2392.535 2555.696)
-#> 55   55       2         1 POINT (2407.538 2545.443)
+#>      cell cluster region_id                  geometry
+#> 1860 1860       2         2  POINT (4937.139 3062.65)
+#> 1863 1863       2         2  POINT (4926.83 3260.598)
+#> 1865 1865       2         2 POINT (4959.216 3264.934)
+#> 1875 1875       5         2 POINT (4961.168 3277.609)
+#> 1880 1880       2         2 POINT (4939.041 3272.613)
+#> 1891 1891       2         2 POINT (4955.413 3256.343)
+#> 1894 1894       2         2 POINT (4932.086 3195.083)
+#> 1897 1897       2         2 POINT (4934.451 3038.603)
+#> 1898 1898       2         2  POINT (4942.686 3216.76)
+#> 1902 1902       2         2 POINT (4953.803 3244.153)
 
 # Get cells inside rings
 ring_regions <- getRingRegion(boundary = boundary_points, dist = 100)
 cells_ring <- getCellsInside(data = coords, boundary = ring_regions)
 cells_ring
-#> Simple feature collection with 4362 features and 3 fields
+#> Simple feature collection with 1369 features and 3 fields
 #> Geometry type: POINT
 #> Dimension:     XY
-#> Bounding box:  xmin: 1482.997 ymin: 1530.545 xmax: 5441.679 ymax: 3532.463
+#> Bounding box:  xmin: 4572.773 ymin: 2600.433 xmax: 5264.996 ymax: 3421.448
 #> CRS:           NA
 #> First 10 features:
-#>    cell cluster region_id                  geometry
-#> 21   21       4         1 POINT (2080.017 2559.984)
-#> 22   22       4         1 POINT (2088.025 2526.528)
-#> 23   23       2         1 POINT (2085.119 2546.843)
-#> 24   24       2         1 POINT (2101.906 2549.501)
-#> 25   25       4         1 POINT (2102.112 2540.185)
-#> 26   26       4         1 POINT (2089.812 2539.796)
-#> 27   27       4         1  POINT (2095.253 2533.08)
-#> 28   28       4         1  POINT (2100.02 2527.252)
-#> 29   29       4         1 POINT (2197.507 2524.511)
-#> 30   30       3         1 POINT (2209.931 2542.314)
+#>      cell cluster region_id                  geometry
+#> 1861 1861       5         2 POINT (4933.268 3097.647)
+#> 1862 1862       2         2 POINT (4934.709 3075.913)
+#> 1864 1864       5         2 POINT (4954.823 3070.896)
+#> 1866 1866       5         2 POINT (4951.338 3054.113)
+#> 1867 1867       5         2 POINT (4952.474 3130.228)
+#> 1868 1868       5         2 POINT (4958.769 3086.888)
+#> 1869 1869       5         2  POINT (4951.975 3185.69)
+#> 1870 1870       5         2 POINT (4950.835 3113.254)
+#> 1871 1871       5         2 POINT (4949.809 3047.716)
+#> 1872 1872       2         2  POINT (4966.83 3247.072)
 ```
