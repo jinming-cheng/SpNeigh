@@ -34,6 +34,8 @@ getCellsInside(data = NULL, cluster_col = NULL, boundary = NULL)
 
   - `"cluster"` for `SpatialExperiment` objects
 
+  - `"cluster"` for `data.frame` objects
+
 - boundary:
 
   An `sf` object (polygon or ring) or a data frame of boundary points

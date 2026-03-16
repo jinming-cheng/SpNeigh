@@ -27,6 +27,8 @@ extractCoords(data, cluster_col = NULL, extract_cluster = TRUE, ...)
 
   - `"cluster"` for `SpatialExperiment` objects
 
+  - `"cluster"` for `data.frame` objects
+
 - extract_cluster:
 
   Logical indicating whether to extract cluster information. If `FALSE`,
@@ -38,8 +40,10 @@ extractCoords(data, cluster_col = NULL, extract_cluster = TRUE, ...)
 
 ## Value
 
-A data frame with columns `x`, `y`, and `cell`, and optionally
-`cluster`.
+A data frame containing columns `x`, `y`, and `cell`, and optionally
+`cluster`. For `Seurat` and `SpatialExperiment` inputs, only these
+standardized columns are returned. For `data.frame` input, additional
+columns present in the input may also be retained.
 
 ## Details
 
@@ -55,20 +59,20 @@ coords <- readRDS(system.file(
 ))
 
 head(extractCoords(coords))
-#>   cell        x        y cluster
-#> 1    1 1898.815 2540.963       4
-#> 2    2 1895.305 2532.627       4
-#> 3    3 2368.073 2534.409       2
-#> 4    4 1903.726 2560.010       4
-#> 5    5 1917.481 2543.132       4
-#> 6    6 1926.540 2560.044       4
+#>          x        y cell cluster
+#> 1 1898.815 2540.963    1       4
+#> 2 1895.305 2532.627    2       4
+#> 3 2368.073 2534.409    3       2
+#> 4 1903.726 2560.010    4       4
+#> 5 1917.481 2543.132    5       4
+#> 6 1926.540 2560.044    6       4
 
 head(extractCoords(coords, extract_cluster = FALSE))
-#>   cell        x        y
-#> 1    1 1898.815 2540.963
-#> 2    2 1895.305 2532.627
-#> 3    3 2368.073 2534.409
-#> 4    4 1903.726 2560.010
-#> 5    5 1917.481 2543.132
-#> 6    6 1926.540 2560.044
+#>          x        y cell cluster
+#> 1 1898.815 2540.963    1       4
+#> 2 1895.305 2532.627    2       4
+#> 3 2368.073 2534.409    3       2
+#> 4 1903.726 2560.010    4       4
+#> 5 1917.481 2543.132    5       4
+#> 6 1926.540 2560.044    6       4
 ```

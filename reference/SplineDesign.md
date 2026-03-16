@@ -52,19 +52,19 @@ summary(fit)
 #> 
 #> Residuals:
 #>      Min       1Q   Median       3Q      Max 
-#> -0.45632 -0.12606 -0.01557  0.11582  0.52905 
+#> -0.47727 -0.12913 -0.01249  0.10844  0.46247 
 #> 
 #> Coefficients:
-#>              Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept) -0.008342   0.019045  -0.438    0.662    
-#> Z1          -5.635501   0.190454 -29.590   <2e-16 ***
-#> Z2           3.591123   0.190454  18.856   <2e-16 ***
-#> Z3           2.891887   0.190454  15.184   <2e-16 ***
+#>             Estimate Std. Error t value Pr(>|t|)    
+#> (Intercept) -0.01236    0.01838  -0.672    0.503    
+#> Z1          -5.63691    0.18383 -30.664   <2e-16 ***
+#> Z2           3.43634    0.18383  18.693   <2e-16 ***
+#> Z3           2.98165    0.18383  16.220   <2e-16 ***
 #> ---
 #> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 #> 
-#> Residual standard error: 0.1905 on 96 degrees of freedom
-#> Multiple R-squared:  0.9384, Adjusted R-squared:  0.9364 
-#> F-statistic: 487.2 on 3 and 96 DF,  p-value: < 2.2e-16
+#> Residual standard error: 0.1838 on 96 degrees of freedom
+#> Multiple R-squared:  0.9418, Adjusted R-squared:   0.94 
+#> F-statistic: 517.6 on 3 and 96 DF,  p-value: < 2.2e-16
 #> 
 ```

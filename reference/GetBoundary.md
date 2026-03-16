@@ -41,6 +41,8 @@ getBoundary(
 
   - `"cluster"` for `SpatialExperiment` objects
 
+  - `"cluster"` for `data.frame` objects
+
 - one_cluster:
 
   The cluster ID (numeric or character) to extract the boundary for.

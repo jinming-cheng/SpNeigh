@@ -29,6 +29,8 @@ computeSpatialInteractionMatrix(data = NULL, cluster_col = NULL, k = 10)
 
   - `"cluster"` for `SpatialExperiment` objects
 
+  - `"cluster"` for `data.frame` objects
+
 - k:
 
   Integer. Number of nearest neighbors to use for each cell. Default is

@@ -71,6 +71,8 @@ plotExpression(
 
   - `"cluster"` for `SpatialExperiment` objects
 
+  - `"cluster"` for `data.frame` objects
+
 - one_cluster:
 
   Optional. Cluster ID to subset cells if `sub_plot = TRUE`.

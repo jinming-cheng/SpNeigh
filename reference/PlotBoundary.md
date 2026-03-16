@@ -47,6 +47,8 @@ plotBoundary(
 
   - `"cluster"` for `SpatialExperiment` objects
 
+  - `"cluster"` for `data.frame` objects
+
 - one_cluster:
 
   The cluster ID to plot and optionally compute its boundary. Required

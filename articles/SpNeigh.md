@@ -197,9 +197,9 @@ Load Seurat pacakge
 library(Seurat)
 #> Loading required package: SeuratObject
 #> Loading required package: sp
-#> 'SeuratObject' was built with package 'Matrix' 1.7.1 but the current
-#> version is 1.7.4; it is recomended that you reinstall 'SeuratObject' as
-#> the ABI for 'Matrix' may have changed
+#> 'SeuratObject' was built under R 4.4.0 but the current version is
+#> 4.4.2; it is recomended that you reinstall 'SeuratObject' as the ABI
+#> for R may have changed
 #> 
 #> Attaching package: 'SeuratObject'
 #> The following objects are masked from 'package:base':
@@ -790,14 +790,14 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] Seurat_5.4.0       SeuratObject_5.3.0 sp_2.2-1           ggplot2_4.0.2     
-#> [5] SpNeigh_0.99.41    BiocStyle_2.34.0  
+#> [5] SpNeigh_0.99.42    BiocStyle_2.34.0  
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RcppAnnoy_0.0.23            splines_4.4.2              
-#>   [3] later_1.4.6                 tibble_3.3.1               
+#>   [3] later_1.4.8                 tibble_3.3.1               
 #>   [5] polyclip_1.10-7             fastDummies_1.7.5          
-#>   [7] lifecycle_1.0.5             sf_1.0-24                  
-#>   [9] globals_0.19.0              lattice_0.22-9             
+#>   [7] lifecycle_1.0.5             sf_1.1-0                   
+#>   [9] globals_0.19.1              lattice_0.22-9             
 #>  [11] MASS_7.3-65                 magrittr_2.0.4             
 #>  [13] limma_3.62.2                plotly_4.12.0              
 #>  [15] sass_0.4.10                 rmarkdown_2.30             
@@ -806,14 +806,14 @@ sessionInfo()
 #>  [21] sctransform_0.4.3           spam_2.11-3                
 #>  [23] spatstat.sparse_3.1-0       reticulate_1.45.0          
 #>  [25] cowplot_1.2.0               pbapply_1.7-4              
-#>  [27] DBI_1.2.3                   RColorBrewer_1.1-3         
+#>  [27] DBI_1.3.0                   RColorBrewer_1.1-3         
 #>  [29] abind_1.4-8                 zlibbioc_1.52.0            
 #>  [31] Rtsne_0.17                  GenomicRanges_1.58.0       
 #>  [33] purrr_1.2.1                 BiocGenerics_0.52.0        
 #>  [35] GenomeInfoDbData_1.2.13     IRanges_2.40.1             
 #>  [37] S4Vectors_0.44.0            ggrepel_0.9.6              
-#>  [39] irlba_2.3.7                 listenv_0.10.0             
-#>  [41] spatstat.utils_3.2-1        units_1.0-0                
+#>  [39] irlba_2.3.7                 listenv_0.10.1             
+#>  [41] spatstat.utils_3.2-2        units_1.0-1                
 #>  [43] goftest_1.2-3               RSpectra_0.16-2            
 #>  [45] spatstat.random_3.4-4       fitdistrplus_1.2-6         
 #>  [47] parallelly_1.46.1           pkgdown_2.2.0              
@@ -823,9 +823,9 @@ sessionInfo()
 #>  [55] stats4_4.4.2                spatstat.explore_3.7-0     
 #>  [57] jsonlite_2.0.0              e1071_1.7-17               
 #>  [59] progressr_0.18.0            ggridges_0.5.7             
-#>  [61] survival_3.8-6              systemfonts_1.3.1          
+#>  [61] survival_3.8-6              systemfonts_1.3.2          
 #>  [63] dbscan_1.2.4                tools_4.4.2                
-#>  [65] ragg_1.5.0                  ica_1.0-3                  
+#>  [65] ragg_1.5.1                  ica_1.0-3                  
 #>  [67] Rcpp_1.1.1                  glue_1.8.0                 
 #>  [69] gridExtra_2.3               SparseArray_1.6.2          
 #>  [71] xfun_0.56                   MatrixGenerics_1.18.1      
@@ -833,7 +833,7 @@ sessionInfo()
 #>  [75] withr_3.0.2                 BiocManager_1.30.27        
 #>  [77] fastmap_1.2.0               digest_0.6.39              
 #>  [79] R6_2.6.1                    mime_0.13                  
-#>  [81] textshaping_1.0.4           scattermore_1.2            
+#>  [81] textshaping_1.0.5           scattermore_1.2            
 #>  [83] tensor_1.5.1                spatstat.data_3.1-9        
 #>  [85] tidyr_1.3.2                 generics_0.1.4             
 #>  [87] data.table_1.18.2.1         FNN_1.1.4.1                
@@ -856,19 +856,19 @@ sessionInfo()
 #> [121] desc_1.4.3                  pillar_1.11.1              
 #> [123] grid_4.4.2                  vctrs_0.7.1                
 #> [125] RANN_2.6.2                  promises_1.5.0             
-#> [127] xtable_1.8-4                cluster_2.1.8.2            
-#> [129] evaluate_1.0.5              magick_2.9.0               
+#> [127] xtable_1.8-8                cluster_2.1.8.2            
+#> [129] evaluate_1.0.5              magick_2.9.1               
 #> [131] cli_3.6.5                   compiler_4.4.2             
 #> [133] rlang_1.1.7                 crayon_1.5.3               
-#> [135] future.apply_1.20.1         labeling_0.4.3             
+#> [135] future.apply_1.20.2         labeling_0.4.3             
 #> [137] classInt_0.4-11             plyr_1.8.9                 
-#> [139] fs_1.6.6                    stringi_1.8.7              
+#> [139] fs_1.6.7                    stringi_1.8.7              
 #> [141] viridisLite_0.4.3           deldir_2.0-4               
 #> [143] lazyeval_0.2.2              spatstat.geom_3.7-0        
 #> [145] V8_8.0.1                    Matrix_1.7-4               
 #> [147] RcppHNSW_0.6.0              patchwork_1.3.2            
-#> [149] future_1.69.0               statmod_1.5.1              
-#> [151] shiny_1.12.1                SummarizedExperiment_1.36.0
+#> [149] future_1.70.0               statmod_1.5.1              
+#> [151] shiny_1.13.0                SummarizedExperiment_1.36.0
 #> [153] ROCR_1.0-12                 igraph_2.2.2               
 #> [155] bslib_0.10.0
 ```
