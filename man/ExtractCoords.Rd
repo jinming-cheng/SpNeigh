@@ -16,6 +16,7 @@ depending on the input object type:
 \itemize{
 \item \code{"seurat_clusters"} for \code{Seurat} objects
 \item \code{"cluster"} for \code{SpatialExperiment} objects
+\item \code{"cluster"} for \code{data.frame} objects
 }}
 
 \item{extract_cluster}{Logical indicating whether to extract cluster
@@ -25,13 +26,17 @@ are returned. Default is \code{TRUE}.}
 \item{...}{Additional arguments (unused).}
 }
 \value{
-A data frame with columns \code{x}, \code{y}, and \code{cell},
+A data frame containing columns \code{x}, \code{y}, and \code{cell},
 and optionally \code{cluster}.
+For \code{Seurat} and \code{SpatialExperiment}
+inputs, only these standardized columns are returned.
+For \code{data.frame}
+input, additional columns present in the input may also be retained.
 }
 \description{
 Extract spatial coordinates and (optionally) cluster assignments from
-a \code{Seurat} object, a \code{SpatialExperiment} object, or a user-supplied
-data frame.
+a \code{Seurat} object, a \code{SpatialExperiment} object,
+or a user-supplied data frame.
 }
 \details{
 This is an S3 generic with methods implemented for

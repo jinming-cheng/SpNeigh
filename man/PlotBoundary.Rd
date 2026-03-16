@@ -32,6 +32,7 @@ depending on the input object type:
 \itemize{
 \item \code{"seurat_clusters"} for \code{Seurat} objects
 \item \code{"cluster"} for \code{SpatialExperiment} objects
+\item \code{"cluster"} for \code{data.frame} objects
 }}
 
 \item{one_cluster}{The cluster ID to plot and optionally compute its

@@ -73,16 +73,14 @@ removeOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 }
 
 
-
 #' Extract spatial coordinates and cluster information
 #'
 #' Extract spatial coordinates and (optionally) cluster assignments from
-#' a \code{Seurat} object, a \code{SpatialExperiment} object, or a user-supplied
-#' data frame.
+#' a \code{Seurat} object, a \code{SpatialExperiment} object,
+#' or a user-supplied data frame.
 #'
 #' This is an S3 generic with methods implemented for
 #' \code{Seurat}, \code{SpatialExperiment}, and \code{data.frame}.
-#'
 #'
 #' @param data A \code{Seurat} object, a \code{SpatialExperiment} object,
 #'   or a data frame containing spatial coordinates.
@@ -93,6 +91,7 @@ removeOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 #'   \itemize{
 #'     \item \code{"seurat_clusters"} for \code{Seurat} objects
 #'     \item \code{"cluster"} for \code{SpatialExperiment} objects
+#'     \item \code{"cluster"} for \code{data.frame} objects
 #'   }
 #'
 #' @param extract_cluster Logical indicating whether to extract cluster
@@ -101,8 +100,12 @@ removeOutliers <- function(coords, k = 5, distance_cutoff = 30) {
 #'
 #' @param ... Additional arguments (unused).
 #'
-#' @return A data frame with columns \code{x}, \code{y}, and \code{cell},
+#' @return A data frame containing columns \code{x}, \code{y}, and \code{cell},
 #'   and optionally \code{cluster}.
+#'   For \code{Seurat} and \code{SpatialExperiment}
+#'   inputs, only these standardized columns are returned.
+#'   For \code{data.frame}
+#'   input, additional columns present in the input may also be retained.
 #'
 #' @export
 #'
@@ -198,26 +201,38 @@ extractCoords.data.frame <- function(
     cluster_col = NULL,
     extract_cluster = TRUE,
     ...) {
-    required_cols <- c("x", "y", "cell")
-
-    if (extract_cluster) {
-        required_cols <- c(required_cols, "cluster")
+    if (!is.data.frame(data)) {
+        stop("`data` must be a data.frame.", call. = FALSE)
     }
+
+    required_cols <- c("x", "y", "cell")
 
     missing_cols <- setdiff(required_cols, colnames(data))
     if (length(missing_cols) > 0) {
         stop(
             "Input data frame is missing required columns: ",
-            paste(missing_cols, collapse = ", ")
+            paste(missing_cols, collapse = ", "),
+            call. = FALSE
         )
     }
 
-    # Return only relevant columns
     if (extract_cluster) {
-        return(data[, c("cell", "x", "y", "cluster"), drop = FALSE])
-    } else {
-        return(data[, c("cell", "x", "y"), drop = FALSE])
+        if (is.null(cluster_col)) {
+            cluster_col <- "cluster"
+        }
+
+        if (!cluster_col %in% colnames(data)) {
+            stop(
+                "Cluster column '", cluster_col,
+                "' not found in data.",
+                call. = FALSE
+            )
+        }
+
+        data$cluster <- data[[cluster_col]]
     }
+
+    return(data)
 }
 
 

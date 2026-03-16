@@ -114,7 +114,7 @@ test_that("extractCoords errors when required columns missing", {
 
     expect_error(
         extractCoords(df, extract_cluster = TRUE),
-        "missing required columns"
+        "Cluster column 'cluster' not found in data."
     )
 })
 
@@ -129,7 +129,7 @@ test_that("extractCoords respects extract_cluster = FALSE", {
 
     res <- extractCoords(df, extract_cluster = FALSE)
 
-    expect_equal(colnames(res), c("cell", "x", "y"))
+    expect_true( all(c("cell", "x", "y") %in% colnames(res)) )
 })
 
 test_that("extractCoords errors on unsupported class", {

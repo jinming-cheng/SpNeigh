@@ -16,6 +16,7 @@ depending on the input object type:
 \itemize{
 \item \code{"seurat_clusters"} for \code{Seurat} objects
 \item \code{"cluster"} for \code{SpatialExperiment} objects
+\item \code{"cluster"} for \code{data.frame} objects
 }}
 
 \item{boundary}{An \code{sf} object (polygon or ring) or a data frame

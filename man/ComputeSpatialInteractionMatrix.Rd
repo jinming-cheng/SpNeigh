@@ -17,6 +17,7 @@ depending on the input object type:
 \itemize{
 \item \code{"seurat_clusters"} for \code{Seurat} objects
 \item \code{"cluster"} for \code{SpatialExperiment} objects
+\item \code{"cluster"} for \code{data.frame} objects
 }}
 
 \item{k}{Integer. Number of nearest neighbors to use for each cell.
