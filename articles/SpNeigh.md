@@ -64,10 +64,14 @@ approaches.
 
 ## Installation
 
-The **SpNeigh** package can be installed from GitHub by using:
+Install **SpNeigh** from Bioconductor
 
 ``` r
-devtools::install_github("jinming-cheng/SpNeigh")
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+
+BiocManager::install("SpNeigh")
 ```
 
 ## Load packages
@@ -200,6 +204,9 @@ library(Seurat)
 #> 'SeuratObject' was built under R 4.4.0 but the current version is
 #> 4.4.2; it is recomended that you reinstall 'SeuratObject' as the ABI
 #> for R may have changed
+#> 'SeuratObject' was built with package 'Matrix' 1.7.4 but the current
+#> version is 1.7.5; it is recomended that you reinstall 'SeuratObject' as
+#> the ABI for 'Matrix' may have changed
 #> 
 #> Attaching package: 'SeuratObject'
 #> The following objects are masked from 'package:base':
@@ -652,7 +659,7 @@ plotWeights(data = coords, weights = weights_bon, point_size = 0.8) +
     labs(title = "Boundary weights")
 ```
 
-![](SpNeigh_files/figure-html/unnamed-chunk-35-1.png)
+![](SpNeigh_files/figure-html/unnamed-chunk-34-1.png)
 
 ### Perform spatial differential analysis along boundary weights
 
@@ -790,7 +797,7 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] Seurat_5.4.0       SeuratObject_5.3.0 sp_2.2-1           ggplot2_4.0.2     
-#> [5] SpNeigh_0.99.42    BiocStyle_2.34.0  
+#> [5] SpNeigh_0.99.43    BiocStyle_2.34.0  
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RcppAnnoy_0.0.23            splines_4.4.2              
@@ -798,11 +805,11 @@ sessionInfo()
 #>   [5] polyclip_1.10-7             fastDummies_1.7.5          
 #>   [7] lifecycle_1.0.5             sf_1.1-0                   
 #>   [9] globals_0.19.1              lattice_0.22-9             
-#>  [11] MASS_7.3-65                 magrittr_2.0.4             
+#>  [11] MASS_7.3-65                 magrittr_2.0.5             
 #>  [13] limma_3.62.2                plotly_4.12.0              
-#>  [15] sass_0.4.10                 rmarkdown_2.30             
+#>  [15] sass_0.4.10                 rmarkdown_2.31             
 #>  [17] jquerylib_0.1.4             yaml_2.3.12                
-#>  [19] httpuv_1.6.16               otel_0.2.0                 
+#>  [19] httpuv_1.6.17               otel_0.2.0                 
 #>  [21] sctransform_0.4.3           spam_2.11-3                
 #>  [23] spatstat.sparse_3.1-0       reticulate_1.45.0          
 #>  [25] cowplot_1.2.0               pbapply_1.7-4              
@@ -811,25 +818,25 @@ sessionInfo()
 #>  [31] Rtsne_0.17                  GenomicRanges_1.58.0       
 #>  [33] purrr_1.2.1                 BiocGenerics_0.52.0        
 #>  [35] GenomeInfoDbData_1.2.13     IRanges_2.40.1             
-#>  [37] S4Vectors_0.44.0            ggrepel_0.9.6              
+#>  [37] S4Vectors_0.44.0            ggrepel_0.9.8              
 #>  [39] irlba_2.3.7                 listenv_0.10.1             
 #>  [41] spatstat.utils_3.2-2        units_1.0-1                
 #>  [43] goftest_1.2-3               RSpectra_0.16-2            
-#>  [45] spatstat.random_3.4-4       fitdistrplus_1.2-6         
+#>  [45] spatstat.random_3.4-5       fitdistrplus_1.2-6         
 #>  [47] parallelly_1.46.1           pkgdown_2.2.0              
 #>  [49] codetools_0.2-20            DelayedArray_0.32.0        
 #>  [51] tidyselect_1.2.1            UCSC.utils_1.2.0           
 #>  [53] farver_2.1.2                matrixStats_1.5.0          
-#>  [55] stats4_4.4.2                spatstat.explore_3.7-0     
+#>  [55] stats4_4.4.2                spatstat.explore_3.8-0     
 #>  [57] jsonlite_2.0.0              e1071_1.7-17               
-#>  [59] progressr_0.18.0            ggridges_0.5.7             
+#>  [59] progressr_0.19.0            ggridges_0.5.7             
 #>  [61] survival_3.8-6              systemfonts_1.3.2          
 #>  [63] dbscan_1.2.4                tools_4.4.2                
-#>  [65] ragg_1.5.1                  ica_1.0-3                  
+#>  [65] ragg_1.5.2                  ica_1.0-3                  
 #>  [67] Rcpp_1.1.1                  glue_1.8.0                 
 #>  [69] gridExtra_2.3               SparseArray_1.6.2          
-#>  [71] xfun_0.56                   MatrixGenerics_1.18.1      
-#>  [73] GenomeInfoDb_1.42.3         dplyr_1.2.0                
+#>  [71] xfun_0.57                   MatrixGenerics_1.18.1      
+#>  [73] GenomeInfoDb_1.42.3         dplyr_1.2.1                
 #>  [75] withr_3.0.2                 BiocManager_1.30.27        
 #>  [77] fastmap_1.2.0               digest_0.6.39              
 #>  [79] R6_2.6.1                    mime_0.13                  
@@ -845,30 +852,30 @@ sessionInfo()
 #>  [99] XVector_0.46.0              htmltools_0.5.9            
 #> [101] dotCall64_1.2               bookdown_0.46              
 #> [103] scales_1.4.0                Biobase_2.66.0             
-#> [105] png_0.1-8                   SpatialExperiment_1.16.0   
-#> [107] spatstat.univar_3.1-6       knitr_1.51                 
+#> [105] png_0.1-9                   SpatialExperiment_1.16.0   
+#> [107] spatstat.univar_3.1-7       knitr_1.51                 
 #> [109] reshape2_1.4.5              rjson_0.2.23               
-#> [111] nlme_3.1-168                curl_7.0.0                 
+#> [111] nlme_3.1-169                curl_7.0.0                 
 #> [113] proxy_0.4-29                cachem_1.1.0               
 #> [115] zoo_1.8-15                  stringr_1.6.0              
 #> [117] KernSmooth_2.23-26          parallel_4.4.2             
 #> [119] miniUI_0.1.2                concaveman_1.2.0           
 #> [121] desc_1.4.3                  pillar_1.11.1              
-#> [123] grid_4.4.2                  vctrs_0.7.1                
+#> [123] grid_4.4.2                  vctrs_0.7.2                
 #> [125] RANN_2.6.2                  promises_1.5.0             
 #> [127] xtable_1.8-8                cluster_2.1.8.2            
 #> [129] evaluate_1.0.5              magick_2.9.1               
 #> [131] cli_3.6.5                   compiler_4.4.2             
-#> [133] rlang_1.1.7                 crayon_1.5.3               
+#> [133] rlang_1.2.0                 crayon_1.5.3               
 #> [135] future.apply_1.20.2         labeling_0.4.3             
 #> [137] classInt_0.4-11             plyr_1.8.9                 
-#> [139] fs_1.6.7                    stringi_1.8.7              
+#> [139] fs_2.0.1                    stringi_1.8.7              
 #> [141] viridisLite_0.4.3           deldir_2.0-4               
-#> [143] lazyeval_0.2.2              spatstat.geom_3.7-0        
-#> [145] V8_8.0.1                    Matrix_1.7-4               
+#> [143] lazyeval_0.2.3              spatstat.geom_3.7-3        
+#> [145] V8_8.0.1                    Matrix_1.7-5               
 #> [147] RcppHNSW_0.6.0              patchwork_1.3.2            
 #> [149] future_1.70.0               statmod_1.5.1              
 #> [151] shiny_1.13.0                SummarizedExperiment_1.36.0
-#> [153] ROCR_1.0-12                 igraph_2.2.2               
+#> [153] ROCR_1.0-12                 igraph_2.2.3               
 #> [155] bslib_0.10.0
 ```

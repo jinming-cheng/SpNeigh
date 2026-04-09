@@ -14,7 +14,17 @@ Quick start guide can be found
 
 ## Installation
 
-The *SpNeigh* package can be installed from GitHub by using:
+Install *SpNeigh* from Bioconductor
+
+``` r
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+
+BiocManager::install("SpNeigh")
+```
+
+Or install *SpNeigh* from GitHub:
 
 ``` r
 devtools::install_github("jinming-cheng/SpNeigh")
@@ -27,19 +37,21 @@ Please cite this article if you use SpNeigh:
 ``` R
 To cite SpNeigh in publications, please use:
 
-  Cheng J, Chow P, Liu N (2025). "SpNeigh: spatial neighborhood and
+  Cheng J, Chow P, Liu N (2026). "SpNeigh: spatial neighborhood and
   differential expression analysis for high-resolution spatial
-  transcriptomics." _bioRxiv_. doi:10.1101/2025.11.07.687304
-  <https://doi.org/10.1101/2025.11.07.687304>.
+  transcriptomics." _NAR Genomics and Bioinformatics_, *8*, lqag039.
+  doi:10.1093/nargab/lqag039 <https://doi.org/10.1093/nargab/lqag039>.
 
 A BibTeX entry for LaTeX users is
 
   @Article{,
     title = {SpNeigh: spatial neighborhood and differential expression analysis for high-resolution spatial transcriptomics},
     author = {Jinming Cheng and Pierce Kah Hoe Chow and Nan Liu},
-    journal = {bioRxiv},
-    year = {2025},
-    doi = {10.1101/2025.11.07.687304},
+    journal = {NAR Genomics and Bioinformatics},
+    year = {2026},
+    volume = {8},
+    pages = {lqag039},
+    doi = {10.1093/nargab/lqag039},
   }
 ```
 

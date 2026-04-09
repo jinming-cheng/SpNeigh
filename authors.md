@@ -10,15 +10,17 @@
 Source:
 [`inst/CITATION`](https://github.com/jinming-cheng/SpNeigh/blob/main/inst/CITATION)
 
-Cheng J, Chow P, Liu N (2025). “SpNeigh: spatial neighborhood and
+Cheng J, Chow P, Liu N (2026). “SpNeigh: spatial neighborhood and
 differential expression analysis for high-resolution spatial
-transcriptomics.” *bioRxiv*.
-[doi:10.1101/2025.11.07.687304](https://doi.org/10.1101/2025.11.07.687304).
+transcriptomics.” *NAR Genomics and Bioinformatics*, **8**, lqag039.
+[doi:10.1093/nargab/lqag039](https://doi.org/10.1093/nargab/lqag039).
 
     @Article{,
       title = {SpNeigh: spatial neighborhood and differential expression analysis for high-resolution spatial transcriptomics},
       author = {Jinming Cheng and Pierce Kah Hoe Chow and Nan Liu},
-      journal = {bioRxiv},
-      year = {2025},
-      doi = {10.1101/2025.11.07.687304},
+      journal = {NAR Genomics and Bioinformatics},
+      year = {2026},
+      volume = {8},
+      pages = {lqag039},
+      doi = {10.1093/nargab/lqag039},
     }

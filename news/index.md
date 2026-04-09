@@ -1,5 +1,35 @@
 # Changelog
 
+## SpNeigh 0.99.43
+
+- Updated CITATION file
+- Added Bioconductor installation instructions to the vignette and
+  README
+
+## SpNeigh 0.99.42
+
+- Updated `extractCoords.data.frame()` implementation
+
+## SpNeigh 0.99.41
+
+- Renamed functions to follow lowerCamelCase convention
+- Renamed `my_theme_ggplot()` to
+  [`theme_spneigh()`](https://github.com/jinming-cheng/SpNeigh/reference/theme_spneigh.md)
+- Renamed `my_color_15` to `colors15_cheng`
+- Implemented
+  [`extractCoords()`](https://github.com/jinming-cheng/SpNeigh/reference/ExtractCoords.md)
+  as an S3 generic
+- Updated faceting implementation
+
+## SpNeigh 0.99.2
+
+- Added CITATION file
+
+## SpNeigh 0.99.1
+
+- Made functions compatible with `SpatialExperiment` objects
+- Added script in `inst/scripts` to document data in `inst/extdata`
+
 ## SpNeigh 0.99.0
 
 *Initial Bioconductor submission*
