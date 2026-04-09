@@ -102,10 +102,13 @@ patterns that are not readily captured by existing approaches.
 
 # Installation
 
-The **SpNeigh** package can be installed from GitHub by using:
+Install **SpNeigh** from Bioconductor
+```{r install_pkg, eval=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
 
-```{r, eval=FALSE}
-devtools::install_github("jinming-cheng/SpNeigh")
+BiocManager::install("SpNeigh")
 ```
 
 

@@ -34,9 +34,17 @@ Quick start guide can be found [here](https://jinming-cheng.github.io/SpNeigh/ar
 
 ## Installation
 
-The *SpNeigh* package can be installed from GitHub by using:
+Install *SpNeigh* from Bioconductor
+```{r, eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
 
-``` r
+BiocManager::install("SpNeigh")
+```
+
+Or install *SpNeigh* from GitHub:
+```{r, eval = FALSE}
 devtools::install_github("jinming-cheng/SpNeigh")
 ```
 

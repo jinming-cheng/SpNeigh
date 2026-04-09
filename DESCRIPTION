@@ -1,7 +1,7 @@
 Package: SpNeigh
 Title: Spatial Neighborhood Modeling and Differential Expression
     Analysis for Transcriptomics
-Version: 0.99.42
+Version: 0.99.43
 Authors@R: 
     person(given = "Jinming", 
            family = "Cheng", 
