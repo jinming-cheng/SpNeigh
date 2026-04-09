@@ -8,7 +8,9 @@ bibentry(
                person("Pierce Kah Hoe", "Chow"),
                person("Nan", "Liu")
                ),
-  journal  = "bioRxiv",
-  year     = "2025",
-  doi      = "10.1101/2025.11.07.687304"
+  journal  = "NAR Genomics and Bioinformatics",
+  year     = "2026",
+  volume   = "8",
+  pages    = "lqag039",
+  doi      = "10.1093/nargab/lqag039"
 )
