@@ -204,9 +204,6 @@ library(Seurat)
 #> 'SeuratObject' was built under R 4.4.0 but the current version is
 #> 4.4.2; it is recomended that you reinstall 'SeuratObject' as the ABI
 #> for R may have changed
-#> 'SeuratObject' was built with package 'Matrix' 1.7.4 but the current
-#> version is 1.7.5; it is recomended that you reinstall 'SeuratObject' as
-#> the ABI for 'Matrix' may have changed
 #> 
 #> Attaching package: 'SeuratObject'
 #> The following objects are masked from 'package:base':
@@ -796,13 +793,13 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] Seurat_5.4.0       SeuratObject_5.3.0 sp_2.2-1           ggplot2_4.0.2     
-#> [5] SpNeigh_0.99.43    BiocStyle_2.34.0  
+#> [1] Seurat_5.5.0       SeuratObject_5.4.0 sp_2.2-1           ggplot2_4.0.3     
+#> [5] SpNeigh_1.1.0      BiocStyle_2.34.0  
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RcppAnnoy_0.0.23            splines_4.4.2              
 #>   [3] later_1.4.8                 tibble_3.3.1               
-#>   [5] polyclip_1.10-7             fastDummies_1.7.5          
+#>   [5] polyclip_1.10-7             fastDummies_1.7.6          
 #>   [7] lifecycle_1.0.5             sf_1.1-0                   
 #>   [9] globals_0.19.1              lattice_0.22-9             
 #>  [11] MASS_7.3-65                 magrittr_2.0.5             
@@ -811,19 +808,19 @@ sessionInfo()
 #>  [17] jquerylib_0.1.4             yaml_2.3.12                
 #>  [19] httpuv_1.6.17               otel_0.2.0                 
 #>  [21] sctransform_0.4.3           spam_2.11-3                
-#>  [23] spatstat.sparse_3.1-0       reticulate_1.45.0          
+#>  [23] spatstat.sparse_3.1-0       reticulate_1.46.0          
 #>  [25] cowplot_1.2.0               pbapply_1.7-4              
 #>  [27] DBI_1.3.0                   RColorBrewer_1.1-3         
 #>  [29] abind_1.4-8                 zlibbioc_1.52.0            
 #>  [31] Rtsne_0.17                  GenomicRanges_1.58.0       
-#>  [33] purrr_1.2.1                 BiocGenerics_0.52.0        
+#>  [33] purrr_1.2.2                 BiocGenerics_0.52.0        
 #>  [35] GenomeInfoDbData_1.2.13     IRanges_2.40.1             
 #>  [37] S4Vectors_0.44.0            ggrepel_0.9.8              
 #>  [39] irlba_2.3.7                 listenv_0.10.1             
 #>  [41] spatstat.utils_3.2-2        units_1.0-1                
 #>  [43] goftest_1.2-3               RSpectra_0.16-2            
 #>  [45] spatstat.random_3.4-5       fitdistrplus_1.2-6         
-#>  [47] parallelly_1.46.1           pkgdown_2.2.0              
+#>  [47] parallelly_1.47.0           pkgdown_2.2.0              
 #>  [49] codetools_0.2-20            DelayedArray_0.32.0        
 #>  [51] tidyselect_1.2.1            UCSC.utils_1.2.0           
 #>  [53] farver_2.1.2                matrixStats_1.5.0          
@@ -833,7 +830,7 @@ sessionInfo()
 #>  [61] survival_3.8-6              systemfonts_1.3.2          
 #>  [63] dbscan_1.2.4                tools_4.4.2                
 #>  [65] ragg_1.5.2                  ica_1.0-3                  
-#>  [67] Rcpp_1.1.1                  glue_1.8.0                 
+#>  [67] Rcpp_1.1.1-1.1              glue_1.8.1                 
 #>  [69] gridExtra_2.3               SparseArray_1.6.2          
 #>  [71] xfun_0.57                   MatrixGenerics_1.18.1      
 #>  [73] GenomeInfoDb_1.42.3         dplyr_1.2.1                
@@ -848,34 +845,34 @@ sessionInfo()
 #>  [91] htmlwidgets_1.6.4           S4Arrays_1.6.0             
 #>  [93] uwot_0.2.4                  pkgconfig_2.0.3            
 #>  [95] gtable_0.3.6                lmtest_0.9-40              
-#>  [97] S7_0.2.1                    SingleCellExperiment_1.28.1
+#>  [97] S7_0.2.2                    SingleCellExperiment_1.28.1
 #>  [99] XVector_0.46.0              htmltools_0.5.9            
 #> [101] dotCall64_1.2               bookdown_0.46              
 #> [103] scales_1.4.0                Biobase_2.66.0             
 #> [105] png_0.1-9                   SpatialExperiment_1.16.0   
 #> [107] spatstat.univar_3.1-7       knitr_1.51                 
 #> [109] reshape2_1.4.5              rjson_0.2.23               
-#> [111] nlme_3.1-169                curl_7.0.0                 
+#> [111] nlme_3.1-169                curl_7.1.0                 
 #> [113] proxy_0.4-29                cachem_1.1.0               
 #> [115] zoo_1.8-15                  stringr_1.6.0              
 #> [117] KernSmooth_2.23-26          parallel_4.4.2             
 #> [119] miniUI_0.1.2                concaveman_1.2.0           
 #> [121] desc_1.4.3                  pillar_1.11.1              
-#> [123] grid_4.4.2                  vctrs_0.7.2                
+#> [123] grid_4.4.2                  vctrs_0.7.3                
 #> [125] RANN_2.6.2                  promises_1.5.0             
 #> [127] xtable_1.8-8                cluster_2.1.8.2            
 #> [129] evaluate_1.0.5              magick_2.9.1               
-#> [131] cli_3.6.5                   compiler_4.4.2             
+#> [131] cli_3.6.6                   compiler_4.4.2             
 #> [133] rlang_1.2.0                 crayon_1.5.3               
 #> [135] future.apply_1.20.2         labeling_0.4.3             
 #> [137] classInt_0.4-11             plyr_1.8.9                 
-#> [139] fs_2.0.1                    stringi_1.8.7              
+#> [139] fs_2.1.0                    stringi_1.8.7              
 #> [141] viridisLite_0.4.3           deldir_2.0-4               
 #> [143] lazyeval_0.2.3              spatstat.geom_3.7-3        
-#> [145] V8_8.0.1                    Matrix_1.7-5               
+#> [145] V8_8.2.0                    Matrix_1.7-5               
 #> [147] RcppHNSW_0.6.0              patchwork_1.3.2            
 #> [149] future_1.70.0               statmod_1.5.1              
 #> [151] shiny_1.13.0                SummarizedExperiment_1.36.0
-#> [153] ROCR_1.0-12                 igraph_2.2.3               
+#> [153] ROCR_1.0-12                 igraph_2.3.0               
 #> [155] bslib_0.10.0
 ```
