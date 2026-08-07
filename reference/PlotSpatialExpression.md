@@ -52,17 +52,17 @@ plotSpatialExpression(
 
   `"none"`
 
-  :   No scaling (default). The average expression is plotted as-is.
+  : No scaling (default). The average expression is plotted as-is.
 
   `"zscore"`
 
-  :   Standardize expression (mean 0, SD 1) per gene using
-      [`scale()`](https://rdrr.io/r/base/scale.html).
+  : Standardize expression (mean 0, SD 1) per gene using
+    [`scale()`](https://rdrr.io/r/base/scale.html).
 
   `"minmax"`
 
-  :   Normalize expression to \[0, 1\] range per gene using
-      [`scales::rescale()`](https://scales.r-lib.org/reference/rescale.html).
+  : Normalize expression to \[0, 1\] range per gene using
+    [`scales::rescale()`](https://scales.r-lib.org/reference/rescale.html).
 
 - n_labels:
 

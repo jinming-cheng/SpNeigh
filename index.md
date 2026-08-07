@@ -17,6 +17,7 @@ Quick start guide can be found
 Install *SpNeigh* from Bioconductor
 
 ``` r
+
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
     install.packages("BiocManager")
 }
@@ -27,7 +28,8 @@ BiocManager::install("SpNeigh")
 Or install *SpNeigh* from GitHub:
 
 ``` r
-devtools::install_github("jinming-cheng/SpNeigh")
+
+pak::pak("jinming-cheng/SpNeigh")
 ```
 
 ## Citation

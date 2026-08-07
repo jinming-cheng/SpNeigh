@@ -21,3 +21,8 @@ Useful links:
 
 **Maintainer**: Jinming Cheng <jinming.cheng@outlook.com>
 ([ORCID](https://orcid.org/0000-0003-3806-4694))
+
+Authors:
+
+- Jinming Cheng <jinming.cheng@outlook.com>
+  ([ORCID](https://orcid.org/0000-0003-3806-4694))
