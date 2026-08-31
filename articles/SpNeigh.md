@@ -170,7 +170,7 @@ Create SpatialExperiment
 ``` r
 
 spe <- SpatialExperiment::SpatialExperiment(
-    assay = list("logcounts" = logNorm_expr),
+    assays = list("logcounts" = logNorm_expr),
     colData = metadata_sub,
     spatialCoords = coords_sub
 )
@@ -857,7 +857,7 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] Seurat_5.5.1       SeuratObject_5.4.0 sp_2.2-3           ggplot2_4.0.3     
-#> [5] SpNeigh_1.1.1      BiocStyle_2.40.0  
+#> [5] SpNeigh_1.1.2      BiocStyle_2.40.0  
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             
@@ -867,9 +867,9 @@ sessionInfo()
 #>   [9] ragg_1.5.2                  vctrs_0.7.3                
 #>  [11] ROCR_1.0-12                 spatstat.explore_3.8-2     
 #>  [13] htmltools_0.5.9             S4Arrays_1.12.0            
-#>  [15] curl_7.1.0                  SparseArray_1.12.2         
+#>  [15] curl_8.0.0                  SparseArray_1.12.2         
 #>  [17] sass_0.4.10                 sctransform_0.4.3          
-#>  [19] parallelly_1.48.0           KernSmooth_2.23-26         
+#>  [19] parallelly_1.48.0           KernSmooth_2.23-27         
 #>  [21] bslib_0.12.0                htmlwidgets_1.6.4          
 #>  [23] desc_1.4.3                  ica_1.0-3                  
 #>  [25] plyr_1.8.9                  plotly_4.12.1              
@@ -880,7 +880,7 @@ sessionInfo()
 #>  [35] fastmap_1.2.0               MatrixGenerics_1.24.0      
 #>  [37] fitdistrplus_1.2-6          future_1.75.0              
 #>  [39] shiny_1.14.0                digest_0.6.39              
-#>  [41] patchwork_1.3.2             S4Vectors_0.50.1           
+#>  [41] patchwork_1.3.2             S4Vectors_0.50.2           
 #>  [43] tensor_1.5.1                RSpectra_0.16-2            
 #>  [45] irlba_2.3.7                 textshaping_1.0.5          
 #>  [47] GenomicRanges_1.64.0        labeling_0.4.3             
@@ -896,26 +896,26 @@ sessionInfo()
 #>  [67] lmtest_0.9-40               otel_0.2.0                 
 #>  [69] httpuv_1.6.17               future.apply_1.20.2        
 #>  [71] goftest_1.2-3               glue_1.8.1                 
-#>  [73] dbscan_1.2.5                nlme_3.1-170               
+#>  [73] dbscan_1.2.6                nlme_3.1-170               
 #>  [75] promises_1.5.0              sf_1.1-2                   
 #>  [77] grid_4.6.1                  Rtsne_0.17                 
 #>  [79] cluster_2.1.8.3             reshape2_1.4.5             
 #>  [81] generics_0.1.4              gtable_0.3.6               
 #>  [83] spatstat.data_3.1-9         class_7.3-24               
-#>  [85] tidyr_1.3.2                 data.table_1.18.4          
+#>  [85] tidyr_1.3.2                 data.table_1.18.6.1        
 #>  [87] XVector_0.52.0              spatstat.geom_3.8-2        
 #>  [89] BiocGenerics_0.58.1         RcppAnnoy_0.0.23           
-#>  [91] ggrepel_0.9.8               RANN_2.6.2                 
+#>  [91] ggrepel_0.9.8               RANN_2.6.3                 
 #>  [93] pillar_1.11.1               stringr_1.6.0              
-#>  [95] limma_3.68.4                spam_2.11-4                
+#>  [95] limma_3.68.5                spam_2.11-4                
 #>  [97] RcppHNSW_0.7.0              later_1.4.8                
 #>  [99] splines_4.6.1               dplyr_1.2.1                
-#> [101] lattice_0.22-9              FNN_1.1.4.1                
-#> [103] deldir_2.0-4                survival_3.8-9             
+#> [101] lattice_0.23-1              FNN_1.1.4.1                
+#> [103] deldir_2.0-4                survival_3.8-11            
 #> [105] tidyselect_1.2.1            SingleCellExperiment_1.34.0
 #> [107] miniUI_0.1.2                pbapply_1.7-4              
 #> [109] knitr_1.51                  gridExtra_2.3.1            
-#> [111] V8_8.2.0                    bookdown_0.47              
+#> [111] V8_8.2.0                    bookdown_0.48              
 #> [113] IRanges_2.46.0              Seqinfo_1.2.0              
 #> [115] SummarizedExperiment_1.42.0 scattermore_1.2            
 #> [117] stats4_4.6.1                xfun_0.60                  
@@ -924,7 +924,7 @@ sessionInfo()
 #> [123] yaml_2.3.12                 evaluate_1.0.5             
 #> [125] codetools_0.2-20            tibble_3.3.1               
 #> [127] BiocManager_1.30.27         cli_3.6.6                  
-#> [129] uwot_0.2.4                  xtable_1.8-8               
+#> [129] uwot_0.2.5                  xtable_1.8-8               
 #> [131] reticulate_1.46.0           systemfonts_1.3.2          
 #> [133] jquerylib_0.1.4             Rcpp_1.1.2                 
 #> [135] spatstat.random_3.5-1       globals_0.19.1             

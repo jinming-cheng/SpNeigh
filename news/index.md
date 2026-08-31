@@ -1,5 +1,9 @@
 # Changelog
 
+## SpNeigh 1.1.2
+
+- Correct a typo in vignette
+
 ## SpNeigh 1.1.1
 
 - Update README
